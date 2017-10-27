@@ -29,12 +29,9 @@ sealed class Result {
 }
 
 class Timetable : Result() {
-
     init {
 
     }
-
-
 }
 
 class Day
