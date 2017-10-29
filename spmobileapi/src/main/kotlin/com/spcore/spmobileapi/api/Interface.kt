@@ -108,12 +108,12 @@ internal interface ATSRestInterface {
 
     /**
      * As pointless this function looks, it is actually necessary to call this
-     * before `ATS_Step2_Step3()`
+     * before `step2_3()` to get dem cookies
      *
      * All the magic happens behind the scenes with the Interceptors
      */
     @GET("/")
-    fun ATS_Step0_Step1() : Call<ResponseBody>
+    fun step0_1() : Call<ResponseBody>
 
     /**
      * More stuff happening here
@@ -127,7 +127,7 @@ internal interface ATSRestInterface {
      */
     @GET("/psc/cs90atstd/EMPLOYEE/HRMS/c/A_STDNT_ATTENDANCE.A_ATS_STDNT_SBMIT.GBL" +
             "?cmd=login&language=ENG")
-    fun ATS_Step2_Step3(
+    fun step2_3(
             @Body body: ATSLoginBody) : Call<ResponseBody>
 
     /**
@@ -135,8 +135,8 @@ internal interface ATSRestInterface {
      *             response in Step3
      */
     @POST("/psc/cs90atstd/EMPLOYEE/HRMS/c/A_STDNT_ATTENDANCE.A_ATS_STDNT_SBMIT.GBL")
-    fun ATS_Step4(
-            @Body body: HashMap<String, String>)
+    fun step4(
+            @Body body: HashMap<String, String>) : Call<ResponseBody>
 
 }
 

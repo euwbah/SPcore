@@ -13,8 +13,8 @@ import com.spcore.spmobileapi.psuedomodels.Time
 import okhttp3.ResponseBody
 import java.util.*
 
-interface CanErr<ErrorEnum, Self> {
-    fun onError(handler: (ErrorEnum) -> Unit) : Self
+interface CanErr<out ErrorType, out SelfType> {
+    fun onError(handler: (ErrorType) -> Unit) : SelfType
 }
 
 
@@ -119,4 +119,15 @@ internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): Can
             return this.name.toWords(Strings.WordDelimiterType.UNDERSCORE_DELIMITED).render()
         }
     }
+}
+
+sealed class ATSResult {
+    object SUCCESS : ATSResult()
+    object INVALID_CODE : ATSResult()
+    object ALREADY_ENTERED : ATSResult()
+
+    object NO_INTERNET : ATSResult()
+    object NOT_CONNECTED_TO_SCHOOL_WIFI : ATSResult()
+    object INVALID_CREDENTIALS : ATSResult()
+    class CONNECTION_ERROR(error: ResponseBody?) : ATSResult()
 }

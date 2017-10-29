@@ -10,7 +10,6 @@ import com.spcore.spmobileapi.api.SPMobileAppRESTInterface
 import com.spcore.spmobileapi.helpers.CookieStore
 import com.spcore.spmobileapi.helpers.CookiesAddInterceptor
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import org.jsoup.Jsoup
@@ -128,7 +127,7 @@ object SPMobileAPI {
             // FIXME: Assumption made that step 0 will automatigically redirect to step 1
             // Even then, very little moving parts here, just one redirect and two
             // passes of cookie collection
-            val response0_1 = atsCalls.ATS_Step0_Step1().execute()
+            val response0_1 = atsCalls.step0_1().execute()
 
             if (!response0_1.isSuccessful)
                 return ATSResult.CONNECTION_ERROR(response0_1.errorBody())
@@ -147,8 +146,9 @@ object SPMobileAPI {
             // STEP 2 & 3 ____________________________________________________________________
 
 
+
             val response2_3 =
-                    atsCalls.ATS_Step2_Step3(ATSLoginBody(id, pass)).execute()
+                    atsCalls.step2_3(ATSLoginBody(id, pass)).execute()
 
             if(!response2_3.isSuccessful)
                 return ATSResult.CONNECTION_ERROR(response2_3.errorBody())
@@ -160,23 +160,45 @@ object SPMobileAPI {
                     return ATSResult.INVALID_CREDENTIALS
             }
 
+            val step4RequestBody = HashMap<String, String>()
+
             response2_3.raw().body()?.let {
                 val htmlresponse = it.string()
                 val document = Jsoup.parse(htmlresponse)
                 val hiddenInputFields = document.select("form[name='win0'] > input[type='hidden']")
+                hiddenInputFields.forEach {
+                    step4RequestBody.put(it.attr("name"), it.attr("value"))
+                }
+            } ?: run {
+                throw UnexpectedAPIException(NO_RESPONSE_BODY)
             }
+
+            step4RequestBody.put("A_ATS_ATCD_SBMT_A_ATS_ATTNDNCE_CD", ats.toString())
+
+
+
+            // STEP 4 _____________________________________________________________________
+
+
+            val response4 = atsCalls.step4(step4RequestBody).execute()
+
+            if (!response4.isSuccessful)
+                return ATSResult.CONNECTION_ERROR(response4.errorBody())
+
+            response4.raw().body()?.let {
+                val xmlstr = it.string()
+                return when {
+                    xmlstr.contains("successfully", true) -> ATSResult.SUCCESS
+                    xmlstr.contains("already", true) -> ATSResult.ALREADY_ENTERED
+                    else -> ATSResult.INVALID_CODE
+                }
+            } ?: run {
+                throw UnexpectedAPIException(NO_RESPONSE_BODY)
+            }
+
 
         } catch (e: SocketException) {
             return ATSResult.NO_INTERNET
         }
     }
-
-    sealed class ATSResult {
-        object NO_INTERNET : ATSResult()
-        object NOT_CONNECTED_TO_SCHOOL_WIFI : ATSResult()
-        object INVALID_CREDENTIALS : ATSResult()
-        class CONNECTION_ERROR(error: ResponseBody?) : ATSResult()
-
-    }
-
 }
