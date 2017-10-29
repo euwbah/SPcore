@@ -5,57 +5,74 @@ package com.spcore.spmobileapi
  * These are the data types that will be utilised and exposed outside of the library
  */
 
-import com.spcore.spmobileapi.api.ServerResponseException
 import com.spcore.spmobileapi.api.TimetableDayResponse
 import com.spcore.spmobileapi.helpers.Strings
 import com.spcore.spmobileapi.helpers.reduceToString
 import com.spcore.spmobileapi.helpers.toWords
 import com.spcore.spmobileapi.psuedomodels.Time
 import okhttp3.ResponseBody
-import java.sql.Timestamp
-import java.time.LocalTime
 import java.util.*
 
-
-sealed class Result {
-    class NoInternet(val message: String = "") : Result()
-    class ConnectionError(val errorBody: ResponseBody?) : Result()
-    class InvalidArguments(val message: String = "") : Result()
-    class UnexpectedError(val message: UnexpectedErrorType) : Result()
-
-    enum class UnexpectedErrorType {
-        NO_RESPONSE_BODY
-    }
+interface CanErr<ErrorEnum, Self> {
+    fun onError(handler: (ErrorEnum) -> Unit) : Self
 }
 
-class Timetable : Result() {
+
+class Timetable {
     init {
 
     }
 }
 
+
+/**
+ * Use the self-returning `Day.onError()` to check errors after constructing
+ */
 class Day
-internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String)
-    : Result() {
+internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): CanErr<Day.Errors, Day> {
 
     val dayOfWeek: DayOfWeek
-    val lessons: List<Lesson>
+    val lessons: List<Lesson>?
+    val error: Errors?
 
     init {
-        if (rawDayTimetable.responseType != TimetableDayResponse.ResponseType.VALID)
-            throw ServerResponseException("Abnormal timetable day response: ${rawDayTimetable.responseType}")
 
         val cal = Calendar.getInstance()
         cal.time = ddmmyyFormat.parse(ddmmyy) // Beware internal date parse exception error
         dayOfWeek = DayOfWeek.fromOrdinal(cal.get(Calendar.DAY_OF_WEEK))
 
-        lessons = rawDayTimetable.timetable
+
+        error = when (rawDayTimetable.status) {
+            TimetableDayResponse.ResponseType.TIMETABLE_NOT_AVAILABLE_YET ->
+                Errors.TIMETABLE_NOT_AVAILABLE_YET
+            TimetableDayResponse.ResponseType.STUD_ID_NONEXISTENT ->
+                Errors.NO_SUCH_STUD_ID
+            else -> null
+        }
+
+        lessons =
+            if (rawDayTimetable.status != TimetableDayResponse.ResponseType.NORMAL)
+                null
+            else
+                rawDayTimetable.timetable
                 .map { Lesson(it.module) }
                 .sortedBy { it.startTime }
     }
 
+    enum class Errors {
+        TIMETABLE_NOT_AVAILABLE_YET,
+        NO_SUCH_STUD_ID
+    }
+
+    override inline fun onError(handler: (Errors) -> Unit): Day {
+        if (error != null)
+            handler(error)
+
+        return this
+    }
+
     override fun toString(): String {
-        return "$dayOfWeek:\t${lessons.reduceToString { a, x -> "$a\n\t$x"}}"
+        return "$dayOfWeek:\t${lessons?.reduceToString { a, x -> "$a\n\t$x"} ?: "No lessons"}"
     }
 
     class Lesson(val abbr:          String,

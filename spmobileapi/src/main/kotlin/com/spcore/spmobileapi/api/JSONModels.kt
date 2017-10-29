@@ -13,26 +13,25 @@ internal class TimetableDayResponse(val timetable: List<TimetableModuleObject>) 
     /** This prop. will be used later during the translation process to determine validity of the
      *  response.
      */
-    var responseType: ResponseType? = null // remember init value is written to the backing field
+    var status: ResponseType? = null // remember init value is written to the backing field
         get() = field ?: let {
-                    if (timetable.any { it.module.validity == STUD_ID_NONEXISTENT })
-                        field = STUD_ID_NONEXISTENT
-                    else
-                        field = VALID
+                    timetable.forEach {
+                        when(it.module.validity) {
+                            STUD_ID_NONEXISTENT -> return STUD_ID_NONEXISTENT
+                            TIMETABLE_NOT_AVAILABLE_YET -> return TIMETABLE_NOT_AVAILABLE_YET
+                            NO_LESSONS -> return NO_LESSONS
+                        }
+                    }
+
+                    field = NORMAL
 
                     field
                 }
         private set(v) {field = v}
 
-    init {
-        println("constructing")
-        if (timetable.any { it.module.validity == STUD_ID_NONEXISTENT })
-            this.responseType = STUD_ID_NONEXISTENT
-    }
-
 
     enum class ResponseType {
-        VALID,
+        NORMAL,
 
         /**
          * i.e. during the holidays
@@ -67,7 +66,7 @@ internal class TimetableDayResponse(val timetable: List<TimetableModuleObject>) 
                         // FIXME HACK XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XX XX
                         // This is just a wild guess... there may be other errors the server may
                         // return that are not included above
-                        else                                -> VALID
+                        else                                -> NORMAL
                     }
 
                     field
@@ -84,7 +83,7 @@ internal class TimetableDayResponse(val timetable: List<TimetableModuleObject>) 
     }
 
     override fun toString(): String {
-        return if (responseType == VALID)
+        return if (status == NORMAL)
             timetable
                 .map    { it.toString() }
                 .reduce { acc, s -> "$acc\n\n$s" }
