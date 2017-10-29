@@ -3,18 +3,17 @@
 package com.spcore.spmobileapi
 
 import android.content.SharedPreferences
-import com.spcore.spmobileapi.Result.*
 import com.spcore.spmobileapi.UnexpectedAPIException.UnexpectedAPIError.*
 import com.spcore.spmobileapi.api.ATSLoginBody
 import com.spcore.spmobileapi.api.ATSRestInterface
 import com.spcore.spmobileapi.api.SPMobileAppRESTInterface
-import com.spcore.spmobileapi.api.ServerResponseException
 import com.spcore.spmobileapi.helpers.CookieStore
 import com.spcore.spmobileapi.helpers.CookiesAddInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import org.jsoup.Jsoup
 import java.net.SocketException
 import java.net.SocketTimeoutException
 
@@ -122,6 +121,10 @@ object SPMobileAPI {
 
         try {
 
+            // STEP 0 & 1 __________________________________________________________________
+
+
+
             // FIXME: Assumption made that step 0 will automatigically redirect to step 1
             // Even then, very little moving parts here, just one redirect and two
             // passes of cookie collection
@@ -138,6 +141,12 @@ object SPMobileAPI {
                 throw UnexpectedAPIException(NO_RESPONSE_BODY)
             }
 
+
+
+
+            // STEP 2 & 3 ____________________________________________________________________
+
+
             val response2_3 =
                     atsCalls.ATS_Step2_Step3(ATSLoginBody(id, pass)).execute()
 
@@ -152,11 +161,13 @@ object SPMobileAPI {
             }
 
             response2_3.raw().body()?.let {
-
+                val htmlresponse = it.string()
+                val document = Jsoup.parse(htmlresponse)
+                val hiddenInputFields = document.select("form[name='win0'] > input[type='hidden']")
             }
 
         } catch (e: SocketException) {
-            return ATSResult.NO_INTERNET("Socket exception")
+            return ATSResult.NO_INTERNET
         }
     }
 

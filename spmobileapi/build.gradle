@@ -32,6 +32,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
+    compile 'org.jsoup:jsoup:1.10.3'
 
     // Required for instrumented tests
     androidTestCompile 'com.android.support:support-annotations:26.+'
