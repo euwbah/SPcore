@@ -1,4 +1,4 @@
-package com.spcore
+package com.spcore.unittests
 
 import org.junit.Test
 

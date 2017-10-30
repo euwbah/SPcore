@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Stupid bugfix for "Couldn't resolve resource @id/visible" and other
+        similar errors in the layout renderer
+        -->
+    <item name="visible" type="id"></item>
+    <item name="masked" type="id"></item>
+</resources>

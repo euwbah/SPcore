@@ -15,6 +15,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import org.jsoup.Jsoup
 import java.net.SocketException
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 
 /**
@@ -31,13 +32,17 @@ object SPMobileAPI {
         if (this.isInitalized) return
 
         val cookieStore = CookieStore(cookieSP)
-        val okhttpclient = OkHttpClient()
-        okhttpclient.interceptors().add(CookiesAddInterceptor(cookieStore))
+        val okhttpclient =
+                OkHttpClient
+                        .Builder()
+                        .addInterceptor(CookiesAddInterceptor(cookieStore))
+                        .build()
 
         fun <E> newRetrofit(baseUrl: String, interfaceType: Class<E>) =
                 Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(MoshiConverterFactory.create())
+                    .client(okhttpclient)
                     .build().create(interfaceType)
 
         mobileAppCalls = newRetrofit(
@@ -69,20 +74,21 @@ object SPMobileAPI {
      * @throws ErroneousResponseException
      */
     // FIXME: Remember to set to internal before release
-    fun getTimetableDay(ddmmyy: String, ID: Int) : Day {
+    fun getTimetableDay(ddmmyy: String, ID: Int) : Result<Day, Day.Errors> {
 
         assertInitialization()
 
         val response =
                 try { mobileAppCalls.getTimetable(ddmmyy, ID).execute() }
                 catch (e: SocketTimeoutException) { throw NoInternetException() }
+                catch (e: UnknownHostException) { throw NoInternetException() }
 
         if (!response.isSuccessful)
             throw ErroneousResponseException(response.errorBody())
 
 
 
-        return response.body()?.let { Day(it, ddmmyy) }
+        return response.body()?.let { Day.wrapAsResult { Day(it, ddmmyy) }}
                 ?: throw UnexpectedAPIException(NO_RESPONSE_BODY)
     }
 
@@ -112,7 +118,7 @@ object SPMobileAPI {
     /**
      * @throws
      */
-    fun sendATS(ID: String, pass: String, ats: Int): ATSResult {
+    fun sendATS(ID: String, pass: String, ats: Int): Result<Nothing?, ATSResult.Errors> {
 
         assertInitialization()
 
@@ -130,12 +136,14 @@ object SPMobileAPI {
             val response0_1 = atsCalls.step0_1().execute()
 
             if (!response0_1.isSuccessful)
-                return ATSResult.CONNECTION_ERROR(response0_1.errorBody())
+                throw ErroneousResponseException(response0_1.errorBody())
 
             response0_1.raw().body()?.let {
                 val htmlresponse = it.string()
                 if (htmlresponse.contains("Please connect to SPStudent"))
-                    return ATSResult.NOT_CONNECTED_TO_SCHOOL_WIFI
+                    return ATSResult.wrapAsResult {
+                        ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI
+                    }
             } ?: run {
                 throw UnexpectedAPIException(NO_RESPONSE_BODY)
             }
@@ -151,16 +159,20 @@ object SPMobileAPI {
                     atsCalls.step2_3(ATSLoginBody(id, pass)).execute()
 
             if(!response2_3.isSuccessful)
-                return ATSResult.CONNECTION_ERROR(response2_3.errorBody())
+                throw ErroneousResponseException(response2_3.errorBody())
 
             // Step 2 failure check: ?errorCode=105
             //      => Invalid credentials
             response2_3.raw().request().url().queryParameter("errorCode")?.let {
                 if (it == "105")
-                    return ATSResult.INVALID_CREDENTIALS
+                    return ATSResult.wrapAsResult {
+                        ATSResult.Errors.INVALID_CREDENTIALS
+                    }
             }
 
             val step4RequestBody = HashMap<String, String>()
+
+            // Hidden input field data extraction
 
             response2_3.raw().body()?.let {
                 val htmlresponse = it.string()
@@ -183,22 +195,31 @@ object SPMobileAPI {
             val response4 = atsCalls.step4(step4RequestBody).execute()
 
             if (!response4.isSuccessful)
-                return ATSResult.CONNECTION_ERROR(response4.errorBody())
+                throw ErroneousResponseException(response4.errorBody())
 
             response4.raw().body()?.let {
                 val xmlstr = it.string()
                 return when {
-                    xmlstr.contains("successfully", true) -> ATSResult.SUCCESS
-                    xmlstr.contains("already", true) -> ATSResult.ALREADY_ENTERED
-                    else -> ATSResult.INVALID_CODE
+                    xmlstr.contains("successfully", true) ->
+                        // Note that "success" here is just a placeholder for any value
+                        // other than a type of the ATSResult.Errors monad
+                        ATSResult.wrapAsResult { "success" }
+                    xmlstr.contains("already", true) ->
+                        ATSResult.wrapAsResult {
+                            ATSResult.Errors.ALREADY_ENTERED
+                        }
+                    else -> ATSResult.wrapAsResult {
+                        ATSResult.Errors.INVALID_CODE
+                    }
                 }
             } ?: run {
                 throw UnexpectedAPIException(NO_RESPONSE_BODY)
             }
 
-
         } catch (e: SocketException) {
-            return ATSResult.NO_INTERNET
+            return ATSResult.wrapAsResult {
+                ATSResult.Errors.NO_INTERNET
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 /*
-    Helpers in this file allows the Retrofit/HttpOk3 to automatically onError cookies
+    Helpers in this file allows the Retrofit/HttpOk3 to automatically tryRetrieveElse cookies
     by saving cookies (in KVP map form) taken from Set-Cookie response headers and
     requesting with the same set of cookies.
 

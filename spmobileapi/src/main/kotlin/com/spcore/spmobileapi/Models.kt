@@ -10,13 +10,16 @@ import com.spcore.spmobileapi.helpers.Strings
 import com.spcore.spmobileapi.helpers.reduceToString
 import com.spcore.spmobileapi.helpers.toWords
 import com.spcore.spmobileapi.psuedomodels.Time
-import okhttp3.ResponseBody
 import java.util.*
 
-interface CanErr<out ErrorType, out SelfType> {
-    fun onError(handler: (ErrorType) -> Unit) : SelfType
+sealed class Result<out ValueType, out ErrorType> {
+    class Ok<out ValueType, out ErrorType>(val okValue: ValueType) : Result<ValueType, ErrorType>()
+    class Error<out ValueType, out ErrorType>(val errorValue: ErrorType) : Result<ValueType, ErrorType>()
 }
 
+interface CanErr<ErrorType> {
+    val error: ErrorType?
+}
 
 class Timetable {
     init {
@@ -24,16 +27,20 @@ class Timetable {
     }
 }
 
-
 /**
- * Use the self-returning `Day.onError()` to check errors after constructing
+ * Note that a day without lessons (i.e. `lessons = null`/`lessons.size() = 0`) is
+ * to be taken literally as a day without lessons (i.e. saturday/sunday), and does
+ * not constitute as an error.
+ *
+ * A mechanism separate from the `Result.Error` wrapper would probably have to handle
+ * the UI to inform the user in the above case
  */
 class Day
-internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): CanErr<Day.Errors, Day> {
+internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): CanErr<Day.Errors> {
 
     val dayOfWeek: DayOfWeek
     val lessons: List<Lesson>?
-    val error: Errors?
+    override val error: Errors?
 
     init {
 
@@ -59,16 +66,19 @@ internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): Can
                 .sortedBy { it.startTime }
     }
 
+    companion object {
+        internal fun wrapAsResult(foo: () -> Day): Result<Day, Errors> {
+            val x = foo()
+            return x.error?.let {
+                Result.Error<Day, Day.Errors>(it)
+            } ?:
+                Result.Ok(x)
+        }
+    }
+
     enum class Errors {
         TIMETABLE_NOT_AVAILABLE_YET,
         NO_SUCH_STUD_ID
-    }
-
-    override inline fun onError(handler: (Errors) -> Unit): Day {
-        if (error != null)
-            handler(error)
-
-        return this
     }
 
     override fun toString(): String {
@@ -121,13 +131,28 @@ internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): Can
     }
 }
 
-sealed class ATSResult {
-    object SUCCESS : ATSResult()
-    object INVALID_CODE : ATSResult()
-    object ALREADY_ENTERED : ATSResult()
+class ATSResult(override val error: Errors?) : CanErr<ATSResult.Errors> {
+    companion object {
+        /**
+         * Return `Errors` to `foo` lambda and it will construct a `Result.Error`.
+         * Returning any other values will result in a valueless `Result.Ok`
+         */
+        internal fun <T> wrapAsResult(foo: () -> T?): Result<Nothing?, Errors> {
+            val x = foo()
+            return when(x) {
+                is Errors ->
+                    Result.Error(x)
+                else ->
+                    Result.Ok(null)
+            }
+        }
+    }
+    sealed class Errors {
+        object INVALID_CODE : Errors()
+        object ALREADY_ENTERED : Errors()
 
-    object NO_INTERNET : ATSResult()
-    object NOT_CONNECTED_TO_SCHOOL_WIFI : ATSResult()
-    object INVALID_CREDENTIALS : ATSResult()
-    class CONNECTION_ERROR(error: ResponseBody?) : ATSResult()
+        object NO_INTERNET : Errors()
+        object NOT_CONNECTED_TO_SCHOOL_WIFI : Errors()
+        object INVALID_CREDENTIALS : Errors()
+    }
 }
