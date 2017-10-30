@@ -8,6 +8,7 @@ import android.os.AsyncTask
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -36,7 +37,12 @@ class LoginActivity : AppCompatActivity() {
         SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
 
         thread(start=true) {
-            val res = SPMobileAPI.getTimetableDay("301017", 1626499)
+            val res = SPMobileAPI.sendATS("1626498", "Elmo'sWorld2", 123456)
+
+            Log.d("LoginActivity", when(res) {
+                is Result.Ok -> res.okValue
+                is Result.Error -> res.errorValue
+            }.toString())
         }
 
         password.setOnEditorActionListener(TextView.OnEditorActionListener { textView, id, keyEvent ->

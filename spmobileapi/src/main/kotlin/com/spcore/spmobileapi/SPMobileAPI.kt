@@ -138,7 +138,7 @@ object SPMobileAPI {
             if (!response0_1.isSuccessful)
                 throw ErroneousResponseException(response0_1.errorBody())
 
-            response0_1.raw().body()?.let {
+            response0_1.body()?.let {
                 val htmlresponse = it.string()
                 if (htmlresponse.contains("Please connect to SPStudent"))
                     return ATSResult.wrapAsResult {
@@ -174,7 +174,7 @@ object SPMobileAPI {
 
             // Hidden input field data extraction
 
-            response2_3.raw().body()?.let {
+            response2_3.body()?.let {
                 val htmlresponse = it.string()
                 val document = Jsoup.parse(htmlresponse)
                 val hiddenInputFields = document.select("form[name='win0'] > input[type='hidden']")
@@ -197,7 +197,7 @@ object SPMobileAPI {
             if (!response4.isSuccessful)
                 throw ErroneousResponseException(response4.errorBody())
 
-            response4.raw().body()?.let {
+            response4.body()?.let {
                 val xmlstr = it.string()
                 return when {
                     xmlstr.contains("successfully", true) ->
