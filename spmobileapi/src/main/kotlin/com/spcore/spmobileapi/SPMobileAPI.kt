@@ -22,14 +22,13 @@ import java.net.UnknownHostException
  * A Kotlin Singleton. This is the main exposure point of the API.
  */
 object SPMobileAPI {
-    // Local API server interface (Unicode+1f5a5: 🖥)
     private lateinit var mobileAppCalls: SPMobileAppRESTInterface
     private lateinit var atsCalls: ATSRestInterface
 
-    private var isInitalized = false
+    private var isInitialized = false
 
     fun inititialize(cookieSP: SharedPreferences) {
-        if (this.isInitalized) return
+        if (this.isInitialized) return
 
         val cookieStore = CookieStore(cookieSP)
         val okhttpclient =
@@ -53,11 +52,11 @@ object SPMobileAPI {
                 "https://myats.sp.edu.sg",
                 ATSRestInterface::class.java)
 
-        this.isInitalized = true
+        this.isInitialized = true
     }
 
     private fun assertInitialization() {
-        if (!isInitalized)
+        if (!isInitialized)
             throw SPMobileAPIUninitializedException()
     }
 
