@@ -15,6 +15,16 @@ import java.util.*
 sealed class Result<out ValueType, out ErrorType> {
     class Ok<out ValueType, out ErrorType>(val okValue: ValueType) : Result<ValueType, ErrorType>()
     class Error<out ValueType, out ErrorType>(val errorValue: ErrorType) : Result<ValueType, ErrorType>()
+
+    inline fun tryGetIfNot(handle: (ErrorType) -> Unit): ValueType? {
+        return when(this) {
+            is Ok -> okValue
+            is Error -> {
+                handle(errorValue)
+                null
+            }
+        }
+    }
 }
 
 interface CanErr<ErrorType> {
@@ -150,6 +160,7 @@ class ATSResult(override val error: Errors?) : CanErr<ATSResult.Errors> {
     sealed class Errors {
         object INVALID_CODE : Errors()
         object ALREADY_ENTERED : Errors()
+        object WRONG_CLASS : Errors()
 
         object NO_INTERNET : Errors()
         object NOT_CONNECTED_TO_SCHOOL_WIFI : Errors()

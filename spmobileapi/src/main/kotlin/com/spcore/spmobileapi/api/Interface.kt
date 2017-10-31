@@ -1,6 +1,11 @@
+/**
+ * Retrofit REST client interface
+ *  **IMPORTANT: All calls returned are synchronous
+ * Android asserts asynchronicity of all HTTP calls, and must be
+ * implemented at a higher level than the calls here in this package
+ */
 package com.spcore.spmobileapi.api
 
-import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -106,6 +111,7 @@ internal interface ATSRestInterface {
                     ATS code is invalid
     */
 
+
     /**
      * As pointless this function looks, it is actually necessary to call this
      * before `step2_3()` to get dem cookies
@@ -129,7 +135,7 @@ internal interface ATSRestInterface {
     @POST("/psc/cs90atstd/EMPLOYEE/HRMS/c/A_STDNT_ATTENDANCE.A_ATS_STDNT_SBMIT.GBL" +
             "?cmd=login&language=ENG")
     fun step2_3(
-            @Field("userid") userid: String, @Field("pwd") pwd: String) : Call<ResponseBody>
+            @Field("userid") userid: String, @Field("pwd") pwd: String, @Field("timezoneOffset") timezoneOffset: Int = -480) : Call<ResponseBody>
 
     /**
      * @param body A HashMap containing all the hidden input fields from the HTML

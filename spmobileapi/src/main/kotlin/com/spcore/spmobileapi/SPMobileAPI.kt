@@ -3,12 +3,13 @@
 package com.spcore.spmobileapi
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.spcore.spmobileapi.UnexpectedAPIException.UnexpectedAPIError.*
 import com.spcore.spmobileapi.api.ATSRestInterface
 import com.spcore.spmobileapi.api.SPMobileAppRESTInterface
-import com.spcore.spmobileapi.helpers.CookieStore
-import com.spcore.spmobileapi.helpers.CookiesAddInterceptor
-import com.spcore.spmobileapi.helpers.CookiesRecInterceptor
+import com.spcore.spmobileapi.interceptors.CookieStore
+import com.spcore.spmobileapi.interceptors.CookiesAddInterceptor
+import com.spcore.spmobileapi.interceptors.CookiesRecInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -26,14 +27,16 @@ object SPMobileAPI {
     private lateinit var atsCalls: ATSRestInterface
 
     private var isInitialized = false
+    private lateinit var cookieStore: CookieStore
 
     fun inititialize(cookieSP: SharedPreferences) {
         if (this.isInitialized) return
 
-        val cookieStore = CookieStore(cookieSP)
+        cookieStore = CookieStore(cookieSP)
         val okhttpclient =
                 OkHttpClient
                         .Builder()
+                        .followRedirects(false)
                         .addInterceptor(CookiesAddInterceptor(cookieStore))
                         .addInterceptor(CookiesRecInterceptor(cookieStore))
                         .build()
@@ -124,8 +127,12 @@ object SPMobileAPI {
 
         val id = (if (ID.toLowerCase().startsWith("p")) "" else "p") + ID
 
+        // Reset all cookies
+        cookieStore.clearCookies()
+
         try {
             return ATSResult.wrapAsResult {
+                Log.d("ME STEP 0_1", "============================================")
                 // STEP 0 & 1 __________________________________________________________________
 
 
@@ -146,6 +153,7 @@ object SPMobileAPI {
                 }
 
 
+                Log.d("ME STEP 2_3", "============================================")
                 // STEP 2 & 3 ____________________________________________________________________
 
 
@@ -170,7 +178,7 @@ object SPMobileAPI {
                 response2_3.body()?.let {
                     val htmlresponse = it.string()
                     val document = Jsoup.parse(htmlresponse)
-                    val hiddenInputFields = document.select("form[name='win0'] > input[type='hidden']")
+                    val hiddenInputFields = document.select("input[type='hidden']")
                     hiddenInputFields.forEach {
                         step4RequestBody.put(it.attr("name"), it.attr("value"))
                     }
@@ -179,7 +187,12 @@ object SPMobileAPI {
                 }
 
                 step4RequestBody.put("A_ATS_ATCD_SBMT_A_ATS_ATTNDNCE_CD", ats.toString())
+                step4RequestBody.put("ICAction", "A_ATS_ATCD_SBMT_SUBMIT_BTN")
+                step4RequestBody.put("ICAJAX", "1")
+                step4RequestBody.put("ICNAVTYPEDROPDOWN", "0")
 
+
+                Log.d("ME STEP 4", "============================================")
 
                 // STEP 4 _____________________________________________________________________
 
@@ -198,6 +211,9 @@ object SPMobileAPI {
                             "success"
                         xmlstr.contains("already", true) ->
                             ATSResult.Errors.ALREADY_ENTERED
+                        xmlstr.contains("not registered", true) ->
+                            // TODO: add regex - "not registered in (\w+/\w+/\d\w/\d+)"
+                            ATSResult.Errors.WRONG_CLASS
                         else ->
                             ATSResult.Errors.INVALID_CODE
                     }

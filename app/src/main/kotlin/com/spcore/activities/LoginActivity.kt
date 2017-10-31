@@ -37,9 +37,9 @@ class LoginActivity : AppCompatActivity() {
         SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
 
         thread(start=true) {
-            val res = SPMobileAPI.sendATS("1626499", "Elmo'sWorld2", 786405)
+            val res = SPMobileAPI.sendATS("1626498", "Elmo'sWorld2", 430487)
 
-            Log.d("LoginActivity", when(res) {
+            Log.d("ME LoginActivity", when(res) {
                 is Result.Ok -> res.okValue
                 is Result.Error -> res.errorValue
             }.toString())
