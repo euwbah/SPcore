@@ -160,7 +160,11 @@ class ATSResult(override val error: Errors?) : CanErr<ATSResult.Errors> {
     sealed class Errors {
         object INVALID_CODE : Errors()
         object ALREADY_ENTERED : Errors()
-        object WRONG_CLASS : Errors()
+
+        /**
+         * @param wrongClass The class of which ATS code the user mistook for his own
+         */
+        class WRONG_CLASS(val wrongClass: String) : Errors()
 
         object NO_INTERNET : Errors()
         object NOT_CONNECTED_TO_SCHOOL_WIFI : Errors()
