@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
         SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
 
         thread(start=true) {
-            val res = SPMobileAPI.sendATS("1626498", "Elmo'sWorld2", 123456)
+            val res = SPMobileAPI.sendATS("1626499", "Elmo'sWorld2", 786405)
 
             Log.d("LoginActivity", when(res) {
                 is Result.Ok -> res.okValue
@@ -164,7 +164,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            // TODO: register the new account here.
             return true
         }
 

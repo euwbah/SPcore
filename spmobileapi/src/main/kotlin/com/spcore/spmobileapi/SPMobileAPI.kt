@@ -4,11 +4,11 @@ package com.spcore.spmobileapi
 
 import android.content.SharedPreferences
 import com.spcore.spmobileapi.UnexpectedAPIException.UnexpectedAPIError.*
-import com.spcore.spmobileapi.api.ATSLoginBody
 import com.spcore.spmobileapi.api.ATSRestInterface
 import com.spcore.spmobileapi.api.SPMobileAppRESTInterface
 import com.spcore.spmobileapi.helpers.CookieStore
 import com.spcore.spmobileapi.helpers.CookiesAddInterceptor
+import com.spcore.spmobileapi.helpers.CookiesRecInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -35,6 +35,7 @@ object SPMobileAPI {
                 OkHttpClient
                         .Builder()
                         .addInterceptor(CookiesAddInterceptor(cookieStore))
+                        .addInterceptor(CookiesRecInterceptor(cookieStore))
                         .build()
 
         fun <E> newRetrofit(baseUrl: String, interfaceType: Class<E>) =
@@ -100,7 +101,7 @@ object SPMobileAPI {
 
 
 
-    // FIXME: Remember to set to internal before release
+    // TODO: complete implementation of `getCalendar()`
     fun getCalendar(): String {
 
         assertInitialization()
@@ -124,96 +125,86 @@ object SPMobileAPI {
         val id = (if (ID.toLowerCase().startsWith("p")) "" else "p") + ID
 
         try {
-
-            // STEP 0 & 1 __________________________________________________________________
-
-
-
-            // FIXME: Assumption made that step 0 will automatigically redirect to step 1
-            // Even then, very little moving parts here, just one redirect and two
-            // passes of cookie collection
-            val response0_1 = atsCalls.step0_1().execute()
-
-            if (!response0_1.isSuccessful)
-                throw ErroneousResponseException(response0_1.errorBody())
-
-            response0_1.body()?.let {
-                val htmlresponse = it.string()
-                if (htmlresponse.contains("Please connect to SPStudent"))
-                    return ATSResult.wrapAsResult {
-                        ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI
-                    }
-            } ?: run {
-                throw UnexpectedAPIException(NO_RESPONSE_BODY)
-            }
+            return ATSResult.wrapAsResult {
+                // STEP 0 & 1 __________________________________________________________________
 
 
+                // FIXME: Possible failure: assuming step 0 will automagically redirect to step 1
+                // Even then, very little moving parts here, just one redirect and two
+                // passes of cookie collection
+                val response0_1 = atsCalls.step0_1().execute()
 
+                if (!response0_1.isSuccessful)
+                    throw ErroneousResponseException(response0_1.errorBody())
 
-            // STEP 2 & 3 ____________________________________________________________________
-
-
-
-            val response2_3 =
-                    atsCalls.step2_3(ATSLoginBody(id, pass)).execute()
-
-            if(!response2_3.isSuccessful)
-                throw ErroneousResponseException(response2_3.errorBody())
-
-            // Step 2 failure check: ?errorCode=105
-            //      => Invalid credentials
-            response2_3.raw().request().url().queryParameter("errorCode")?.let {
-                if (it == "105")
-                    return ATSResult.wrapAsResult {
-                        ATSResult.Errors.INVALID_CREDENTIALS
-                    }
-            }
-
-            val step4RequestBody = HashMap<String, String>()
-
-            // Hidden input field data extraction
-
-            response2_3.body()?.let {
-                val htmlresponse = it.string()
-                val document = Jsoup.parse(htmlresponse)
-                val hiddenInputFields = document.select("form[name='win0'] > input[type='hidden']")
-                hiddenInputFields.forEach {
-                    step4RequestBody.put(it.attr("name"), it.attr("value"))
+                response0_1.body()?.let {
+                    val htmlresponse = it.string()
+                    if (htmlresponse.contains("Please connect to SPStudent"))
+                        return@wrapAsResult ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI
+                } ?: run {
+                    throw UnexpectedAPIException(NO_RESPONSE_BODY)
                 }
-            } ?: run {
-                throw UnexpectedAPIException(NO_RESPONSE_BODY)
-            }
-
-            step4RequestBody.put("A_ATS_ATCD_SBMT_A_ATS_ATTNDNCE_CD", ats.toString())
 
 
+                // STEP 2 & 3 ____________________________________________________________________
 
-            // STEP 4 _____________________________________________________________________
+
+                val response2_3 =
+                        atsCalls.step2_3(id, pass).execute()
+
+                if (!response2_3.isSuccessful)
+                    throw ErroneousResponseException(response2_3.errorBody())
+
+                // Step 2 failure check: ?errorCode=105
+                //      => Invalid credentials
+                // FIXME: Possible point of failure in `.raw()`
+                response2_3.raw().request().url().queryParameter("errorCode")?.let {
+                    if (it == "105")
+                        return@wrapAsResult ATSResult.Errors.INVALID_CREDENTIALS
+                }
+
+                val step4RequestBody = HashMap<String, String>()
+
+                // Hidden input field data extraction
+
+                response2_3.body()?.let {
+                    val htmlresponse = it.string()
+                    val document = Jsoup.parse(htmlresponse)
+                    val hiddenInputFields = document.select("form[name='win0'] > input[type='hidden']")
+                    hiddenInputFields.forEach {
+                        step4RequestBody.put(it.attr("name"), it.attr("value"))
+                    }
+                } ?: run {
+                    throw UnexpectedAPIException(NO_RESPONSE_BODY)
+                }
+
+                step4RequestBody.put("A_ATS_ATCD_SBMT_A_ATS_ATTNDNCE_CD", ats.toString())
 
 
-            val response4 = atsCalls.step4(step4RequestBody).execute()
+                // STEP 4 _____________________________________________________________________
 
-            if (!response4.isSuccessful)
-                throw ErroneousResponseException(response4.errorBody())
 
-            response4.body()?.let {
-                val xmlstr = it.string()
-                return when {
-                    xmlstr.contains("successfully", true) ->
-                        // Note that "success" here is just a placeholder for any value
-                        // other than a type of the ATSResult.Errors monad
-                        ATSResult.wrapAsResult { "success" }
-                    xmlstr.contains("already", true) ->
-                        ATSResult.wrapAsResult {
+                val response4 = atsCalls.step4(step4RequestBody).execute()
+
+                if (!response4.isSuccessful)
+                    throw ErroneousResponseException(response4.errorBody())
+
+                response4.body()?.let {
+                    val xmlstr = it.string()
+                    return@wrapAsResult when {
+                        xmlstr.contains("successfully", true) ->
+                            // Note that "success" here is just a placeholder for any value
+                            // other than a type of the ATSResult.Errors monad
+                            "success"
+                        xmlstr.contains("already", true) ->
                             ATSResult.Errors.ALREADY_ENTERED
-                        }
-                    else -> ATSResult.wrapAsResult {
-                        ATSResult.Errors.INVALID_CODE
+                        else ->
+                            ATSResult.Errors.INVALID_CODE
                     }
+                } ?: run {
+                    throw UnexpectedAPIException(NO_RESPONSE_BODY)
                 }
-            } ?: run {
-                throw UnexpectedAPIException(NO_RESPONSE_BODY)
-            }
+            } // end of yuge'ss lambda
 
         } catch (e: SocketException) {
             return ATSResult.wrapAsResult {

@@ -125,22 +125,19 @@ internal interface ATSRestInterface {
      *
      * @param body The user's credentials in the form of the `ATSLoginBody` data model
      */
-    @GET("/psc/cs90atstd/EMPLOYEE/HRMS/c/A_STDNT_ATTENDANCE.A_ATS_STDNT_SBMIT.GBL" +
+    @FormUrlEncoded
+    @POST("/psc/cs90atstd/EMPLOYEE/HRMS/c/A_STDNT_ATTENDANCE.A_ATS_STDNT_SBMIT.GBL" +
             "?cmd=login&language=ENG")
     fun step2_3(
-            @Body body: ATSLoginBody) : Call<ResponseBody>
+            @Field("userid") userid: String, @Field("pwd") pwd: String) : Call<ResponseBody>
 
     /**
      * @param body A HashMap containing all the hidden input fields from the HTML
      *             response in Step3
      */
+    @FormUrlEncoded
     @POST("/psc/cs90atstd/EMPLOYEE/HRMS/c/A_STDNT_ATTENDANCE.A_ATS_STDNT_SBMIT.GBL")
     fun step4(
-            @Body body: HashMap<String, String>) : Call<ResponseBody>
+            @FieldMap body: Map<String, String>) : Call<ResponseBody>
 
 }
-
-internal class ATSLoginBody(
-        val userid: String,
-        val pwd: String
-)
