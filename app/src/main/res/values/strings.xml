@@ -2,17 +2,21 @@
     <string name="app_name">SPcore</string>
 
     <!-- Strings related to login -->
+    <string name="login_description">Sign in with your SPice account</string>
     <string name="prompt_id">Admin No.</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_admin_no">Not a valid admin number</string>
+    <string name="error_incorrect_password">Wrong admin number/password</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
-    <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
 
+    <!-- SharedPreferences IDs -->
+
+        <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
+        <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
+
+        <string name="jwt_token_shared_preference_id"></string>
 
 </resources>

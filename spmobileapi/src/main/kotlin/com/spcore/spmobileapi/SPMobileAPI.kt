@@ -213,11 +213,11 @@ object SPMobileAPI {
                             ATSResult.Errors.ALREADY_ENTERED
                         xmlstr.contains("not registered", true) -> {
                             // example match: "not registered in DIT/FT/2B/02"
-                            val pattern = Regex("not registered in (?<class>\\w+/\\w+/\\d\\w/\\d+)")
+                            val pattern = Regex("not registered in (\\w+/\\w+/\\d\\w/\\d+)")
                             val match = pattern.find(xmlstr)
 
                             val youPickedTheWrongHouseFool =
-                                    match?.groups?.get("class")?.value
+                                    match?.groups?.get(0)?.value
 
                             ATSResult.Errors.WRONG_CLASS(youPickedTheWrongHouseFool ?: "No class!!?? Pwo")
                         }
