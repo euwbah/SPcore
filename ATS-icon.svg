@@ -1,0 +1,15 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="402" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path opacity="0.7" stroke="#000000" transform="rotate(8.934207916259766 226.89962768554676,216.14547729492202) " id="svg_2" d="m337.63371,54.506886l-39.377368,-26.972865c-9.935036,-6.798662 -23.026169,-3.526467 -29.28627,7.303207l-15.520847,26.922535l75.330573,51.563225l15.533088,-26.910038c6.236342,-10.842565 3.259965,-25.122551 -6.679176,-31.906064l0,0zm-218.2355,239.851341l75.334678,51.562695l122.783036,-213.017307l-75.37054,-51.576158l-122.747187,213.030756l0.000012,0.000014zm-11.507357,65.512324l-1.663873,48.431954l39.316962,-22.663948l36.536628,-21.024008l-72.677777,-49.775643l-1.511928,45.031658l0,0l-0.000012,-0.000014z" stroke-width="1.5" fill="#000000"/>
+  <text opacity="0.7" stroke="#000000" transform="matrix(2.360740627056225,0,0,3.1727314273385328,-295.7338180723863,-638.4969452313022) " xml:space="preserve" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="43" id="svg_3" y="241.864364" x="134.183263" stroke-width="0" fill="#000000">ATS</text>
+ </g>
+</svg>

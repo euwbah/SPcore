@@ -14,9 +14,10 @@
 
     <!-- SharedPreferences IDs -->
 
-        <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
-        <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
+    <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
+    <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
 
-        <string name="jwt_token_shared_preference_id"></string>
+    <string name="jwt_token_shared_preference_id"></string>
+    <string name="title_activity_home">HomeActivity</string>
 
 </resources>
