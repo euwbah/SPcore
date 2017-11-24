@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SPcore</string>
 
-    <!-- Strings related to login -->
+    <!-- Login screen strings -->
     <string name="login_description">Sign in with your SPice account</string>
     <string name="prompt_id">Admin No.</string>
     <string name="prompt_password">Password</string>
@@ -12,12 +12,32 @@
     <string name="error_field_required">This field is required</string>
 
 
+
+    <!-- Home screen action bar strings -->
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_ats">ATS</string>
+
+
+    <!-- Side nav strings -->
+    <string name="nav_day_str">Day</string>
+    <string name="nav_week_str">Week</string>
+    <string name="nav_logout_str">Logout</string>
+    <string name="nav_settings_str">Settings</string>
+
+
     <!-- SharedPreferences IDs -->
 
-    <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
-    <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
+        <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
+        <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
+        <string name="jwt_token_shared_preference_id">com.SPcore.n3k07</string>
 
-    <string name="jwt_token_shared_preference_id"></string>
-    <string name="title_activity_home">HomeActivity</string>
+
+    <!-- Accessbility (TTS) -->
+
+        <!-- Nav bar -->
+        <string name="nav_tts_open">Open navigation drawer</string>
+        <string name="nav_tts_close">Close navigation drawer</string>
+
 
 </resources>

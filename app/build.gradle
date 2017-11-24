@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "27.0.0"
+    buildToolsVersion "27.0.1"
     defaultConfig {
         applicationId "com.spcore"
         minSdkVersion 21
@@ -37,6 +37,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:design:26.+'
 
+    compile 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
+    compile 'com.github.alamkanak:android-week-view:1.2.6'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.+'
 
     testCompile 'junit:junit:4.12'

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/nav_group_view_mode"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_day_view"
+            android:icon="@drawable/ic_view_day"
+            android:title="@string/nav_day_str" />
+        <item
+            android:id="@+id/nav_week_view"
+            android:icon="@drawable/ic_view_week"
+            android:title="@string/nav_week_str"/>
+    </group>
+
+    <group
+        android:id="@+id/nav_group_misc_actions"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/nav_settings_str" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit_to_app"
+            android:title="@string/nav_logout_str" />
+    </group>
+</menu>

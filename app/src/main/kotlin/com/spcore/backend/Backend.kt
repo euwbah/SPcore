@@ -1,6 +1,7 @@
 package com.spcore.backend
 
 import android.util.Log
+import com.spcore.helpers.BACKEND_URL
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,7 +16,7 @@ object Backend {
 
     init {
         backendCalls = Retrofit.Builder()
-                .baseUrl("http://localhost:3000")
+                .baseUrl(BACKEND_URL)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build().create(BackendInterface::class.java)
     }

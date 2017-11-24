@@ -2,6 +2,7 @@ package com.spcore.activities
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 
 import android.os.AsyncTask
@@ -9,6 +10,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -19,6 +21,7 @@ import com.spcore.R
 import com.spcore.backend.Backend
 import com.spcore.backend.LoginResponse
 import com.spcore.helpers.Auth.retrieveJWTTokenSP
+import com.spcore.helpers.HARDCODE_MODE
 import com.spcore.helpers.backendErrorAdapter
 import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
@@ -73,10 +76,13 @@ class LoginActivity : AppCompatActivity() {
         var focusView: View? = null
 
         val isValidAdminNo = {
-            x: String -> x.matches(Regex("p?\\d{7}"))
+            x: String -> x.matches(Regex("[pP]?\\d{7}"))
         }
 
-        if (!TextUtils.isEmpty(passwordStr)) {
+        Log.d("NIGGA LOGIN", "$adminNoStr, $passwordStr: ${TextUtils.isEmpty(passwordStr)}")
+
+
+        if (TextUtils.isEmpty(passwordStr)) {
             password.error = getString(R.string.error_field_required)
             focusView = password
             problem = true
@@ -101,7 +107,8 @@ class LoginActivity : AppCompatActivity() {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true)
-            mAuthTask = UserLoginTask(adminNoStr, passwordStr)
+            val adminNoStrWithoutP = adminNoStr.replace("p", "", true)
+            mAuthTask = UserLoginTask(adminNoStrWithoutP, passwordStr)
             mAuthTask?.execute()
         }
     }
@@ -149,7 +156,15 @@ class LoginActivity : AppCompatActivity() {
             AsyncTask<Void, Void, LoginStatus>() {
 
         override fun doInBackground(vararg params: Void): LoginStatus {
-            // TODO: attempt authentication against a network service.
+
+            if (HARDCODE_MODE) {
+                val fakeResponse = LoginResponse("Fake JWT Token")
+                return when (adminNoStr) {
+                    "1234567" -> LoginStatus.SUCCESS(fakeResponse)
+                    "7654321" -> LoginStatus.SP_SERVER_DOWN
+                    else -> LoginStatus.INVALID_CREDENTIALS
+                }
+            }
 
             val resp = Backend.performLogin(adminNoStr, passwordStr).execute()
 
@@ -157,7 +172,7 @@ class LoginActivity : AppCompatActivity() {
                 resp.errorBody()?.string()?.let {
                     val err = backendErrorAdapter.fromJson(it)
 
-                    err?.code?.toInt()?.let {
+                    err?.code?.let {
                         return when(it) {
                             2 -> LoginStatus.INVALID_CREDENTIALS
                             3 -> LoginStatus.SP_SERVER_DOWN
@@ -185,6 +200,8 @@ class LoginActivity : AppCompatActivity() {
                             .edit()
                             .putString("token", status.response.token)
                             .apply()
+
+                    this@LoginActivity.startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 }
 
                 is LoginStatus.INVALID_CREDENTIALS -> {
