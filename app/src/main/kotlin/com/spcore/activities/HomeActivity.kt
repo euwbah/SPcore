@@ -6,11 +6,13 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
+import com.alamkanak.weekview.WeekViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
 
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.content_home.*
 import java.util.*
 
 class HomeActivity : AppCompatActivity() {
@@ -62,13 +64,18 @@ class HomeActivity : AppCompatActivity() {
                 if (isExpanded)
                     ViewCompat.animate(date_picker_arrow).rotation(0f).start()
                 else
-                    ViewCompat.animate(date_picker_arrow).rotation(180f).start()
+                    ViewCompat.animate(date_picker_arrow).rotation(-180f).start()
 
                 isExpanded = !isExpanded
                 app_bar_layout.setExpanded(isExpanded, true)
             }
         }
 
+        // Note: month here is 1-based
+        schedule_view.setMonthChangeListener {
+            year, month ->
+
+        }
     }
 
 

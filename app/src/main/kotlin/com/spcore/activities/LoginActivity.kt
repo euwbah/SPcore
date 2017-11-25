@@ -19,6 +19,7 @@ import android.widget.Toast
 
 import com.spcore.R
 import com.spcore.backend.Backend
+import com.spcore.backend.FrontendInterface
 import com.spcore.backend.LoginResponse
 import com.spcore.helpers.Auth.retrieveJWTTokenSP
 import com.spcore.helpers.HARDCODE_MODE
@@ -155,41 +156,8 @@ class LoginActivity : AppCompatActivity() {
     inner class UserLoginTask internal constructor(private val adminNoStr: String, private val passwordStr: String) :
             AsyncTask<Void, Void, LoginStatus>() {
 
-        override fun doInBackground(vararg params: Void): LoginStatus {
-
-            if (HARDCODE_MODE) {
-                val fakeResponse = LoginResponse("Fake JWT Token")
-                return when (adminNoStr) {
-                    "1234567" -> LoginStatus.SUCCESS(fakeResponse)
-                    "7654321" -> LoginStatus.SP_SERVER_DOWN
-                    else -> LoginStatus.INVALID_CREDENTIALS
-                }
-            }
-
-            val resp = Backend.performLogin(adminNoStr, passwordStr).execute()
-
-            if(!resp.isSuccessful) {
-                resp.errorBody()?.string()?.let {
-                    val err = backendErrorAdapter.fromJson(it)
-
-                    err?.code?.let {
-                        return when(it) {
-                            2 -> LoginStatus.INVALID_CREDENTIALS
-                            3 -> LoginStatus.SP_SERVER_DOWN
-                            else -> LoginStatus.UNEXPECTED_ERROR(it, err.message)
-                        }
-                    }
-                }
-
-                return LoginStatus.VOID
-            }
-
-            resp.body()?.let {
-                return LoginStatus.SUCCESS(it)
-            }
-
-            return LoginStatus.VOID
-        }
+        override fun doInBackground(vararg params: Void) =
+                FrontendInterface.performLogin(adminNoStr, passwordStr)
 
         override fun onPostExecute(status: LoginStatus) {
             mAuthTask = null
