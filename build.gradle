@@ -4,6 +4,7 @@ buildscript {
     ext.kotlin_version = '1.1.51'
     repositories {
         jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
@@ -19,10 +20,13 @@ apply plugin: 'kotlin'
 allprojects {
     repositories {
         jcenter()
+        google()
     }
 }
 repositories {
+    mavenLocal()
     mavenCentral()
+    google()
 }
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"

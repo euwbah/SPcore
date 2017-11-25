@@ -18,12 +18,9 @@ import android.widget.Toast
 
 
 import com.spcore.R
-import com.spcore.backend.Backend
-import com.spcore.backend.FrontendInterface
-import com.spcore.backend.LoginResponse
+import com.spcore.services.FrontendInterface
+import com.spcore.services.LoginResponse
 import com.spcore.helpers.Auth.retrieveJWTTokenSP
-import com.spcore.helpers.HARDCODE_MODE
-import com.spcore.helpers.backendErrorAdapter
 import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
 import kotlinx.android.synthetic.main.activity_login.*

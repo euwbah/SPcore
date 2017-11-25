@@ -12,7 +12,7 @@
 
     <!-- Login progress -->
     <TextView
-        android:id="@+id/loginInfo"
+        android:id="@+id/login_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20sp"
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_id"
-                    android:inputType="textEmailAddress"
+                    android:inputType="number"
                     android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>

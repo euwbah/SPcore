@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/SPCore.iml" filepath="$PROJECT_DIR$/SPCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/spmobileapi/spmobileapi.iml" filepath="$PROJECT_DIR$/spmobileapi/spmobileapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weekview/weekview.iml" filepath="$PROJECT_DIR$/weekview/weekview.iml" />
     </modules>
   </component>
 </project>

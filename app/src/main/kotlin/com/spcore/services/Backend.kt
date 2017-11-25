@@ -1,13 +1,11 @@
-package com.spcore.backend
+package com.spcore.services
 
-import android.util.Log
 import com.spcore.helpers.BACKEND_URL
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import kotlin.concurrent.thread
 
 
 object Backend {

@@ -5,11 +5,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
-import com.alamkanak.weekview.WeekViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
+import com.spcore.services.FrontendInterface
 
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
@@ -74,7 +75,18 @@ class HomeActivity : AppCompatActivity() {
         // Note: month here is 1-based
         schedule_view.setMonthChangeListener {
             year, month ->
+                Log.d("SPCORE SCHED VIEW", "MonthChange: $year, $month")
+                FrontendInterface.getSchedule(year, month).map { it.toWeekViewEvent() }
+        }
 
+        schedule_view.setEmptyViewClickListener {  }
+        schedule_view.setEmptyViewLongPressListener {  }
+        schedule_view.setEventLongPressListener { event, eventRect ->  }
+        schedule_view.setOnEventClickListener { event, eventRect ->  }
+
+        schedule_view.setScrollListener {
+            newFirstVisibleDay, oldFirstVisibleDay ->
+                setCurrentDate(newFirstVisibleDay.time)
         }
     }
 

@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion "27.0.1"
     defaultConfig {
         applicationId "com.spcore"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,11 +34,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support:design:26.+'
+    compile 'com.android.support:appcompat-v7:27.+'
+    compile 'com.android.support:design:27.+'
 
     compile 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
-    compile 'com.github.alamkanak:android-week-view:1.2.6'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.+'
 
     testCompile 'junit:junit:4.12'
@@ -48,6 +47,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
     compile 'com.squareup.moshi:moshi-kotlin:1.5.0'
 
+    compile project(':weekview')
     compile project(':spmobileapi')
     // Required for instrumented tests
     androidTestCompile 'com.android.support:support-annotations:26.+'

@@ -1,8 +1,13 @@
-package com.spcore.backend
+package com.spcore.services
 
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.HARDCODE_MODE
 import com.spcore.helpers.backendErrorAdapter
+import com.spcore.helpers.toCalendar
+import com.spcore.models.Lesson
+import com.spcore.models.ScheduleItem
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A collection of synchronous methods which convert raw data from backend into
@@ -50,7 +55,35 @@ object FrontendInterface {
     }
 
     // NOTE: month is 1-based
-    fun getTimetable(year: Int, month: Int) {
+    fun getSchedule(year: Int, month: Int) : List<ScheduleItem> {
+        val schedule = ArrayList<ScheduleItem>()
 
+        if(HARDCODE_MODE) {
+            val cal = Calendar.getInstance()
+            cal.set(Calendar.YEAR, year)
+            cal.set(Calendar.MONTH, month - 1) // java's calendar's month is 0-based
+
+            // DAY_OF_MONTH is 1-based
+            val firstDayOfMonth = cal.getActualMinimum(Calendar.DAY_OF_MONTH)
+            val lastDayOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+            for(i in firstDayOfMonth..lastDayOfMonth) {
+                // for whatever reason, passing 0 to the the year param counts as the year 1900
+                val start = Date(year - 1900, month - 1, i, 11, 0).toCalendar()
+                val end = Date(year - 1900, month - 1, i, 13, 0).toCalendar()
+                schedule.add(Lesson(
+                        "HODL",
+                        "M00NB0115",
+                        "T1337",
+                        start,
+                        end
+                ))
+            }
+
+        } else {
+            TODO("i HaVe CrIpPlInG dEpReSsIoN")
+        }
+
+        return schedule
     }
 }
