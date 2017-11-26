@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/spmobileapi" />
             <option value="$PROJECT_DIR$/weekview" />
+            <option value="$PROJECT_DIR$/weekview-source" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

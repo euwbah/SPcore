@@ -1,1 +1,1 @@
-include ':app', ':spmobileapi', ':weekview'
+include ':app', ':spmobileapi', ':weekview', ':weekview-source'

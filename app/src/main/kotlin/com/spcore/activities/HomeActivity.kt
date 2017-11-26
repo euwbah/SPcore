@@ -10,6 +10,7 @@ import android.view.Menu
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
+import com.spcore.helpers.toCalendar
 import com.spcore.services.FrontendInterface
 
 import kotlinx.android.synthetic.main.activity_home.*
@@ -48,7 +49,7 @@ class HomeActivity : AppCompatActivity() {
         toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
         toolbar_dropdown_calendar.setListener(object : CompactCalendarView.CompactCalendarViewListener {
             override fun onDayClick(dateClicked: Date) {
-                setMYTextView(dateClicked)
+                setScheduleViewDate(dateClicked)
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
@@ -57,7 +58,8 @@ class HomeActivity : AppCompatActivity() {
         })
 
         // Set to today
-        setCurrentDate(Date())
+        setCalendarDate(Date())
+        setScheduleViewDate(Date())
 
         run datePickerToggling@ {
             var isExpanded = false
@@ -79,19 +81,21 @@ class HomeActivity : AppCompatActivity() {
                 FrontendInterface.getSchedule(year, month).map { it.toWeekViewEvent() }
         }
 
-        schedule_view.setEmptyViewClickListener {  }
-        schedule_view.setEmptyViewLongPressListener {  }
-        schedule_view.setEventLongPressListener { event, eventRect ->  }
-        schedule_view.setOnEventClickListener { event, eventRect ->  }
-
         schedule_view.setScrollListener {
             newFirstVisibleDay, oldFirstVisibleDay ->
-                setCurrentDate(newFirstVisibleDay.time)
+                setCalendarDate(newFirstVisibleDay.time)
         }
     }
 
+    private fun setScheduleViewDate(date: Date) {
+        val cal = date.toCalendar()
+        schedule_view.goToDate(cal)
+        schedule_view.goToEarliestVisibleEvent()
+        setMYTextView(date)
+    }
 
-    private fun setCurrentDate(date: Date) {
+
+    private fun setCalendarDate(date: Date) {
         setMYTextView(date)
         toolbar_dropdown_calendar.setCurrentDate(date)
     }

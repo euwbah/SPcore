@@ -47,8 +47,10 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
     compile 'com.squareup.moshi:moshi-kotlin:1.5.0'
 
-    compile project(':weekview')
+    // Using source version for testing custom code
+    compile project(':weekview-source')
     compile project(':spmobileapi')
+
     // Required for instrumented tests
     androidTestCompile 'com.android.support:support-annotations:26.+'
     androidTestCompile 'com.android.support.test:runner:0.5'

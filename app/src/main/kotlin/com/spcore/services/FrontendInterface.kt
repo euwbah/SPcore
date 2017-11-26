@@ -78,6 +78,18 @@ object FrontendInterface {
                         start,
                         end
                 ))
+
+                val start2 = start.clone() as Calendar
+                start2.add(Calendar.HOUR_OF_DAY, 12)
+                val end2 = end.clone() as Calendar
+                end2.add(Calendar.HOUR_OF_DAY, 14)
+                schedule.add(Lesson(
+                        "OVERNIGHT",
+                        "testing123",
+                        "somewhere over the rainbow",
+                        start2,
+                        end2
+                ))
             }
 
         } else {

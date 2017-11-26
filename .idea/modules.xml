@@ -5,7 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/SPCore.iml" filepath="$PROJECT_DIR$/SPCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/spmobileapi/spmobileapi.iml" filepath="$PROJECT_DIR$/spmobileapi/spmobileapi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/weekview/weekview.iml" filepath="$PROJECT_DIR$/weekview/weekview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weekview/library-debug.iml" filepath="$PROJECT_DIR$/weekview/library-debug.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weekview-source/weekview-source.iml" filepath="$PROJECT_DIR$/weekview-source/weekview-source.iml" />
     </modules>
   </component>
 </project>
