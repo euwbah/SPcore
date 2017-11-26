@@ -1,6 +1,8 @@
 package com.spcore.activities
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -36,8 +38,10 @@ class HomeActivity : AppCompatActivity() {
             val id = it.itemId
 
             when(id) {
-                R.id.nav_day_view -> TODO()
-                R.id.nav_week_view -> TODO()
+                R.id.nav_day_view ->
+                        schedule_view.numberOfVisibleDays = 1
+                R.id.nav_week_view ->
+                        schedule_view.numberOfVisibleDays = 7
                 // etc...
             }
 
@@ -85,9 +89,14 @@ class HomeActivity : AppCompatActivity() {
                 setCalendarDate(newFirstVisibleDay.time)
         }
 
-        schedule_view.invalidate()
+        schedule_view.hourHeight = Resources.getSystem().getDisplayMetrics().heightPixels / 15
 
-        setScheduleViewDate(Date())
+        Handler().postDelayed({
+            // Give some time to load the hard-coded data before snapping the earliest visible event
+            // into view
+            setScheduleViewDate(Date())
+        }, 50)
+
     }
 
     private fun setScheduleViewDate(date: Date) {
