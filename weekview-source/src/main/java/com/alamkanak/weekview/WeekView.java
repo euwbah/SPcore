@@ -155,6 +155,9 @@ public class WeekView extends View {
     private DateTimeInterpreter mDateTimeInterpreter;
     private ScrollListener mScrollListener;
 
+    // Behaviour options
+    private boolean mDisplayDayOrdinalOfMultiDayEvents = true;
+
     private final GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
         @Override
@@ -1054,7 +1057,7 @@ public class WeekView extends View {
     private void cacheEvent(WeekViewEvent event) {
         if(event.getStartTime().compareTo(event.getEndTime()) >= 0)
             return;
-        List<WeekViewEvent> splitedEvents = event.splitWeekViewEvents();
+        List<WeekViewEvent> splitedEvents = event.splitWeekViewEvents(mDisplayDayOrdinalOfMultiDayEvents);
         for(WeekViewEvent splitedEvent: splitedEvents){
             mEventRects.add(new EventRect(splitedEvent, event, null));
         }
@@ -1812,6 +1815,18 @@ public class WeekView extends View {
      */
     public void setScrollDuration(int scrollDuration) {
         mScrollDuration = scrollDuration;
+    }
+
+    /**
+     * Set whether or not to append a day ordinal on each day of a multi-day event
+     * E.g.:
+     *      if set to true: "My 3-Day Event [1/3]", "My 3-Day Event [2/3]", etc...
+     *      if set to false: "My 3-Day Event", "My 3-Day Event", etc...
+     *
+     * @param display True to show day ordinal, false otherwise. Default is true
+     */
+    public void setDisplayDayOrdinalOfMultiDayEvents(boolean display) {
+        mDisplayDayOrdinalOfMultiDayEvents = display;
     }
 
     /////////////////////////////////////////////////////////////////

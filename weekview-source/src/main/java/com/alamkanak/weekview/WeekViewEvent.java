@@ -172,7 +172,7 @@ public class WeekViewEvent {
         return (int) (mId ^ (mId >>> 32));
     }
 
-    public List<WeekViewEvent> splitWeekViewEvents(){
+    List<WeekViewEvent> splitWeekViewEvents(boolean displayDayOrdinalIfMultiDay) {
         //This function splits the WeekViewEvent in WeekViewEvents by day
         List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
         // The first millisecond of the next day is still the same day. (no need to split events for this).
@@ -211,6 +211,17 @@ public class WeekViewEvent {
             WeekViewEvent event2 = new WeekViewEvent(this.getId(), this.getName(), this.getLocation(), startTime, this.getEndTime(), this.isAllDay());
             event2.setColor(this.getColor());
             events.add(event2);
+
+            // if displayDayOrdinalIfMultiDay option is true, append day ordinals to the end of the
+            // each day's event title
+
+            if (displayDayOrdinalIfMultiDay) {
+                int numDays = events.size();
+                for(int day = 1; day <= numDays; day++) {
+                    WeekViewEvent e = events.get(day - 1);
+                    e.setName(e.getName() + " [" + day + " / " + numDays + "]");
+                }
+            }
         }
         else{
             events.add(this);
