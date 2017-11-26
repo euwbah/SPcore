@@ -59,7 +59,6 @@ class HomeActivity : AppCompatActivity() {
 
         // Set to today
         setCalendarDate(Date())
-        setScheduleViewDate(Date())
 
         run datePickerToggling@ {
             var isExpanded = false
@@ -85,6 +84,10 @@ class HomeActivity : AppCompatActivity() {
             newFirstVisibleDay, oldFirstVisibleDay ->
                 setCalendarDate(newFirstVisibleDay.time)
         }
+
+        schedule_view.invalidate()
+
+        setScheduleViewDate(Date())
     }
 
     private fun setScheduleViewDate(date: Date) {

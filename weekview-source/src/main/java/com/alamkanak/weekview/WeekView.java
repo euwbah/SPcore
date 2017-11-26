@@ -1989,8 +1989,12 @@ public class WeekView extends View {
 
         List<WeekViewEvent> visibleEvents = new ArrayList<>();
 
+        Calendar lastDayEnd = (Calendar) mLastVisibleDay.clone();
+        lastDayEnd.add(Calendar.DAY_OF_MONTH, 1);
+        lastDayEnd.add(Calendar.MILLISECOND, -1);
         for(WeekViewEvent e : mCurrentPeriodEvents)
-            if (e.getStartTime().compareTo(mFirstVisibleDay) >= 0 && e.getStartTime().compareTo(mLastVisibleDay) <= 0)
+            if (e.getStartTime().compareTo(mFirstVisibleDay) >= 0 &&
+                e.getStartTime().compareTo(lastDayEnd) <= 0)
                 visibleEvents.add(e);
 
         Calendar earliestEventStartTime = null;
