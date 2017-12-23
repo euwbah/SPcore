@@ -31,7 +31,7 @@ class Lesson : WeekViewEvent, Parcelable {
                 location: String,
                 start: Calendar,
                 end: Calendar,
-                id: Int = Objects.hash(moduleCode, location, start, Auth.getJwtToken())
+                id: Int = Objects.hash(moduleCode, location, start)
     ) : super(id.toLong(), moduleName, location, start, end) {
         this.moduleCode = moduleCode
     }
