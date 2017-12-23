@@ -1,11 +1,11 @@
 package com.spcore.services
 
+import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.HARDCODE_MODE
 import com.spcore.helpers.backendErrorAdapter
 import com.spcore.helpers.toCalendar
 import com.spcore.models.Lesson
-import com.spcore.models.ScheduleItem
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -55,8 +55,8 @@ object FrontendInterface {
     }
 
     // NOTE: month is 1-based
-    fun getSchedule(year: Int, month: Int) : List<ScheduleItem> {
-        val schedule = ArrayList<ScheduleItem>()
+    fun getSchedule(year: Int, month: Int) : List<WeekViewEvent> {
+        val schedule = ArrayList<WeekViewEvent>()
 
         if(HARDCODE_MODE) {
             val cal = Calendar.getInstance()

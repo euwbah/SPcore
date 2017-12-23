@@ -1,5 +1,6 @@
 package com.spcore.activities
 
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
@@ -15,6 +16,7 @@ import com.spcore.helpers.toCalendar
 import com.spcore.services.FrontendInterface
 
 import com.spcore.listeners.AppBarStateListener
+import com.spcore.models.Lesson
 
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
@@ -44,7 +46,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.nav_week_view ->
                         schedule_view.numberOfVisibleDays = 7
 //                R.id.nav_logout ->
-//                        retrieveJWTTokenSP().edit().remove("token").apply()
+//                        initJWTTokenSP().edit().remove("token").apply()
 //                        this@HomeActivity.startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
             }
 
@@ -80,15 +82,19 @@ class HomeActivity : AppCompatActivity() {
                 AppBarStateListener {
                     state, prev ->
                         appBarState = state
-                        Log.d("STATE", state.toString())
+//                        Log.d("STATE", state.toString())
                         when(state) {
                             is AppBarStateListener.State.COLLAPSED -> {
                                 date_picker_arrow.rotation = -180f
                                 isExpanded = false
+
+                                schedule_view.invalidate()
                             }
                             is AppBarStateListener.State.EXPANDED -> {
                                 date_picker_arrow.rotation = 0f
                                 isExpanded = true
+
+                                schedule_view.invalidate()
                             }
                             is AppBarStateListener.State.QUANTUM_FLUX_SUPERPOSITION -> {
                                 date_picker_arrow.rotation = (state.expandedness - 1).toFloat() * 180
@@ -127,8 +133,6 @@ class HomeActivity : AppCompatActivity() {
                                 val superposition =
                                         appBarState as AppBarStateListener.State.QUANTUM_FLUX_SUPERPOSITION
 
-                                Log.d("SUP", superposition.expandedness.toString())
-
                                 val toExpand = superposition.expandedness >= 0.5
 
                                 isExpanded = toExpand
@@ -162,12 +166,24 @@ class HomeActivity : AppCompatActivity() {
         // Note: month here is 1-based
         schedule_view.setMonthChangeListener {
             year, month ->
-                FrontendInterface.getSchedule(year, month).map { it.toWeekViewEvent() }
+                FrontendInterface.getSchedule(year, month)
         }
 
         schedule_view.setScrollListener {
             newFirstVisibleDay, oldFirstVisibleDay ->
                 setCalendarDate(newFirstVisibleDay.time)
+        }
+
+        schedule_view.setOnEventClickListener { event, eventRect ->
+            startActivity(
+                    if (event is Lesson) {
+                        val intent = Intent(this, LessonDetailsActivity::class.java)
+                        intent.putExtra("event", event)
+                        intent
+                    } else {
+                        TODO("Unsupported event type")
+                    }
+            )
         }
 
         schedule_view.hourHeight = Resources.getSystem().getDisplayMetrics().heightPixels / 15
@@ -216,5 +232,4 @@ class HomeActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.home_menu, menu)
         return true
     }
-
 }

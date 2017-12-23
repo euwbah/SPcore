@@ -59,6 +59,7 @@ public class WeekView extends View {
     @Deprecated
     public static final int LENGTH_LONG = 2;
     private final Context mContext;
+    private Canvas mCanvas = null;
     private Paint mTimeTextPaint;
     private float mTimeTextWidth;
     private float mTimeTextHeight;
@@ -214,6 +215,7 @@ public class WeekView extends View {
                     ViewCompat.postInvalidateOnAnimation(WeekView.this);
                     break;
             }
+
             return true;
         }
 
@@ -494,6 +496,9 @@ public class WeekView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (mCanvas == null)
+            mCanvas = canvas;
+
         // Draw the header row.
         drawHeaderRowAndEvents(canvas);
 
@@ -596,8 +601,9 @@ public class WeekView extends View {
         }
 
         // If the new mCurrentOrigin.y is invalid, make it valid.
-        if (mCurrentOrigin.y < getHeight() - mHourHeight * 24 - mHeaderHeight - mHeaderRowPadding * 2 - mHeaderMarginBottom - mTimeTextHeight/2)
-            mCurrentOrigin.y = getHeight() - mHourHeight * 24 - mHeaderHeight - mHeaderRowPadding * 2 - mHeaderMarginBottom - mTimeTextHeight/2;
+        if (mCurrentOrigin.y < getHeight() - mHourHeight * 24 - mHeaderHeight - mHeaderRowPadding * 2 - mHeaderMarginBottom - mTimeTextHeight/2) {
+            mCurrentOrigin.y = getHeight() - mHourHeight * 24 - mHeaderHeight - mHeaderRowPadding * 2 - mHeaderMarginBottom - mTimeTextHeight / 2;
+        }
 
         // Don't put an "else if" because it will trigger a glitch when completely zoomed out and
         // scrolling vertically.
@@ -2036,6 +2042,16 @@ public class WeekView extends View {
         return -mCurrentOrigin.y / mHourHeight;
     }
 
+    /**
+     * Returns a floating point from 0 through 1 representing the scale of the whole thing
+     * @return
+     */
+    public double getScrollAmount() {
+        float bottomPos = getHeight() - mHourHeight * 24 - mHeaderHeight - mHeaderRowPadding * 2 - mHeaderMarginBottom - mTimeTextHeight / 2;
+        float scrollAmount = mCurrentOrigin.y / bottomPos;
+        Log.d("SCROLL AMT", scrollAmount + "");
+        return scrollAmount;
+    }
 
 
     /////////////////////////////////////////////////////////////////

@@ -92,7 +92,6 @@ abstract class AppBarStateListener : AppBarLayout.OnOffsetChangedListener {
 
         /**
          * Represents the stationary state of the AppBar
-         *
          * More specifically, it is only considered stationary if no onOffsetChanged events
          * were received for a duration of STUCK_THRESH in milliseconds
          *

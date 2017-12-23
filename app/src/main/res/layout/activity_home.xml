@@ -32,7 +32,7 @@
                 android:fitsSystemWindows="true"
                 android:minHeight="?attr/actionBarSize"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:statusBarScrim="?attr/colorPrimaryDark">
 
                 <LinearLayout

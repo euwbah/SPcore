@@ -18,9 +18,10 @@ import android.widget.Toast
 
 
 import com.spcore.R
+import com.spcore.helpers.Auth
 import com.spcore.services.FrontendInterface
 import com.spcore.services.LoginResponse
-import com.spcore.helpers.Auth.retrieveJWTTokenSP
+import com.spcore.helpers.Auth.initJWTTokenSP
 import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
 import kotlinx.android.synthetic.main.activity_login.*
@@ -161,10 +162,7 @@ class LoginActivity : AppCompatActivity() {
             showProgress(false)
             when(status) {
                 is LoginStatus.SUCCESS -> {
-                    this@LoginActivity.retrieveJWTTokenSP()
-                            .edit()
-                            .putString("token", status.response.token)
-                            .apply()
+                    Auth.setJwtToken(status.response.token)
 
                     this@LoginActivity.startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 }

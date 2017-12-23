@@ -12,7 +12,6 @@
     <string name="error_field_required">This field is required</string>
 
 
-
     <!-- Home screen action bar strings -->
     <string name="title_activity_home">HomeActivity</string>
     <string name="action_refresh">Refresh</string>
@@ -27,10 +26,9 @@
 
     <!-- SharedPreferences IDs -->
 
-        <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
-        <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
-        <string name="jwt_token_shared_preference_id">com.SPcore.n3k07</string>
-
+    <!-- for cookie storage (only used for ATS submission's temporary session cookies) -->
+    <string name="cookie_storage_shared_preference_id">com.SPcore.k0-keys</string>
+    <string name="jwt_token_shared_preference_id">com.SPcore.n3k07</string>
 
 
     <!--
@@ -43,6 +41,7 @@
     <string name="nav_tts_open">Open navigation drawer</string>
     <string name="nav_tts_close">Close navigation drawer</string>
     <string name="nav_header_profile_picture_description">Profile picture</string>
+    <string name="title_activity_lesson_details">LessonDetailsActivity</string>
 
 
 </resources>

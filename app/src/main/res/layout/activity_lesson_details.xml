@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.LessonDetailsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/lesson_details_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:fitsSystemWindows="true">
+
+        <!-- Use contentInset... for padding of title and custom action bar content -->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/lesson_details_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:layout_collapseMode="none">
+
+            <!-- For displaying lesson code & lesson name -->
+            <TextView
+                android:id="@+id/lesson_details_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:layout_marginStart="24dp"
+                android:textColor="@android:color/white"
+                android:textSize="24dp"
+                android:layout_gravity="bottom|start"
+                android:text="placeholder title"
+                />
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_lesson_details" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchorGravity="bottom|start"
+        app:layout_anchor="@id/lesson_details_toolbar"
+        android:layout_margin="@dimen/fab_margin"
+        app:elevation="10dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ats" />
+
+</android.support.design.widget.CoordinatorLayout>

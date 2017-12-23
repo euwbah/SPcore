@@ -1,5 +1,9 @@
 package com.alamkanak.weekview;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -9,8 +13,17 @@ import static com.alamkanak.weekview.WeekViewUtil.*;
 /**
  * Created by Raquib-ul-Alam Kanak on 7/21/2014.
  * Website: http://april-shower.com
+ *
+ * Parcelable implementation:
+ * 1. ID                (long)
+ * 2. Location          (String)
+ * 3. Name              (String)
+ * 4. AllDay            (Value-byte)
+ * 5. Color             (int)
+ * 6. StartTime         (long [timestamp])
+ * 7. EndTime           (long [timestamp])
  */
-public class WeekViewEvent {
+public class WeekViewEvent implements Parcelable {
     private long mId;
     private Calendar mStartTime;
     private Calendar mEndTime;
@@ -99,6 +112,29 @@ public class WeekViewEvent {
         this(id, name, null, startTime, endTime);
     }
 
+    protected WeekViewEvent(Parcel in) {
+        mId = in.readLong();
+        mLocation = in.readString();
+        mName = in.readString();
+        mAllDay = in.readInt() != 0;
+        mColor = in.readInt();
+        mStartTime = Calendar.getInstance();
+        mStartTime.setTimeInMillis(in.readLong());
+        mEndTime = Calendar.getInstance();
+        mEndTime.setTimeInMillis(in.readLong());
+    }
+
+    public static final Creator<WeekViewEvent> CREATOR = new Creator<WeekViewEvent>() {
+        @Override
+        public WeekViewEvent createFromParcel(Parcel in) {
+            return new WeekViewEvent(in);
+        }
+
+        @Override
+        public WeekViewEvent[] newArray(int size) {
+            return new WeekViewEvent[size];
+        }
+    };
 
     public Calendar getStartTime() {
         return mStartTime;
@@ -228,5 +264,21 @@ public class WeekViewEvent {
         }
 
         return events;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
+        dest.writeString(mLocation);
+        dest.writeString(mName);
+        dest.writeInt(mAllDay ? 1 : 0);
+        dest.writeInt(mColor);
+        dest.writeLong(mStartTime.getTimeInMillis());
+        dest.writeLong(mEndTime.getTimeInMillis());
     }
 }

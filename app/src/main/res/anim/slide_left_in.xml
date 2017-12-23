@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This animation is for the lesson/event details activity entrance
+-->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+    android:duration="200">
+    <translate
+        android:fromXDelta="100%"
+        android:toXDelta="0"/>
+
+    <alpha
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"/>
+</set>
