@@ -14,7 +14,7 @@
 
 ###### Response
 
-```json
+```js
 {
   "schedule": [
     // Example of lesson schedule item type
@@ -63,6 +63,6 @@
 
 ##### Person
 
-```json
+```js
 // TODO
 ```
