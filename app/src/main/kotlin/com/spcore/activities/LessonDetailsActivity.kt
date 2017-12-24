@@ -15,28 +15,9 @@ import kotlinx.android.synthetic.main.activity_lesson_details.*
 import kotlinx.android.synthetic.main.content_lesson_details.*
 import kotlinx.coroutines.experimental.async
 
-class LessonDetailsActivity : AppCompatActivity(), ATSEntryDialogFragment.OnATSEntryListener {
+class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity"),
+                                ATSEntryDialogFragment.OnATSEntryListener {
     private lateinit var lesson: Lesson
-
-    override fun onStart() {
-        super.onStart()
-
-        getSharedPreferences(getString(R.string.lda_activity_state_shared_preference_id), Context.MODE_PRIVATE)
-                .edit()
-                .putBoolean("running", true)
-                .apply()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        getSharedPreferences(
-                    getString(R.string.lda_activity_state_shared_preference_id),
-                    Context.MODE_PRIVATE)
-                .edit()
-                .putBoolean("running", false)
-                .apply()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

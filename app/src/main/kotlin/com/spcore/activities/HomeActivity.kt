@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 import java.util.*
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
     private var isAppBarExpanded = false
 

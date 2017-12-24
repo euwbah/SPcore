@@ -20,7 +20,6 @@ class ScrollingCalendarBehavior(context: Context, attrs: AttributeSet) : AppBarL
 
         if (dependency is WeekView) {
             scheduleView = dependency
-//            Log.d("WEEK VIEW FOUND", "JA JAJAJAJAJ")
         }
 
         return super.layoutDependsOn(parent, child, dependency)
@@ -31,7 +30,6 @@ class ScrollingCalendarBehavior(context: Context, attrs: AttributeSet) : AppBarL
         // update gesture detector
         gestureDetector.onTouchEvent(ev)
 
-//        Log.d("FIRST VISIBLE HOUR", scheduleView.firstVisibleHour.toString())
 
         return super.onInterceptTouchEvent(parent, child, ev)
     }

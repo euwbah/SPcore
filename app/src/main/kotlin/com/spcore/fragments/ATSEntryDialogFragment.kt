@@ -5,12 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import com.spcore.R
+import kotlinx.coroutines.experimental.*
 import kotlinx.android.synthetic.main.fragment_atsentry_dialog.*
 
 
@@ -36,22 +38,37 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d("CREATE", "oaiegaerg")
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-        submit_ats_button.setOnClickListener {
-
-        }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        Log.d("CREATE VIEW", "oaiegaerg")
+
         val view = inflater.inflate(R.layout.fragment_atsentry_dialog, container, false)
-        view.findViewById<EditText>(R.id.ats_input).requestFocus()
         dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+
+        // This async is necessary as it functions akin to Platform.runLater in JavaFX,
+        // giving the synthetic properties time to load
+        async {
+            ats_input.requestFocus()
+            submit_ats_button.setOnClickListener {
+                ats_error_message.text = ats_input.text.length.let {
+                    when {
+                        it == 0 -> "Input is empty"
+                        it != 6 -> "Invalid code"
+                        else -> ""
+                    }
+                }
+            }
+        }
 
         // Inflate the layout for this fragment
         return view
@@ -63,6 +80,7 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d("ATTACH", "oaiegaerg")
         if (context is OnATSEntryListener) {
             listener = context
         } else {
@@ -72,6 +90,7 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onDetach() {
         super.onDetach()
+        Log.d("DETACH", "oaiegaerg")
         listener = null
     }
 

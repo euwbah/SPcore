@@ -25,7 +25,7 @@ import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
 import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppStateTrackerActivity("LoginActivity") {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */

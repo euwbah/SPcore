@@ -11,7 +11,7 @@ import com.spcore.helpers.SPLASH_SCREEN_MIN_DUR
 import kotlinx.coroutines.experimental.*
 
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : AppStateTrackerActivity("SplashActivity") {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

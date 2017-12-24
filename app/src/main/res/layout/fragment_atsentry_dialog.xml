@@ -16,6 +16,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
+        android:maxLength="6"
         android:ems="7"
         android:fontFamily="sans-serif"
         android:gravity="center"
@@ -24,6 +25,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ats_error_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:maxLines="3"
+        android:text=""
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="@+id/ats_input"
+        app:layout_constraintStart_toStartOf="@+id/ats_input"
+        app:layout_constraintTop_toBottomOf="@+id/ats_input" />
 
     <Button
         android:id="@+id/submit_ats_button"
@@ -34,7 +47,8 @@
         android:text="Submit ATS"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/ats_input"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ats_input"
-        app:layout_constraintTop_toBottomOf="@+id/ats_input" />
+        app:layout_constraintTop_toBottomOf="@+id/ats_error_message" />
 
 </android.support.constraint.ConstraintLayout>

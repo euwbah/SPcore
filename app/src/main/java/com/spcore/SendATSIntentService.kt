@@ -3,16 +3,17 @@ package com.spcore
 import android.app.IntentService
 import android.content.Intent
 import android.content.Context
+import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
+import com.spcore.helpers.AppState
 import com.spcore.helpers.Auth
-import com.spcore.spmobileapi.ATSResult
+import com.spcore.helpers.BROADCAST_ATS_SUCCESS
+import com.spcore.spmobileapi.Result
 import com.spcore.spmobileapi.SPMobileAPI
 
-// TODO: Rename actions, choose action names that describe tasks that this
-// IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-private const val K_ACTION_SUBMIT_ATS = "com.spcore.action.FOO"
+private const val K_ACTION_SUBMIT_ATS = "com.spcore.action.SUBMIT_ATS"
 
-// TODO: Rename parameters
-private const val K_PARAM_ATS = "com.spcore.extra.PARAM1"
+private const val K_PARAM_ATS_CODE = "com.spcore.extra.ATS_CODE"
 
 
 /**
@@ -26,14 +27,23 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
     override fun onHandleIntent(intent: Intent) {
         when(intent.action) {
             K_ACTION_SUBMIT_ATS ->
-                    intent.extras.getInt(K_PARAM_ATS)
+                    intent.extras.getInt(K_PARAM_ATS_CODE)
         }
     }
 
     private fun submitAts(ats: Int) {
         val (adminNo, pass) = Auth.getCredentials()
-        SPMobileAPI.sendATS(adminNo, pass, ats).tryGetIfNot {
 
+        val atsResult = SPMobileAPI.sendATS(adminNo, pass, ats)
+
+        Log.d("APP STATE", AppState.getForegroundActivity())
+
+        when(atsResult) {
+            is Result.Ok ->
+                    if(AppState.getForegroundActivity() == "LessonDetailsActivity") {
+                        val broadcast = Intent(BROADCAST_ATS_SUCCESS)
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
+                    }
         }
     }
 
@@ -49,7 +59,7 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
         fun startActionFoo(context: Context, param1: Int) {
             val intent = Intent(context, SendATSIntentService::class.java).apply {
                 action = K_ACTION_SUBMIT_ATS
-                putExtra(K_PARAM_ATS, param1)
+                putExtra(K_PARAM_ATS_CODE, param1)
             }
             context.startService(intent)
         }

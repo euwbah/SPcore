@@ -11,7 +11,7 @@ import com.spcore.models.Lesson
  * Call this once during the splash screen
  */
 fun <T : Context> T.initSharedPrefs() {
-    arrayOf(Auth, ATS)
+    arrayOf(Auth, ATS, AppState)
             .map { it.initializeSP(this)}
 }
 
@@ -113,7 +113,7 @@ object ATS : SharedPrefWrapper {
 }
 
 /**
- * Represents whether the [com.spcore.activities.LessonDetailsActivity] is running
+ * Used to get the state of the app (i.e., what activities are running now)
  *
  * It's purpose is to evaluate the need for sending a notification on ATS submission status &em;
  * *e.g.*:
@@ -128,20 +128,25 @@ object ATS : SharedPrefWrapper {
  *   in the scenario of not being connected to school wifi, there will be no quick-reply.
  *   When the notification is clicked, it opens up the ATS submission dialog
  */
-object LDA : SharedPrefWrapper {
-    private lateinit var LDASP : SharedPreferences
+object AppState : SharedPrefWrapper {
+    private lateinit var AppStateSP: SharedPreferences
 
     override fun <T : Context> initializeSP(context: T) {
-        if(!this::LDASP.isInitialized)
-            LDASP = context.getSharedPreferences(
-                    context.getString(R.string.lda_activity_state_shared_preference_id),
+        if(!this::AppStateSP.isInitialized)
+            AppStateSP = context.getSharedPreferences(
+                    "com.spcore.appstate",
                     Context.MODE_PRIVATE)
     }
 
-    fun isRunning() : Boolean {
-        if(!this::LDASP.isInitialized)
-            throw UnsupportedOperationException("LDA shared pref not init yet")
-        return LDASP.getBoolean("running", false)
+    /**
+     * Get's the activity ID of the current foreground activity as provided in [com.spcore.activities.AppStateTrackerActivity]
+     * or "none" if none are in the foreground
+     */
+    fun getForegroundActivity() : String {
+        if(!this::AppStateSP.isInitialized)
+            throw UnsupportedOperationException("AppState shared pref not init yet")
+
+        return AppStateSP.getString("active", "none")
     }
 
 }

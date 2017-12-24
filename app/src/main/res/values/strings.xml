@@ -31,7 +31,6 @@
 
     <string name="jwt_token_shared_preference_id">com.SPcore.n3k07</string>
     <string name="ats_shared_preference_id">com.SPcore.574</string>
-    <string name="lda_activity_state_shared_preference_id">com.spcore.ldarun</string>
 
 
     <!--

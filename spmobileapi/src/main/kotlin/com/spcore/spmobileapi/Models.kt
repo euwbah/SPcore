@@ -5,15 +5,19 @@ package com.spcore.spmobileapi
  * These are the data types that will be utilised and exposed outside of the library
  */
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.spcore.spmobileapi.api.TimetableDayResponse
 import com.spcore.spmobileapi.helpers.Strings
 import com.spcore.spmobileapi.helpers.reduceToString
 import com.spcore.spmobileapi.helpers.toWords
 import com.spcore.spmobileapi.psuedomodels.Time
+import java.io.Serializable
 import java.util.*
 
 sealed class Result<out ValueType, out ErrorType> {
     class Ok<out ValueType, out ErrorType>(val okValue: ValueType) : Result<ValueType, ErrorType>()
+
     class Error<out ValueType, out ErrorType>(val errorValue: ErrorType) : Result<ValueType, ErrorType>()
 
     inline fun tryGetIfNot(handle: (ErrorType) -> Unit): ValueType? {
