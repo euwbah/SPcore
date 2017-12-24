@@ -3,6 +3,8 @@ package com.spcore
 import android.app.IntentService
 import android.content.Intent
 import android.content.Context
+import com.spcore.helpers.Auth
+import com.spcore.spmobileapi.ATSResult
 import com.spcore.spmobileapi.SPMobileAPI
 
 // TODO: Rename actions, choose action names that describe tasks that this
@@ -24,12 +26,15 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
     override fun onHandleIntent(intent: Intent) {
         when(intent.action) {
             K_ACTION_SUBMIT_ATS ->
-                    intent.extras.getInt(K_PARAM_ATS, -1)
+                    intent.extras.getInt(K_PARAM_ATS)
         }
     }
 
     private fun submitAts(ats: Int) {
-        SPMobileAPI.sendATS()
+        val (adminNo, pass) = Auth.getCredentials()
+        SPMobileAPI.sendATS(adminNo, pass, ats).tryGetIfNot {
+
+        }
     }
 
     companion object {

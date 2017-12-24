@@ -63,6 +63,9 @@ object Auth : SharedPrefWrapper {
                 .apply()
     }
 
+    /**
+     * Returns a list duple. Suggested usage: **`val (adminNo, pass) = getCredentials()`**
+     */
     fun getCredentials(): List<String> {
         if (!this::authSP.isInitialized)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
@@ -131,7 +134,7 @@ object LDA : SharedPrefWrapper {
     override fun <T : Context> initializeSP(context: T) {
         if(!this::LDASP.isInitialized)
             LDASP = context.getSharedPreferences(
-                    context.getString(R.string.lda_activity_state_sp),
+                    context.getString(R.string.lda_activity_state_shared_preference_id),
                     Context.MODE_PRIVATE)
     }
 

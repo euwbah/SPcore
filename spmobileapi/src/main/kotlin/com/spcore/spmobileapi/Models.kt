@@ -144,8 +144,8 @@ internal constructor(rawDayTimetable: TimetableDayResponse, ddmmyy: String): Can
 class ATSResult(override val error: Errors?) : CanErr<ATSResult.Errors> {
     companion object {
         /**
-         * Return `Errors` to `foo` lambda and it will construct a `Result.Error`.
-         * Returning any other values will result in a valueless `Result.Ok`
+         * Return [Errors] from [foo] and it will construct a `Result.Error`.
+         * Returning any other value type will result in a valueless `Result.Ok`
          */
         internal fun <T> wrapAsResult(foo: () -> T?): Result<Nothing?, Errors> {
             val x = foo()

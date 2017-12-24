@@ -21,7 +21,7 @@ class LessonDetailsActivity : AppCompatActivity(), ATSEntryDialogFragment.OnATSE
     override fun onStart() {
         super.onStart()
 
-        getSharedPreferences(getString(R.string.lda_activity_state_sp), Context.MODE_PRIVATE)
+        getSharedPreferences(getString(R.string.lda_activity_state_shared_preference_id), Context.MODE_PRIVATE)
                 .edit()
                 .putBoolean("running", true)
                 .apply()
@@ -31,7 +31,7 @@ class LessonDetailsActivity : AppCompatActivity(), ATSEntryDialogFragment.OnATSE
         super.onStop()
 
         getSharedPreferences(
-                    getString(R.string.lda_activity_state_sp),
+                    getString(R.string.lda_activity_state_shared_preference_id),
                     Context.MODE_PRIVATE)
                 .edit()
                 .putBoolean("running", false)

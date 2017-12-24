@@ -120,6 +120,9 @@ object SPMobileAPI {
 
     /**
      * ==**THIS IS A SYNCHRONOUS FUNCTION!!! DO NOT RUN ON UI THREAD!!!**==
+     *
+     * NOTE: it is ok for ats to be an Int as it will be automatically 0-padded when converted
+     *       a string
      */
     fun sendATS(ID: String, pass: String, ats: Int): Result<Nothing?, ATSResult.Errors> {
 
@@ -186,7 +189,7 @@ object SPMobileAPI {
                     throw UnexpectedAPIException(NO_RESPONSE_BODY)
                 }
 
-                step4RequestBody.put("A_ATS_ATCD_SBMT_A_ATS_ATTNDNCE_CD", ats.toString())
+                step4RequestBody.put("A_ATS_ATCD_SBMT_A_ATS_ATTNDNCE_CD", "%06d".format(ats))
                 step4RequestBody.put("ICAction", "A_ATS_ATCD_SBMT_SUBMIT_BTN")
                 step4RequestBody.put("ICAJAX", "1")
                 step4RequestBody.put("ICNAVTYPEDROPDOWN", "0")
