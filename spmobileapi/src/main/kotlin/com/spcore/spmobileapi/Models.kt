@@ -12,6 +12,7 @@ import com.spcore.spmobileapi.helpers.Strings
 import com.spcore.spmobileapi.helpers.reduceToString
 import com.spcore.spmobileapi.helpers.toWords
 import com.spcore.spmobileapi.psuedomodels.Time
+import java.io.ObjectInputStream
 import java.io.Serializable
 import java.util.*
 
@@ -173,5 +174,32 @@ class ATSResult(override val error: Errors?) : CanErr<ATSResult.Errors> {
         object NO_INTERNET : Errors()
         object NOT_CONNECTED_TO_SCHOOL_WIFI : Errors()
         object INVALID_CREDENTIALS : Errors()
+
+        fun toSerializable() : _Serializable {
+            return when(this) {
+                ATSResult.Errors.INVALID_CODE -> _Serializable("invalid code")
+                ATSResult.Errors.ALREADY_ENTERED -> _Serializable("already entered")
+                is ATSResult.Errors.WRONG_CLASS -> _Serializable("wrong class", this.wrongClass)
+                ATSResult.Errors.NO_INTERNET -> _Serializable("no internet")
+                ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI -> _Serializable("not connected to school wifi")
+                ATSResult.Errors.INVALID_CREDENTIALS -> _Serializable("invalid credentials")
+            }
+        }
+
+        class _Serializable
+            internal constructor(val type: String, val param1: String = "") : Serializable {
+
+            fun deserialize(): Errors {
+                return when(type) {
+                    "invalid code" -> INVALID_CODE
+                    "already entered" -> ALREADY_ENTERED
+                    "wrong class" -> WRONG_CLASS(param1)
+                    "no internet" -> NO_INTERNET
+                    "not connected to school wifi" -> NOT_CONNECTED_TO_SCHOOL_WIFI
+                    "invalid credentials" -> INVALID_CREDENTIALS
+                    else -> throw ABall()
+                }
+            }
+        }
     }
 }

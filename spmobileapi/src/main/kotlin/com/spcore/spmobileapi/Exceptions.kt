@@ -17,3 +17,5 @@ class UnexpectedAPIException(val errorType: UnexpectedAPIError,
         NO_RESPONSE_BODY
     }
 }
+
+class ABall(override val message: String = "niga wtf") : Exception(message)

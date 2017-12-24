@@ -1,6 +1,8 @@
 package com.spcore.activities
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +12,7 @@ import com.spcore.R
 import com.spcore.fragments.ATSEntryDialogFragment
 import com.spcore.helpers.*
 import com.spcore.models.Lesson
+import com.spcore.spmobileapi.ATSResult
 
 import kotlinx.android.synthetic.main.activity_lesson_details.*
 import kotlinx.android.synthetic.main.content_lesson_details.*
@@ -18,6 +21,7 @@ import kotlinx.coroutines.experimental.async
 class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity"),
                                 ATSEntryDialogFragment.OnATSEntryListener {
     private lateinit var lesson: Lesson
+    private lateinit var atsDialogFragment: ATSEntryDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -65,13 +69,30 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
         }
 
         key_ats_fab.setOnClickListener { view ->
-            val atsDialog = ATSEntryDialogFragment.newInstance("aaaa", "bbbb")
-            atsDialog.show(supportFragmentManager, "key ats")
+            atsDialogFragment = ATSEntryDialogFragment.newInstance("aaaa", "bbbb")
+            atsDialogFragment.show(supportFragmentManager, "key ats")
         }
     }
 
     override fun onATSSubmitted(uri: Uri) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    inner class ATSSubmissionResultReceiver
+    private constructor(): BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when(intent.action) {
+                BROADCAST_ATS_SUCCESS -> {
+
+                }
+
+                BROADCAST_ATS_FAILURE -> {
+                    val error =
+                            (intent.getSerializableExtra("error") as ATSResult.Errors._Serializable)
+                                    .deserialize()
+                }
+            }
+        }
     }
 
 }

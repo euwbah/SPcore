@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.EditText
 import com.spcore.R
+import com.spcore.services.intents.SendATSIntentService
 import kotlinx.coroutines.experimental.*
 import kotlinx.android.synthetic.main.fragment_atsentry_dialog.*
 
@@ -64,7 +64,10 @@ class ATSEntryDialogFragment : DialogFragment() {
                     when {
                         it == 0 -> "Input is empty"
                         it != 6 -> "Invalid code"
-                        else -> ""
+                        else -> {
+                            SendATSIntentService.startNew(this@ATSEntryDialogFragment.context!!, ats_input.text.toString())
+                            ""
+                        }
                     }
                 }
             }

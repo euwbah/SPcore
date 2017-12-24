@@ -149,4 +149,8 @@ object AppState : SharedPrefWrapper {
         return AppStateSP.getString("active", "none")
     }
 
+    fun foregroundActivityIs(activityID: String): Boolean {
+        return getForegroundActivity() == activityID
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.spcore
+package com.spcore.services.intents
 
 import android.app.IntentService
 import android.content.Intent
@@ -7,14 +7,19 @@ import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.spcore.helpers.AppState
 import com.spcore.helpers.Auth
+import com.spcore.helpers.BROADCAST_ATS_FAILURE
 import com.spcore.helpers.BROADCAST_ATS_SUCCESS
 import com.spcore.spmobileapi.Result
 import com.spcore.spmobileapi.SPMobileAPI
 
+/**
+ * Key to activate ATS submission function
+ */
 private const val K_ACTION_SUBMIT_ATS = "com.spcore.action.SUBMIT_ATS"
-
-private const val K_PARAM_ATS_CODE = "com.spcore.extra.ATS_CODE"
-
+    /**
+     * Param key containing the ATS code in the intent extras bundle
+     */
+    private const val K_PARAM_ATS_CODE = "com.spcore.extra.ATS_CODE"
 
 /**
  * An [IntentService] subclass for handling asynchronous task requests in
@@ -26,12 +31,14 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
 
     override fun onHandleIntent(intent: Intent) {
         when(intent.action) {
-            K_ACTION_SUBMIT_ATS ->
-                    intent.extras.getInt(K_PARAM_ATS_CODE)
+            K_ACTION_SUBMIT_ATS -> {
+                val ats = intent.extras.getString(K_PARAM_ATS_CODE)
+                submitAts(ats)
+            }
         }
     }
 
-    private fun submitAts(ats: Int) {
+    private fun submitAts(ats: String) {
         val (adminNo, pass) = Auth.getCredentials()
 
         val atsResult = SPMobileAPI.sendATS(adminNo, pass, ats)
@@ -40,9 +47,20 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
 
         when(atsResult) {
             is Result.Ok ->
-                    if(AppState.getForegroundActivity() == "LessonDetailsActivity") {
+                    if(AppState.foregroundActivityIs("LessonDetailsActivity")) {
                         val broadcast = Intent(BROADCAST_ATS_SUCCESS)
                         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
+                    } else {
+                        // Use notifications instead
+                    }
+
+            is Result.Error ->
+                    if(AppState.foregroundActivityIs("LessonDetailsActivity")) {
+                        val broadcast = Intent(BROADCAST_ATS_FAILURE)
+                                .putExtra("error", atsResult.errorValue.toSerializable())
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
+                    } else {
+
                     }
         }
     }
@@ -56,10 +74,10 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
          */
         // TODO: Customize helper method
         @JvmStatic
-        fun startActionFoo(context: Context, param1: Int) {
+        fun startNew(context: Context, atsCode: String) {
             val intent = Intent(context, SendATSIntentService::class.java).apply {
                 action = K_ACTION_SUBMIT_ATS
-                putExtra(K_PARAM_ATS_CODE, param1)
+                putExtra(K_PARAM_ATS_CODE, atsCode)
             }
             context.startService(intent)
         }
