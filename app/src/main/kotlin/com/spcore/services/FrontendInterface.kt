@@ -2,9 +2,7 @@ package com.spcore.services
 
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.activities.LoginActivity.LoginStatus
-import com.spcore.helpers.HARDCODE_MODE
-import com.spcore.helpers.backendErrorAdapter
-import com.spcore.helpers.toCalendar
+import com.spcore.helpers.*
 import com.spcore.models.Lesson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -69,6 +67,7 @@ object FrontendInterface {
 
             for(i in firstDayOfMonth..lastDayOfMonth) {
                 // for whatever reason, passing 0 to the the year param counts as the year 1900
+
                 val start = Date(year - 1900, month - 1, i, 11, 0).toCalendar()
                 val end = Date(year - 1900, month - 1, i, 13, 0).toCalendar()
                 schedule.add(Lesson(
@@ -79,18 +78,25 @@ object FrontendInterface {
                         end
                 ))
 
-                val start2 = start.clone() as Calendar
-                start2.add(Calendar.HOUR_OF_DAY, 12)
-                val end2 = end.clone() as Calendar
-                end2.add(Calendar.HOUR_OF_DAY, 14)
                 schedule.add(Lesson(
                         "OVERNIGHT",
-                        "testing123",
+                        "0V3RN1GH7",
                         "somewhere over the rainbow",
-                        start2,
-                        end2
+                        start + Duration(hours=12), // 11pm
+                        end + Duration(hours=14)    // 3am next day
                 ))
             }
+
+            val now = Calendar.getInstance()
+            // only add now for the current month
+            if (now.get(Calendar.MONTH) == month - 1)
+                schedule.add(Lesson(
+                        "NOW",
+                        "1715N0W",
+                        "Nowland",
+                        now - Duration(hours=1),
+                        now + Duration(hours=1)
+                ))
 
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")

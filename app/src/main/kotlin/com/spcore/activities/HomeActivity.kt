@@ -7,7 +7,6 @@ import android.os.Handler
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
@@ -23,6 +22,9 @@ import kotlinx.android.synthetic.main.content_home.*
 import java.util.*
 
 class HomeActivity : AppCompatActivity() {
+
+    private var isAppBarExpanded = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,12 +72,11 @@ class HomeActivity : AppCompatActivity() {
         setCalendarDate(Date())
 
         run show_hide_calendar_AppBar@ {
-            var isExpanded = false
             var appBarState: AppBarStateListener.State = AppBarStateListener.State.COLLAPSED
 
             date_picker_dropdown_button.setOnClickListener {
-                isExpanded = !isExpanded
-                home_app_bar_layout.setExpanded(isExpanded, true)
+                isAppBarExpanded = !isAppBarExpanded
+                home_app_bar_layout.setExpanded(isAppBarExpanded, true)
             }
 
             home_app_bar_layout.addOnOffsetChangedListener(
@@ -86,13 +87,13 @@ class HomeActivity : AppCompatActivity() {
                         when(state) {
                             is AppBarStateListener.State.COLLAPSED -> {
                                 date_picker_arrow.rotation = -180f
-                                isExpanded = false
+                                isAppBarExpanded = false
 
                                 schedule_view.invalidate()
                             }
                             is AppBarStateListener.State.EXPANDED -> {
                                 date_picker_arrow.rotation = 0f
-                                isExpanded = true
+                                isAppBarExpanded = true
 
                                 schedule_view.invalidate()
                             }
@@ -115,52 +116,12 @@ class HomeActivity : AppCompatActivity() {
                                             0.8
 
                                 val toExpand = state.originalExpandedness >= expandingThreshold
-                                isExpanded = toExpand
+                                isAppBarExpanded = toExpand
                                 home_app_bar_layout.setExpanded(toExpand, true)
                             }
                         }
                 }
             )
-
-            val handleAppBarScrollFinished = foo@ {
-                view: View, motionEvent: MotionEvent ->
-                    Log.d("MotionEvent", motionEvent.toString())
-                    if (motionEvent.actionMasked == MotionEvent.ACTION_CANCEL) {
-                        // When the user lets go of the dropdown calendar...
-
-                        if (appBarState is AppBarStateListener.State.QUANTUM_FLUX_SUPERPOSITION) {
-                            try {
-                                val superposition =
-                                        appBarState as AppBarStateListener.State.QUANTUM_FLUX_SUPERPOSITION
-
-                                val toExpand = superposition.expandedness >= 0.5
-
-                                isExpanded = toExpand
-                                home_app_bar_layout.setExpanded(toExpand, true)
-
-                                date_picker_dropdown_button.invalidate()
-                            } catch(e: TypeCastException) {
-                                // Ignore the TypeCastException
-                            }
-                        }
-
-                        return@foo true
-                    }
-
-                    return@foo false
-            }
-
-            // It is also possible to drag from the dropdown button to collapse/expand
-            // the action bar
-//            date_picker_dropdown_button.setOnTouchListener listener@ {
-//                view, motionEvent ->
-//                    return@listener handleAppBarScrollFinished(view, motionEvent)
-//            }
-
-//            toolbar_dropdown_calendar.setOnTouchListener listener@ {
-//                view, motionEvent ->
-//                    return@listener handleAppBarScrollFinished(view, motionEvent)
-//            }
         }
 
         // Note: month here is 1-based
@@ -223,6 +184,8 @@ class HomeActivity : AppCompatActivity() {
 
         if(home_drawer_layout.isDrawerOpen(GravityCompat.START))
             home_drawer_layout.closeDrawer(GravityCompat.START)
+        else if(isAppBarExpanded)
+            home_app_bar_layout.setExpanded(false, true)
         else
             super.onBackPressed()
     }

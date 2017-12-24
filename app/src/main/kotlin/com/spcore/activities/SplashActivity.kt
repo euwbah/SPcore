@@ -6,9 +6,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.spcore.helpers.*
-import com.spcore.helpers.Auth.initJWTTokenSP
 import com.spcore.R
 import com.spcore.helpers.SPLASH_SCREEN_MIN_DUR
+import kotlinx.coroutines.experimental.*
+
 
 class SplashActivity : AppCompatActivity() {
 
@@ -16,22 +17,24 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        initJWTTokenSP()
+        val activityClass =
+                async {
+                    initSharedPrefs()
 
-        val activityClass: Class<out Activity> = if(Auth.getJwtToken() != null)
-            HomeActivity::class.java
-        else
-            LoginActivity::class.java
+                    if (Auth.getJwtToken() != null)
+                        HomeActivity::class.java
+                    else
+                        LoginActivity::class.java
+                }
 
         // If JWT token exists, assume user logged in already
         // (although a check will still need to run in the background once the main intent is
         //  opened to ensure that it is not a fake token)
 
         Handler().postDelayed({
-
-
-            this@SplashActivity.startActivity(Intent(this, activityClass))
-
+            runBlocking {
+                this@SplashActivity.startActivity(Intent(this@SplashActivity, activityClass.await()))
+            }
         }, SPLASH_SCREEN_MIN_DUR)
     }
 

@@ -5,6 +5,9 @@ import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.R
 import com.spcore.helpers.Auth
+import com.spcore.helpers.Duration
+import com.spcore.helpers.isFrom
+import com.spcore.helpers.minus
 import java.util.*
 
 /**
@@ -16,6 +19,7 @@ import java.util.*
 class Lesson : WeekViewEvent, Parcelable {
 
     val moduleCode: String
+    val atsKeyed = false
 
     /**
      * @param moduleName    e.g. MAPP
@@ -24,7 +28,7 @@ class Lesson : WeekViewEvent, Parcelable {
      * @param start         Lesson start time
      * @param end           Lesson end time
      * @param id            Unique lesson identifier (this value should be returned from server)
-     *                      The ID should be unique to module, location, start time and person
+     *                      The ID should be unique to module, location, and start time
      */
     constructor(moduleName: String,
                 moduleCode: String,
@@ -38,6 +42,23 @@ class Lesson : WeekViewEvent, Parcelable {
 
     constructor(x: Parcel) : super(x) {
         this.moduleCode = x.readString()
+    }
+
+    /**
+     * Determines whether ATS can be keyed in now
+     *
+     * IMPORTANT: Note that lessons which are one after another will have overlapping
+     *            ATS-keyable timeframes. In such scenarioes, only regard the one that comes after.
+     */
+    fun isATSKeyableNow() : Boolean {
+        return Calendar.getInstance() isFrom startTime - Duration(minutes = 15) upTo endTime
+    }
+
+    /**
+     * Determines whether the lesson is currently on-going
+     */
+    fun isNow() : Boolean {
+        return Calendar.getInstance() isFrom startTime upTo endTime
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

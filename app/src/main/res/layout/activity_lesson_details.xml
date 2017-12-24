@@ -27,11 +27,11 @@
                 android:id="@+id/lesson_details_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@android:color/white"
-                android:textSize="24dp"
-                android:layout_gravity="bottom|start"
+                android:textSize="30dp"
+                android:layout_gravity="bottom|end"
                 android:text="placeholder title"
                 />
 
@@ -42,7 +42,7 @@
     <include layout="@layout/content_lesson_details" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/key_ats_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchorGravity="bottom|start"

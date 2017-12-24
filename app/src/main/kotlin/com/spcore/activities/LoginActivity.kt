@@ -21,7 +21,6 @@ import com.spcore.R
 import com.spcore.helpers.Auth
 import com.spcore.services.FrontendInterface
 import com.spcore.services.LoginResponse
-import com.spcore.helpers.Auth.initJWTTokenSP
 import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
 import kotlinx.android.synthetic.main.activity_login.*

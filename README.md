@@ -14,6 +14,7 @@
 
 ###### Response
 
+<code></code>
 ```js
 {
   "schedule": [
@@ -47,13 +48,13 @@
       "end": 123456789, // 64-bit epoch timestamp in millisec
       // deletedInvite refers to the people who have completely 
       // deleted the event from their calendar
-      "deletedInvite": [[Person](#person)],
+      "deletedInvite": [Person],
       // Those who have responded with "Going"
-      "going": [[Person](#person)],
+      "going": [Person],
       // Those who haven't responded
-      "unconfirmed": [[Person](#person)],
+      "unconfirmed": [Person],
       // Those who responded with not going
-      "notGoing": [[Person](#person)]
+      "notGoing": [Person]
     }
   ]
 }
@@ -61,7 +62,7 @@
 
 #### JSON Datatypes
 
-##### Person
+##### `Person`
 
 ```js
 // TODO
