@@ -1,11 +1,8 @@
 package com.spcore.activities
 
-import android.app.DialogFragment
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.spcore.R
@@ -16,8 +13,6 @@ import com.spcore.models.Lesson
 import kotlinx.android.synthetic.main.activity_lesson_details.*
 import kotlinx.android.synthetic.main.content_lesson_details.*
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
-import kotlin.concurrent.thread
 
 class LessonDetailsActivity : AppCompatActivity(), ATSEntryDialogFragment.OnATSEntryListener {
     private lateinit var lesson: Lesson

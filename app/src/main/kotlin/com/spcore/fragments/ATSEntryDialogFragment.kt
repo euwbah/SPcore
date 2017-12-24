@@ -38,7 +38,6 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("ON CREATE", "AAA")
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -62,7 +61,6 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("ON ATTACH", "AAA")
         if (context is OnATSEntryListener) {
             listener = context
         } else {

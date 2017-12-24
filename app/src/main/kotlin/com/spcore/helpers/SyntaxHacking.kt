@@ -3,8 +3,8 @@ package com.spcore.helpers
 /**
  * Basically allows for `x == y == z` kind of syntax via infix functions
  *
- * Use `and` to chain, and end the chain with `equals`
- * E.g.: `x and y and blah and asdfhjkl equals z`
+ * Use [_and] to chain, and end the chain with [equalTo]
+ * E.g.: `x _and y _and blah _and asdfhjkl equalTo z`
  */
 class CompoundEqualityBuilder<V>(val value: V, val stillRemainsTrue: Boolean) {
     fun _and(b: V): CompoundEqualityBuilder<V> {

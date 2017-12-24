@@ -1,7 +1,6 @@
 package com.spcore.helpers
 
 import java.util.*
-import com.spcore.helpers.*
 
 fun Date.toCalendar(): Calendar {
     val cal = Calendar.getInstance()
@@ -106,7 +105,7 @@ fun humanReadableTimeRange(time1: Calendar, time2: Calendar) : String {
 }
 
 /**
- * Infix method chaining builder for checking whether a Calendar value is
+ * Infix method chaining builder for checking whether a [Calendar] value is
  * between some start and end time
  *
  * @param cal The time in question
@@ -117,7 +116,7 @@ class CalendarRangeBuilder internal constructor(val cal: Calendar, val start: Ca
     /**
      * Inclusive upper bounds
      *
-     * @see upTo
+     * For exclusive upper bounds see [upTo]
      */
     infix fun to(end: Calendar): Boolean {
         return !cal.after(end) &&   if(startInclusive)
@@ -129,7 +128,7 @@ class CalendarRangeBuilder internal constructor(val cal: Calendar, val start: Ca
     /**
      * Exclusive upper bounds
      *
-     * @see to
+     * For inclusive upper bounds see [to]
      */
     infix fun upTo(end: Calendar): Boolean {
         return cal.before(end) &&   if(startInclusive)
@@ -142,7 +141,7 @@ class CalendarRangeBuilder internal constructor(val cal: Calendar, val start: Ca
 /**
  * Exclusive lower bounds
  *
- * @see isFrom
+ * For inclusive lower bounds, see [isFrom]
  */
 infix fun Calendar.isBetween(start: Calendar): CalendarRangeBuilder {
     return CalendarRangeBuilder(this, start, false)
@@ -151,7 +150,7 @@ infix fun Calendar.isBetween(start: Calendar): CalendarRangeBuilder {
 /**
  * Inclusive lower bounds
  *
- * @see isBetween
+ * For exclusive lower bounds, see [isBetween]
  */
 infix fun Calendar.isFrom(start: Calendar): CalendarRangeBuilder {
     return CalendarRangeBuilder(this, start, true)
@@ -175,8 +174,10 @@ class Duration(
 }
 
 /**
- * Provides a way to do basic addition of a timespan to a Calendar object
+ * Provides a way to do basic addition of a timespan to a [Calendar] object
  * without killing it
+ *
+ * Usage: `calendar1 + Duration(minutes=1, seconds=3)`
  */
 operator fun Calendar.plus(duration: Duration): Calendar {
     val newCalendar = this.clone() as Calendar
@@ -185,8 +186,10 @@ operator fun Calendar.plus(duration: Duration): Calendar {
 }
 
 /**
- * Provides a way to do basic addition of a timespan to a Calendar object
+ * Provides a way to do basic subtraction of a timespan to a [Calendar] object
  * without killing it
+ *
+ * Usage: `calendar1 - Duration(minutes=1, seconds=3)`
  */
 operator fun Calendar.minus(duration: Duration): Calendar {
     val newCalendar = this.clone() as Calendar

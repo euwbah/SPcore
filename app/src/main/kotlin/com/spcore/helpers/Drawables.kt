@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable
  * @param newHeight The new height of the drawable in **px**
  * @param resources The resource set which provides device-specific dimension units rather than
  *                  default ones.
- *
  *                  If not provided, it will use the default system resources from `Resources.getSystem()`, but
  *                  this is akin to deprecated behaviour, and will not work properly if the phone
  *                  orientation is changed.
