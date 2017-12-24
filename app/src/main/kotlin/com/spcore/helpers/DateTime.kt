@@ -65,18 +65,34 @@ fun humanReadableTimeRange(time1: Calendar, time2: Calendar) : String {
                 time2.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
 
     val firstTimeStr =
-            time1.get(Calendar.HOUR).toString() +
-            (if(time1.get(Calendar.MINUTE) != 0)
-                ":" + time1.get(Calendar.MINUTE).toString()
-            else "") +
+            time1.get(Calendar.HOUR).let {
+                if(it == 0)
+                    12
+                else
+                    it
+            }.toString() +
+            time1.get(Calendar.MINUTE).let {
+                if(it == 0)
+                    ""
+                else
+                    ":%02d".format(it)
+            } +
             " " +
             if(time1.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
 
     val secondTimeStr =
-            time2.get(Calendar.HOUR).toString() +
-                    (if(time2.get(Calendar.MINUTE) != 0)
-                        ":" + time2.get(Calendar.MINUTE).toString()
-                    else "") +
+            time2.get(Calendar.HOUR).let {
+                if(it == 0)
+                    12
+                else
+                    it
+            }.toString() +
+                    time2.get(Calendar.MINUTE).let {
+                        if(it == 0)
+                            ""
+                        else
+                            ":%02d".format(it)
+                    } +
                     " " +
                     if(time2.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
 
