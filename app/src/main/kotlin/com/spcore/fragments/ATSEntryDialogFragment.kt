@@ -5,12 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.spcore.R
 import kotlinx.android.synthetic.main.fragment_atsentry_dialog.*
@@ -43,6 +41,10 @@ class ATSEntryDialogFragment : DialogFragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
+        submit_ats_button.setOnClickListener {
+
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +58,7 @@ class ATSEntryDialogFragment : DialogFragment() {
     }
 
     fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
+        listener?.onATSSubmitted(uri)
     }
 
     override fun onAttach(context: Context) {
@@ -73,20 +75,9 @@ class ATSEntryDialogFragment : DialogFragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
     interface OnATSEntryListener {
         // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+        fun onATSSubmitted(uri: Uri)
     }
 
     companion object {

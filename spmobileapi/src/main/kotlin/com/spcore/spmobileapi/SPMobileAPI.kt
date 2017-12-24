@@ -119,7 +119,7 @@ object SPMobileAPI {
 
 
     /**
-     * @throws
+     * ==**THIS IS A SYNCHRONOUS FUNCTION!!! DO NOT RUN ON UI THREAD!!!**==
      */
     fun sendATS(ID: String, pass: String, ats: Int): Result<Nothing?, ATSResult.Errors> {
 

@@ -2,7 +2,9 @@ package com.spcore.helpers
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import com.spcore.R
+import com.spcore.exceptions.NotLoggedInException
 import com.spcore.models.Lesson
 
 /**
@@ -18,11 +20,11 @@ interface SharedPrefWrapper {
 }
 
 object Auth : SharedPrefWrapper {
-    private lateinit var jwtSP : SharedPreferences
+    private lateinit var authSP: SharedPreferences
 
     override fun <T : Context> initializeSP(context: T) {
-        if(!this@Auth::jwtSP.isInitialized)
-            jwtSP = context.getSharedPreferences(
+        if(!this@Auth::authSP.isInitialized)
+            authSP = context.getSharedPreferences(
                     context.getString(R.string.jwt_token_shared_preference_id),
                     Context.MODE_PRIVATE)
     }
@@ -31,23 +33,47 @@ object Auth : SharedPrefWrapper {
      * ### REMEMBER TO CALL `Context.initJWTTokenSP()` first!
      */
     fun getJwtToken() : String? {
-        if (!this::jwtSP.isInitialized)
+        if (!this::authSP.isInitialized)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
-        return jwtSP.getString("token", null)
+        return authSP.getString("token", null)
     }
 
     /**
      * ### REMEMBER TO CALL `Context.initJWTTokenSP()` first!
      */
     fun setJwtToken(token: String) {
-        if (!this::jwtSP.isInitialized)
+        if (!this::authSP.isInitialized)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
-        jwtSP
+        authSP
                 .edit()
                 .putString("token", token)
                 .apply()
+    }
+
+    fun saveCredentials(adminNo: String, pass: String) {
+        if (!this::authSP.isInitialized)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        authSP
+                .edit()
+                .putString("23gnoiasbrjaeorbin", Base64.encode(adminNo.toByteArray(), Base64.DEFAULT).toString())
+                .putString("argjoaierogjeoagij", Base64.encode(pass.toByteArray(), Base64.DEFAULT).toString())
+                .apply()
+    }
+
+    fun getCredentials(): List<String> {
+        if (!this::authSP.isInitialized)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        val adminNo = authSP.getString("23gnoiasbrjaeorbin", null)
+        val pass = authSP.getString("argjoaierogjeoagij", null)
+
+        if (adminNo _or pass _is null)
+            throw NotLoggedInException()
+
+        return listOf(adminNo, pass)
     }
 
 }
@@ -81,4 +107,38 @@ object ATS : SharedPrefWrapper {
 
         return ATSSP.getString("lessonID", "anignatup") == currLesson.id.toString()
     }
+}
+
+/**
+ * Represents whether the [com.spcore.activities.LessonDetailsActivity] is running
+ *
+ * It's purpose is to evaluate the need for sending a notification on ATS submission status &em;
+ * *e.g.*:
+ * if the LDA is running:
+ * - upon successful entry ==> display toast message
+ * - upon erroneous entry  ==> reshow the [com.spcore.fragments.ATSEntryDialogFragment] dialog
+ *
+ * if the LDA isn't running:
+ * - upon successful entry ==> display notification, when that is clicked, it opens up the lesson
+ *   that ATS was entered for
+ * - upon erroneous entry  ==> display relevant notification with quick-reply which allows user to retype ATS,
+ *   in the scenario of not being connected to school wifi, there will be no quick-reply.
+ *   When the notification is clicked, it opens up the ATS submission dialog
+ */
+object LDA : SharedPrefWrapper {
+    private lateinit var LDASP : SharedPreferences
+
+    override fun <T : Context> initializeSP(context: T) {
+        if(!this::LDASP.isInitialized)
+            LDASP = context.getSharedPreferences(
+                    context.getString(R.string.lda_activity_state_sp),
+                    Context.MODE_PRIVATE)
+    }
+
+    fun isRunning() : Boolean {
+        if(!this::LDASP.isInitialized)
+            throw UnsupportedOperationException("LDA shared pref not init yet")
+        return LDASP.getBoolean("running", false)
+    }
+
 }

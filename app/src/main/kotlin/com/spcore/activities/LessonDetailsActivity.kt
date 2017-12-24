@@ -1,5 +1,6 @@
 package com.spcore.activities
 
+import android.content.Context
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +17,26 @@ import kotlinx.coroutines.experimental.async
 
 class LessonDetailsActivity : AppCompatActivity(), ATSEntryDialogFragment.OnATSEntryListener {
     private lateinit var lesson: Lesson
+
+    override fun onStart() {
+        super.onStart()
+
+        getSharedPreferences(getString(R.string.lda_activity_state_sp), Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean("running", true)
+                .apply()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        getSharedPreferences(
+                    getString(R.string.lda_activity_state_sp),
+                    Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean("running", false)
+                .apply()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -68,7 +89,7 @@ class LessonDetailsActivity : AppCompatActivity(), ATSEntryDialogFragment.OnATSE
         }
     }
 
-    override fun onFragmentInteraction(uri: Uri) {
+    override fun onATSSubmitted(uri: Uri) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

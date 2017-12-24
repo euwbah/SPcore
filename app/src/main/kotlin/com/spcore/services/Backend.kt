@@ -23,19 +23,44 @@ object Backend {
         return backendCalls.performLogin(adminNo, password)
     }
 
+    /**
+     * Performs an async login request to Budi's backend
+     *
+     * This returns a [onResponseBuilder] which consumes a callback, [onResponseBuilder.onResponse],
+     * upon successful response,
+     * which in turn returns [onFailureBuilder]
+     */
     fun performLoginAsync(adminNo: String, password: String): onResponseBuilder<LoginResponse> {
         return onResponseBuilder(backendCalls.performLogin(adminNo, password))
     }
 
+    /**
+     * Method-chaining interface to provide a callback upon successful response
+     *
+     * @see onResponse
+     */
     class onResponseBuilder<T>(val call: Call<T>) {
+        /**
+         * @param onRespCallback The callback upon successful response
+         * @return Returns the [onFailureBuilder] method-chaining interface
+         */
         fun onResponse(onRespCallback: (Call<T>, Response<T>) -> Unit): onFailureBuilder<T> {
             return onFailureBuilder(call, onRespCallback)
         }
     }
 
+    /**
+     * Method-chaining interface to provide callback upon a non-successful response
+     *
+     * @see onFailure
+     */
     class onFailureBuilder<T>(
             val call:           Call<T>,
             val onRespCallback: (Call<T>, Response<T>) -> Unit) {
+        /**
+         * @param onFailureCallback The callback upon successful response
+         * @return Returns the [onFailure] method-chaining interface
+         */
         fun onFailure(onFailureCallback: (Call<T>, Throwable?) -> Unit) {
             call.enqueue(object : Callback<T> {
                 override fun onFailure(_call: Call<T>, _t: Throwable?) {
