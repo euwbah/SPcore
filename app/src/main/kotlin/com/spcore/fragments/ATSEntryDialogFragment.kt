@@ -5,10 +5,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.spcore.R
+import kotlinx.android.synthetic.main.fragment_atsentry_dialog.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,16 +38,22 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("ON CREATE", "AAA")
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_atsentry_dialog, container, false)
+        view.findViewById<EditText>(R.id.ats_input).requestFocus()
+        dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_atsentry_dialog, container, false)
+        return view
     }
 
     fun onButtonPressed(uri: Uri) {
@@ -51,6 +62,7 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d("ON ATTACH", "AAA")
         if (context is OnATSEntryListener) {
             listener = context
         } else {

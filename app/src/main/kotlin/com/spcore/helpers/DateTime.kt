@@ -87,14 +87,14 @@ fun humanReadableTimeRange(time1: Calendar, time2: Calendar) : String {
                 else
                     it
             }.toString() +
-                    time2.get(Calendar.MINUTE).let {
-                        if(it == 0)
-                            ""
-                        else
-                            ":%02d".format(it)
-                    } +
-                    " " +
-                    if(time2.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+            time2.get(Calendar.MINUTE).let {
+                if(it == 0)
+                    ""
+                else
+                    ":%02d".format(it)
+            } +
+            " " +
+            if(time2.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
 
     return if(showSecondDate) {
         "$firstDateStr$firstYearString, $firstTimeStr -\n" +
