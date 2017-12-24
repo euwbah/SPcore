@@ -49,6 +49,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_id"
                     android:inputType="number"
+                    android:maxLength="7"
                     android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
