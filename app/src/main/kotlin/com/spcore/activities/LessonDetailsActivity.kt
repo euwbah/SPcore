@@ -70,7 +70,7 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
         }
 
         key_ats_fab.setOnClickListener { view ->
-            atsDialogFragment = ATSEntryDialogFragment.newInstance("aaaa", "bbbb")
+            atsDialogFragment = ATSEntryDialogFragment.newInstance("")
             atsDialogFragment.show(supportFragmentManager, "key ats")
         }
 

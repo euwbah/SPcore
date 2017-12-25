@@ -18,11 +18,10 @@ import kotlinx.android.synthetic.main.fragment_atsentry_dialog.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_ERR_MSG = "errmsg"
 
 /**
- * A simple [Fragment] subclass.
+ * Dialog Fragment for ATS entry modal dialog
  * Activities that contain this fragment must implement the
  * [ATSEntryDialogFragment.OnATSEntryListener] interface
  * to handle interaction events.
@@ -32,8 +31,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class ATSEntryDialogFragment : DialogFragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var errmsg String = ""
     private var listener: OnATSEntryListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +40,7 @@ class ATSEntryDialogFragment : DialogFragment() {
         Log.d("CREATE", "oaiegaerg")
 
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            errmsg = it.getString(ARG_ERR_MSG)
         }
     }
 
@@ -59,6 +56,7 @@ class ATSEntryDialogFragment : DialogFragment() {
         // giving the synthetic properties time to load
         async {
             ats_input.requestFocus()
+            ats_error_msg.text = errmsg
             submit_ats_button.setOnClickListener {
                 ats_error_message.text = ats_input.text.length.let {
                     when {
@@ -103,21 +101,11 @@ class ATSEntryDialogFragment : DialogFragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ATSEntryDialogFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(errmsg: String = "") =
                 ATSEntryDialogFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+                        putString(ARG_ERR_MSG, param1)
                     }
                 }
     }
