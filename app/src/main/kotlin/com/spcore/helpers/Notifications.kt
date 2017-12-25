@@ -7,8 +7,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.RemoteInput
 import com.spcore.R
 import com.spcore.activities.LessonDetailsActivity
+import com.spcore.services.intents.SendATSIntentService
 
 
 /*
@@ -19,9 +21,21 @@ import com.spcore.activities.LessonDetailsActivity
  * For notifs related to ATS
  */
 internal const val NC_ATS = "com.spcore.notifchannel.ATS"
+/** Notification Channel name as displayed in the notification settings */
 internal const val NC_ATS_DN = "ATS Prompts"
 
+/*
+ * Notification IDs
+ */
+
+/** notif id for ATS_FAILURE */
 internal const val NID_ATS_FAILURE = 0
+
+/** Key to use when putting inline-reply response into Intent extras */
+internal const val K_IR_ATS = "com.spcore.extra.IR_ATS"
+
+/** Inline reply request code identifier for ATS inline-reply */
+internal const val IR_RC_ATS = 0
 
 /**
  * [Notifications]
@@ -55,14 +69,22 @@ class CNotifications(context: Context) : ContextWrapper(context) {
         }
     }
 
-    fun notifyATSError(errmsg: String, putQuickReply: Boolean) {
-        val builder =
+    /**
+     * @param errmsg Error message to display
+     * @param makeSticky Set true if notification should be sticky
+     * @param inlineReply Set true to allow user to re-enter the ATS code inline
+     */
+    fun notifyATSError(errmsg: String, makeSticky: Boolean, inlineReply: Boolean) {
+
+        val notificationBuilder =
                 NotificationCompat
                         .Builder(this, NC_ATS)
                         .setSmallIcon(R.drawable.ats) // FIXME: This is stupid
                         .setLargeIcon(getDrawable(R.drawable.ats).toBitmap())
                         .setContentTitle("ATS Submission Failed")
                         .setContentText(errmsg)
+                        .setOngoing(makeSticky)
+
 
         // i.e. the intent which shows up when the user clicks on the notification body
         val intentToSpawn =
@@ -78,9 +100,33 @@ class CNotifications(context: Context) : ContextWrapper(context) {
         stackBuilder.addNextIntent(intentToSpawn)
 
         val spawnedPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-        builder.setContentIntent(spawnedPendingIntent)
+        notificationBuilder.setContentIntent(spawnedPendingIntent)
 
-        notifManager.notify(NID_ATS_FAILURE, builder.build())
+
+        if (inlineReply) {
+            // The inline-reply action restarts the SendATSIntentService
+            val inlineReplyIntent =
+                    PendingIntent.getBroadcast(
+                            applicationContext,
+                            IR_RC_ATS,
+                            SendATSIntentService.newIntent(this),
+                            PendingIntent.FLAG_UPDATE_CURRENT)
+            val remoteInput =
+                    RemoteInput.Builder(K_IR_ATS)
+                            .setLabel("Key ATS...")
+                            .build()
+            val inlineReplyNotifAction =
+                        NotificationCompat.Action.Builder(
+                                R.drawable.ats,
+                                "Submit ATS",
+                                inlineReplyIntent)
+                        .addRemoteInput(remoteInput)
+                        .build()
+
+            notificationBuilder.addAction(inlineReplyNotifAction)
+        }
+
+        notifManager.notify(NID_ATS_FAILURE, notificationBuilder.build())
     }
 
 }
