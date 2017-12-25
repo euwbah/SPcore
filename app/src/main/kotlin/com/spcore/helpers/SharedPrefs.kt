@@ -20,10 +20,10 @@ interface SharedPrefWrapper {
 }
 
 object Auth : SharedPrefWrapper {
-    private lateinit var authSP: SharedPreferences
+    private var authSP: SharedPreferences? = null
 
     override fun <T : Context> initializeSP(context: T) {
-        if(!this@Auth::authSP.isInitialized)
+        if(authSP == null)
             authSP = context.getSharedPreferences(
                     context.getString(R.string.jwt_token_shared_preference_id),
                     Context.MODE_PRIVATE)
@@ -33,50 +33,51 @@ object Auth : SharedPrefWrapper {
      * ### REMEMBER TO CALL `Context.initJWTTokenSP()` first!
      */
     fun getJwtToken() : String? {
-        if (!this::authSP.isInitialized)
+        if(authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
-        return authSP.getString("token", null)
+        return authSP?.getString("token", null)
     }
 
     /**
      * ### REMEMBER TO CALL `Context.initJWTTokenSP()` first!
      */
     fun setJwtToken(token: String) {
-        if (!this::authSP.isInitialized)
+        if(authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
         authSP
-                .edit()
-                .putString("token", token)
-                .apply()
+                ?.edit()
+                ?.putString("token", token)
+                ?.apply()
     }
 
     fun saveCredentials(adminNo: String, pass: String) {
-        if (!this::authSP.isInitialized)
+        if (authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
         authSP
-                .edit()
-                .putString("23gnoiasbrjaeorbin", Base64.encode(adminNo.toByteArray(), Base64.DEFAULT).toString())
-                .putString("argjoaierogjeoagij", Base64.encode(pass.toByteArray(), Base64.DEFAULT).toString())
-                .apply()
+                ?.edit()
+                ?.putString("23gnoiasbrjaeorbin", Base64.encode(adminNo.toByteArray(), Base64.DEFAULT).toString())
+                ?.putString("argjoaierogjeoagij", Base64.encode(pass.toByteArray(), Base64.DEFAULT).toString())
+                ?.apply()
     }
 
     /**
      * Returns a list duple. Suggested usage: **`val (adminNo, pass) = getCredentials()`**
      */
     fun getCredentials(): List<String> {
-        if (!this::authSP.isInitialized)
+        if(authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
-        val adminNo = authSP.getString("23gnoiasbrjaeorbin", null)
-        val pass = authSP.getString("argjoaierogjeoagij", null)
+        val adminNo = authSP?.getString("23gnoiasbrjaeorbin", null)
+        val pass = authSP?.getString("argjoaierogjeoagij", null)
 
         if (adminNo _or pass _is null)
             throw NotLoggedInException()
 
-        return listOf(adminNo, pass)
+        // can be asserted because ^^^
+        return listOf(adminNo!!, pass!!)
     }
 
 }
@@ -85,30 +86,30 @@ object Auth : SharedPrefWrapper {
  * So far, this shared pref is just used to store whether or not the current lesson's ATS was keyed
  */
 object ATS : SharedPrefWrapper {
-    private lateinit var ATSSP : SharedPreferences
+    private var ATSSP : SharedPreferences? = null
 
     override fun <T : Context> initializeSP(context: T) {
-        if(!this@ATS::ATSSP.isInitialized)
+        if(ATSSP == null)
             ATSSP = context.getSharedPreferences(
                     context.getString(R.string.ats_shared_preference_id),
                     Context.MODE_PRIVATE)
     }
 
     fun markATSSubmitted(forLesson: Lesson) {
-        if(!this@ATS::ATSSP.isInitialized)
+        if(ATSSP == null)
             throw UnsupportedOperationException("ATS shared preferences not initialized yet")
 
         ATSSP
-                .edit()
-                .putString("lessonID", forLesson.id.toString())
-                .apply()
+                ?.edit()
+                ?.putString("lessonID", forLesson.id.toString())
+                ?.apply()
     }
 
     fun checkATSSubmitted(currLesson: Lesson) : Boolean {
-        if(!this@ATS::ATSSP.isInitialized)
+        if(ATSSP == null)
             throw UnsupportedOperationException("ATS shared preferences not initialized yet")
 
-        return ATSSP.getString("lessonID", "anignatup") == currLesson.id.toString()
+        return ATSSP?.getString("lessonID", "anignatup") == currLesson.id.toString()
     }
 }
 
@@ -129,10 +130,10 @@ object ATS : SharedPrefWrapper {
  *   When the notification is clicked, it opens up the ATS submission dialog
  */
 object AppState : SharedPrefWrapper {
-    private lateinit var AppStateSP: SharedPreferences
+    private var AppStateSP: SharedPreferences? = null
 
     override fun <T : Context> initializeSP(context: T) {
-        if(!this::AppStateSP.isInitialized)
+        if(AppStateSP == null)
             AppStateSP = context.getSharedPreferences(
                     "com.spcore.appstate",
                     Context.MODE_PRIVATE)
@@ -141,12 +142,14 @@ object AppState : SharedPrefWrapper {
     /**
      * Get's the activity ID of the current foreground activity as provided in [com.spcore.activities.AppStateTrackerActivity]
      * or "none" if none are in the foreground
+     *
+     * @return Returns the activity ID or "none" if none are in the foreground
      */
     fun getForegroundActivity() : String {
-        if(!this::AppStateSP.isInitialized)
+        if(AppStateSP == null)
             throw UnsupportedOperationException("AppState shared pref not init yet")
 
-        return AppStateSP.getString("active", "none")
+        return AppStateSP?.getString("active", "none")  ?: "none"
     }
 
     fun foregroundActivityIs(activityID: String): Boolean {
