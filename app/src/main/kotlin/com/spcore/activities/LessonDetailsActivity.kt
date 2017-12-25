@@ -3,10 +3,11 @@ package com.spcore.activities
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.content.LocalBroadcastManager
 import android.view.View
 import com.spcore.R
 import com.spcore.fragments.ATSEntryDialogFragment
@@ -72,14 +73,31 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
             atsDialogFragment = ATSEntryDialogFragment.newInstance("aaaa", "bbbb")
             atsDialogFragment.show(supportFragmentManager, "key ats")
         }
+
+        ATSSubmissionResultReceiver().activateReceiver()
     }
 
     override fun onATSSubmitted(uri: Uri) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    inner class ATSSubmissionResultReceiver
-    private constructor(): BroadcastReceiver() {
+    /**
+     * Usage: instantiate the Receiver and call [activateReceiver]
+     */
+    inner class ATSSubmissionResultReceiver : BroadcastReceiver() {
+
+        fun activateReceiver() {
+            arrayOf(BROADCAST_ATS_SUCCESS, BROADCAST_ATS_FAILURE)
+                    .map {
+                        LocalBroadcastManager
+                                .getInstance(this@LessonDetailsActivity)
+                                .registerReceiver(
+                                        this,
+                                        IntentFilter(it)
+                                )
+                    }
+        }
+
         override fun onReceive(context: Context, intent: Intent) {
             when(intent.action) {
                 BROADCAST_ATS_SUCCESS -> {
