@@ -51,7 +51,7 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
                         val broadcast = Intent(BROADCAST_ATS_SUCCESS)
                         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
                     } else {
-                        val notifManager = systemService(Context.NOTIFICATION_SERVICE)
+                        val notifManager = getSystemService(Context.NOTIFICATION_SERVICE)
                     }
 
             is Result.Error ->

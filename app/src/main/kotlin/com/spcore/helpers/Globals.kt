@@ -17,14 +17,3 @@ internal const val BROADCAST_ATS_SUCCESS = "com.spcore.broadcast.ATS_SUCCESS"
  * Upon failed ATS entry
  */
 internal const val BROADCAST_ATS_FAILURE = "com.spcore.broadcast.ATS_FAILURE"
-
-/*
- * Notification channels & respective display names
- */
-
-/**
- * For notifs related to ATS
- */
-internal const val NC_ATS = "com.spcore.NC_ATS"
-
-internal const val NC_ATS_DN = "Attendance notifications"

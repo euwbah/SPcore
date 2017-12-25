@@ -36,6 +36,8 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
                 this@SplashActivity.startActivity(Intent(this@SplashActivity, activityClass.await()))
             }
         }, SPLASH_SCREEN_MIN_DUR)
+
+        initializeNotifications(this.applicationContext)
     }
 
 }

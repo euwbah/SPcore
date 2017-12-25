@@ -75,6 +75,11 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
         }
 
         ATSSubmissionResultReceiver().activateReceiver()
+
+        if(intent.extras.getBoolean("open ats dialog", false)) {
+            atsDialogFragment = ATSEntryDialogFragment.newInstance("")
+            atsDialogFragment.show(supportFragmentManager, "key ats")
+        }
     }
 
     override fun onATSSubmitted(uri: Uri) {
@@ -98,6 +103,11 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
                     }
         }
 
+        /**
+         * Action to take upon receiving broadcast.
+         *
+         * REMINDER: Broadcasts are only sent if the LessonDetailsActivity is active
+         */
         override fun onReceive(context: Context, intent: Intent) {
             when(intent.action) {
                 BROADCAST_ATS_SUCCESS -> {

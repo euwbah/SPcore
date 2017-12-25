@@ -31,7 +31,7 @@ private const val ARG_ERR_MSG = "errmsg"
  */
 class ATSEntryDialogFragment : DialogFragment() {
     // TODO: Rename and change types of parameters
-    private var errmsg String = ""
+    private var errmsg: String = ""
     private var listener: OnATSEntryListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +56,7 @@ class ATSEntryDialogFragment : DialogFragment() {
         // giving the synthetic properties time to load
         async {
             ats_input.requestFocus()
-            ats_error_msg.text = errmsg
+            ats_error_message.text = errmsg
             submit_ats_button.setOnClickListener {
                 ats_error_message.text = ats_input.text.length.let {
                     when {
@@ -105,7 +105,7 @@ class ATSEntryDialogFragment : DialogFragment() {
         fun newInstance(errmsg: String = "") =
                 ATSEntryDialogFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_ERR_MSG, param1)
+                        putString(ARG_ERR_MSG, errmsg)
                     }
                 }
     }
