@@ -18,7 +18,6 @@ import com.spcore.spmobileapi.SPMobileAPI
  * Key to activate ATS submission function
  */
 const val K_ACTION_SUBMIT_ATS = "com.spcore.action.SUBMIT_ATS"
-const val K_ACTION_SUBMIT_ATS_INLINE = "com.spcore.action.SUBMIT_ATS_INLINE"
 
     /** Param key of the ATS code [String] */
     const val K_PARAM_ATS_CODE = "com.spcore.extra.ATS_CODE"
@@ -36,14 +35,6 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
                 val ats = intent.extras.getString(K_PARAM_ATS_CODE)
                 val lesson = intent.extras.getParcelable<Lesson>(K_PARAM_LESSON)
                 submitAts(ats, lesson)
-            }
-            K_ACTION_SUBMIT_ATS_INLINE -> {
-                val ats = RemoteInput.getResultsFromIntent(intent)?.getCharSequence(K_IR_ATS)
-                val lesson = intent.extras.getParcelable<Lesson>(K_PARAM_LESSON)
-                if(ats != null)
-                    submitAts(ats.toString(), lesson)
-                else
-                    Log.e("SPCORE", "UNEXPECTED IGNORED ERROR: ATS inline-reply results bundle was null")
             }
         }
     }
@@ -165,18 +156,14 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
          * @param atsCode If this is not provided, function assumes that ATS code needs to be
          *                extracted from the inline-reply Bundle
          */
-        fun newIntent(context: Context, lesson: Lesson, atsCode: String? = null): Intent {
+        fun newIntent(context: Context, lesson: Lesson, atsCode: String): Intent {
             Log.d("NEW INTENT", "SendATSIntentService")
             return Intent(context, SendATSIntentService::class.java).apply {
 
                 putExtra(K_PARAM_LESSON, lesson)
+                putExtra(K_PARAM_ATS_CODE, atsCode)
 
-                action =
-                        if(atsCode != null) {
-                            putExtra(K_PARAM_ATS_CODE, atsCode)
-                            K_ACTION_SUBMIT_ATS
-                        } else
-                            K_ACTION_SUBMIT_ATS_INLINE
+                action = K_ACTION_SUBMIT_ATS
             }
         }
     }

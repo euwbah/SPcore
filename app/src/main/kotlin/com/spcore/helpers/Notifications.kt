@@ -10,6 +10,8 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.RemoteInput
 import com.spcore.R
 import com.spcore.activities.LessonDetailsActivity
+import com.spcore.broadcasts.DirectReplyATSBroadcastReceiver
+import com.spcore.broadcasts.ATS_ACTION_INLINE
 import com.spcore.models.Lesson
 import com.spcore.services.SendATSIntentService
 
@@ -128,7 +130,7 @@ class CNotifications(context: Context) : ContextWrapper(context) {
                     PendingIntent.getBroadcast(
                             applicationContext,
                             IR_RC_ATS,
-                            SendATSIntentService.newIntent(this, lesson),
+                            DirectReplyATSBroadcastReceiver.newIntent(applicationContext, lesson),
                             PendingIntent.FLAG_UPDATE_CURRENT)
             val remoteInput =
                     RemoteInput.Builder(K_IR_ATS)
