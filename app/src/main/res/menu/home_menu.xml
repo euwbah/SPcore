@@ -6,14 +6,14 @@
     tools:context=".activities.HomeActivity">
 
     <item
-        android:id="@+id/action_ats"
+        android:id="@+id/action_home_ats"
         android:icon="@drawable/ats"
         android:orderInCategory="100"
         android:title="@string/action_ats"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/action_home_refresh"
         android:orderInCategory="100"
         android:title="@string/action_refresh"
         app:showAsAction="never"

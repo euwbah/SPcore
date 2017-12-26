@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import android.view.View
 import com.spcore.R
 import com.spcore.fragments.ATSEntryDialogFragment
@@ -24,12 +27,27 @@ private const val ATS_NOT_SUBMITTED_COLOR = 0xFF_EE_33_11.toInt()
 /**
  * Keys for extras bundle:
  *  - `event`: The parcelled [Lesson] object
+ *  - `open ats dialog` (optional): A [Boolean] - whether or not to show the ATS dialog automatically
+ *  - `dismiss notification` (optional): An [Int] representing notification ID to dismiss
  */
 class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
-                              ATSEntryDialogFragment.ATSDialogEventsHander {
+                              ATSEntryDialogFragment.ATSDialogEventsHandler {
     private lateinit var lesson: Lesson
 
     private var atsDialogFragment: ATSEntryDialogFragment? = null
+
+    /** replacement for [key_ats_fab.isEnabled]/[key_ats_fab.setEnabled] as it causes some
+     * z-index glitching */
+    private var fabEnabled = true
+    set(enabled) {
+        key_ats_fab.alpha =
+                if(enabled)
+                    1f
+                else
+                    0.3f
+
+        field = enabled
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -42,12 +60,20 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        /*
+            READ EXTRAS
+         */
+
         lesson = intent.extras.getParcelable("event")
+        val openDialog = intent.extras.getBoolean("open ats dialog", false)
+        val dismissNotifID = intent.extras.getInt("dismiss notification", -1337)
+
+        Log.d("LessonDetailsAct.. LDA", "Lesson ID: ${lesson.id}")
 
         lesson_details_toolbar_title.text = "[${lesson.moduleCode}] ${lesson.name}"
 
         val _24dp = 24.dpToPx()
-        async {
+        Handler(mainLooper).post {
             val d = getDrawable(R.drawable.ats).resizeImage(_24dp, _24dp, resources)
             d.setColorFilter(0xcc333333.toInt(), PorterDuff.Mode.MULTIPLY)
             lesson_details_ats_status.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
@@ -77,27 +103,33 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
         }
 
         key_ats_fab.setOnClickListener { view ->
-            atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, "")
-            atsDialogFragment?.show(supportFragmentManager, "key ats")
+            if(fabEnabled) {
+                atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, "")
+                atsDialogFragment?.show(supportFragmentManager, "key ats")
+            }
         }
 
         ATSSubmissionResultReceiver().activateReceiver()
 
-        if(intent.extras.getBoolean("open ats dialog", false)) {
+        if(openDialog) {
             atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, intent.extras.getString("errmsg", ""))
             atsDialogFragment?.show(supportFragmentManager, "key ats")
+        }
+
+        if(dismissNotifID != -1337) {
+            Notifications.cancelNotification(dismissNotifID)
         }
     }
 
     /**
-     * This is invoked the instant the user clicks the "Submit ATS" button
+     * This is invoked when the ATS code submitted passes client-side validation
      * in the [ATSEntryDialogFragment]
      */
-    override fun onSubmitATSButtonClick() {
+    override fun onSuccessfulRequest() {
         atsDialogFragment?.dismiss()
 
         // Temporarily deactivate the FAB while the submission requests are in progress
-        key_ats_fab.isEnabled = false
+        fabEnabled = false
     }
 
     /**
@@ -144,11 +176,14 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
                     if(atsDialogFragment?.dialog?.isShowing == true)
                         atsDialogFragment?.errmsg = errmsg
                     else {
-                        atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, errmsg)
+                        Handler(mainLooper).post {
+                            atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, errmsg)
+                            atsDialogFragment?.show(supportFragmentManager, "key ats")
+                        }
                     }
 
                     // Re-activate the fab because the user needs to key it again
-                    key_ats_fab.isEnabled = true
+                    fabEnabled = true
                 }
             }
         }

@@ -70,6 +70,10 @@ class CNotifications(context: Context) : ContextWrapper(context) {
         }
     }
 
+    fun cancelNotification(notifID: Int) {
+        notifManager.cancel(notifID)
+    }
+
     fun notifyATSSuccess() {
         val notificationBuilder =
                 NotificationCompat
@@ -102,9 +106,11 @@ class CNotifications(context: Context) : ContextWrapper(context) {
         // i.e. the intent which shows up when the user clicks on the notification body
         val intentToSpawn =
                 Intent(this, LessonDetailsActivity::class.java)
-                        .putExtra("show ats dialog", true) // this is tentative, perhaps not all
-                                                                      // cases require this intent with the
-                                                                      // ats dialog open
+                        .putExtra("event", lesson)
+                        .putExtra("open ats dialog", true) // this is tentative, perhaps not all
+                                                                      // cases require this intent to spawn
+                                                                      // with the ats dialog open
+                        .putExtra("dismiss notification", NID_ATS_FAILURE)
 
         val stackBuilder = TaskStackBuilder.create(this)
         // addParentStack will read parentActivityName metadata attributes from AndroidManifest.xml
@@ -131,7 +137,7 @@ class CNotifications(context: Context) : ContextWrapper(context) {
             val inlineReplyNotifAction =
                         NotificationCompat.Action.Builder(
                                 R.drawable.ats,
-                                "Submit ATS",
+                                "Re-submit ATS",
                                 inlineReplyIntent)
                         .addRemoteInput(remoteInput)
                         .build()

@@ -2,7 +2,10 @@ package com.spcore.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.app.DialogFragment
+import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +25,7 @@ private const val ARG_LESSON = "lesson"
 /**
  * Dialog Fragment for ATS entry modal dialog
  * Activities that contain this fragment must implement the
- * [ATSEntryDialogFragment.ATSDialogEventsHander] interface
+ * [ATSEntryDialogFragment.ATSDialogEventsHandler] interface
  * to handle interaction events.
  * Use the [ATSEntryDialogFragment.newInstance] factory method to
  * create an instance of this fragment.
@@ -30,12 +33,14 @@ private const val ARG_LESSON = "lesson"
  */
 class ATSEntryDialogFragment : DialogFragment() {
 
-    private var listener: ATSDialogEventsHander? = null
+    private var listener: ATSDialogEventsHandler? = null
 
     var errmsg: String
         get() = ats_error_message?.text?.toString() ?: ""
         set(value) {
-            ats_error_message?.text = value
+            Handler(Looper.getMainLooper()).post {
+                ats_error_message?.text = value
+            }
             value
         }
 
@@ -48,8 +53,8 @@ class ATSEntryDialogFragment : DialogFragment() {
         Log.d("CREATE", "oaiegaerg")
 
         arguments?.let {
-            errmsg = it.getString(ARG_ERR_MSG)
             lesson = it.getParcelable(ARG_LESSON)
+            errmsg = it.getString(ARG_ERR_MSG)
         }
     }
 
@@ -63,18 +68,17 @@ class ATSEntryDialogFragment : DialogFragment() {
 
         // This async is necessary as it functions akin to Platform.runLater in JavaFX,
         // giving the synthetic properties time to load
-        async {
+        Handler(Looper.getMainLooper()).post {
             ats_input.requestFocus()
-            ats_error_message.text = errmsg
             submit_ats_button.setOnClickListener {
 
-                listener?.onSubmitATSButtonClick()
 
                 ats_error_message.text = ats_input.text.length.let {
                     when {
                         it == 0 -> "Input is empty"
                         it != 6 -> "Invalid code"
                         else -> {
+                            listener?.onSuccessfulRequest()
                             SendATSIntentService.startNew(this@ATSEntryDialogFragment.context!!, lesson, ats_input.text.toString())
                             ""
                         }
@@ -91,7 +95,7 @@ class ATSEntryDialogFragment : DialogFragment() {
         super.onAttach(context)
         Log.d("ATTACH", "oaiegaerg")
 
-        if(context is ATSDialogEventsHander) {
+        if(context is ATSDialogEventsHandler) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement ATSDialogEventsHandler")
@@ -102,6 +106,24 @@ class ATSEntryDialogFragment : DialogFragment() {
         super.onDetach()
         Log.d("DETACH", "oaiegaerg")
     }
+
+    /**
+     * Also in attempt to work around #19917
+     * [See StackOverflow](https://stackoverflow.com/a/15229490)
+     */
+    override fun show(manager: FragmentManager, tag: String?) {
+        manager
+                .beginTransaction()
+                .add(this, tag)
+                .commitAllowingStateLoss()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        // BUG #19917 Support Package
+        // Causes java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+        // super.onSaveInstanceState(outState)
+    }
+
 
     companion object {
         @JvmStatic
@@ -114,7 +136,10 @@ class ATSEntryDialogFragment : DialogFragment() {
                 }
     }
 
-    interface ATSDialogEventsHander {
-        fun onSubmitATSButtonClick()
+    interface ATSDialogEventsHandler {
+        /**
+         * i.e., no client-side detected errors
+         */
+        fun onSuccessfulRequest()
     }
 }

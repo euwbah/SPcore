@@ -48,7 +48,6 @@
         app:layout_anchorGravity="bottom|start"
         app:layout_anchor="@id/lesson_details_toolbar"
         android:layout_margin="@dimen/fab_margin"
-        app:elevation="10dp"
         app:fabSize="normal"
         app:srcCompat="@drawable/ats" />
 

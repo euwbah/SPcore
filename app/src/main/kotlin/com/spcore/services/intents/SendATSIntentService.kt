@@ -12,6 +12,7 @@ import com.spcore.helpers.*
 import com.spcore.models.Lesson
 import com.spcore.spmobileapi.ATSResult
 import com.spcore.spmobileapi.Result
+import com.spcore.spmobileapi.SPMobileAPI
 
 /**
  * Key to activate ATS submission function
@@ -54,8 +55,26 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
         Thread.sleep(2000)
 
         val atsResult =
-                //SPMobileAPI.sendATS(adminNo, pass, ats)
-                Result.Ok<Nothing?, ATSResult.Errors>(null) as Result<Nothing?, ATSResult.Errors>
+                if(HARDCODE_MODE) {
+                    when (ats) {
+                        "111111" ->
+                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.INVALID_CODE)
+                        "222222" ->
+                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.NO_INTERNET)
+                        "333333" ->
+                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.INVALID_CREDENTIALS)
+                        "444444" ->
+                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI)
+                        "555555" ->
+                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.ALREADY_ENTERED)
+                        "666666" ->
+                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.WRONG_CLASS("YE/MUMS/CLASS"))
+                        else ->
+                            Result.Ok(null)
+                    }
+                } else
+                    SPMobileAPI.sendATS(adminNo, pass, ats)
+
 
         Log.d("APP STATE", AppState.getForegroundActivity())
 
@@ -103,8 +122,15 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
                             lesson,
                             atsResult.errorValue.toString(),
 
-                            atsResult.errorValue !is ATSResult.Errors.WRONG_CLASS,
+                            // whether to makeSticky or not
+                            when(atsResult.errorValue) {
+                                ATSResult.Errors.INVALID_CODE,
+                                is ATSResult.Errors.WRONG_CLASS -> true
 
+                                else -> false
+                            },
+
+                            // whether to show direct-reply
                             when(atsResult.errorValue) {
                                 ATSResult.Errors.INVALID_CODE,
                                 is ATSResult.Errors.WRONG_CLASS ->
@@ -140,6 +166,7 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
          *                extracted from the inline-reply Bundle
          */
         fun newIntent(context: Context, lesson: Lesson, atsCode: String? = null): Intent {
+            Log.d("NEW INTENT", "SendATSIntentService")
             return Intent(context, SendATSIntentService::class.java).apply {
 
                 putExtra(K_PARAM_LESSON, lesson)

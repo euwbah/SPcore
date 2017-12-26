@@ -197,4 +197,23 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         menuInflater.inflate(R.menu.home_menu, menu)
         return true
     }
+
+    /**
+     * Event handler when action bar items are clicked
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_home_ats -> {
+
+                true
+            }
+            R.id.action_home_refresh -> {
+                schedule_view.notifyDatasetChanged()
+                true
+            }
+            else ->
+                super.onOptionsItemSelected(item)
+        }
+
+    }
 }
