@@ -30,9 +30,13 @@ private const val ARG_ERR_MSG = "errmsg"
  *
  */
 class ATSEntryDialogFragment : DialogFragment() {
-    // TODO: Rename and change types of parameters
-    private var errmsg: String = ""
-    private var listener: OnATSEntryListener? = null
+    var errmsg: String
+        get() = ats_error_message?.text?.toString() ?: ""
+        set(value) {
+            ats_error_message?.text = value
+            value
+        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,29 +79,14 @@ class ATSEntryDialogFragment : DialogFragment() {
         return view
     }
 
-    fun onButtonPressed(uri: Uri) {
-        listener?.onATSSubmitted(uri)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.d("ATTACH", "oaiegaerg")
-        if (context is OnATSEntryListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnATSEntryListener")
-        }
     }
 
     override fun onDetach() {
         super.onDetach()
         Log.d("DETACH", "oaiegaerg")
-        listener = null
-    }
-
-    interface OnATSEntryListener {
-        // TODO: Update argument type and name
-        fun onATSSubmitted(uri: Uri)
     }
 
     companion object {

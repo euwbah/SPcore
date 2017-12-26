@@ -4,12 +4,14 @@ import android.app.IntentService
 import android.app.RemoteInput
 import android.content.Intent
 import android.content.Context
+import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
+import android.widget.Toast
 import com.spcore.helpers.*
 import com.spcore.spmobileapi.ATSResult
 import com.spcore.spmobileapi.Result
-import com.spcore.spmobileapi.SPMobileAPI
+import kotlinx.coroutines.experimental.*
 
 /**
  * Key to activate ATS submission function
@@ -22,10 +24,7 @@ const val K_ACTION_SUBMIT_ATS_INLINE = "com.spcore.action.SUBMIT_ATS_INLINE"
     const val K_PARAM_ATS_CODE = "com.spcore.extra.ATS_CODE"
 
 /**
- * An [IntentService] subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
+ * [IntentService] for submitting ATS. Make sure to implement
  */
 class SendATSIntentService() : IntentService("SendATSIntentService") {
 
@@ -48,49 +47,62 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
     private fun submitAts(ats: String) {
         val (adminNo, pass) = Auth.getCredentials()
 
-        val atsResult = SPMobileAPI.sendATS(adminNo, pass, ats)
+        val atsResult =
+                //SPMobileAPI.sendATS(adminNo, pass, ats)
+                Result.Ok<Nothing?, ATSResult.Errors>(null) as Result<Nothing?, ATSResult.Errors>
 
         Log.d("APP STATE", AppState.getForegroundActivity())
 
         when(atsResult) {
             is Result.Ok ->
-                    if(AppState.foregroundActivityIs("LessonDetailsActivity")) {
+                when {
+                    AppState foregroundIs "LessonDetailsActivity" -> {
                         val broadcast = Intent(BROADCAST_ATS_SUCCESS)
                         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
-                    } else {
-
+                        Handler(mainLooper).post({
+                                    Toast
+                                            .makeText(this@SendATSIntentService, "ATS Submitted Successfully", Toast.LENGTH_SHORT)
+                                            .show()
+                                })
                     }
+                    AppState foregroundIsnt "none" -> // If app is open, show toast message
+                        Handler(mainLooper).post({
+                            Toast
+                                    .makeText(this@SendATSIntentService, "ATS Submitted Successfully", Toast.LENGTH_SHORT)
+                                    .show()
+                        })
+                    else -> Notifications.notifyATSSuccess()
+                }
 
             is Result.Error ->
-                    if(AppState.foregroundActivityIs("LessonDetailsActivity")) {
+                when {
+                    AppState foregroundIs "LessonDetailsActivity" -> {
                         val broadcast = Intent(BROADCAST_ATS_FAILURE)
                                 .putExtra("error", atsResult.errorValue.toSerializable())
                         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
-                    } else {
-                        Notifications.notifyATSError(
-                                when(atsResult.errorValue) {
-                                    ATSResult.Errors.INVALID_CODE -> "Invalid code was entered, enter again."
-                                    ATSResult.Errors.ALREADY_ENTERED -> "ATS code was already submitted"
-                                    is ATSResult.Errors.WRONG_CLASS -> {
-                                        val `class` = (atsResult.errorValue as ATSResult.Errors.WRONG_CLASS).wrongClass
-                                        "ATS code was for class $`class`"
-                                    }
-                                    ATSResult.Errors.NO_INTERNET -> "No internet connection"
-                                    ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI -> "Not connected to SPStudent"
-                                    ATSResult.Errors.INVALID_CREDENTIALS -> "SPice account password was just changed, log out and log in again"
-                                },
-
-                                atsResult.errorValue !is ATSResult.Errors.WRONG_CLASS,
-
-                                when(atsResult.errorValue) {
-                                    ATSResult.Errors.INVALID_CODE,
-                                    is ATSResult.Errors.WRONG_CLASS ->
-                                            true
-                                    else ->
-                                            false
-                                }
-                        )
                     }
+                    AppState foregroundIsnt "none" -> {
+                        val broadcast =
+                                Intent(BROADCAST_CREATE_SNACKBAR)
+                                        .putExtra("type", "ats error")
+                                        .putExtra("errmsg", atsResult.errorValue.toString())
+
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
+                    }
+                    else -> Notifications.notifyATSError(
+                            atsResult.errorValue.toString(),
+
+                            atsResult.errorValue !is ATSResult.Errors.WRONG_CLASS,
+
+                            when(atsResult.errorValue) {
+                                ATSResult.Errors.INVALID_CODE,
+                                is ATSResult.Errors.WRONG_CLASS ->
+                                    true
+                                else ->
+                                    false
+                            }
+                    )
+                }
         }
     }
 

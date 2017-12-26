@@ -42,7 +42,7 @@ object Auth : SharedPrefWrapper {
     /**
      * ### REMEMBER TO CALL `Context.initJWTTokenSP()` first!
      */
-    fun setJwtToken(token: String) {
+    private fun setJwtToken(token: String) {
         if(authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
@@ -52,15 +52,25 @@ object Auth : SharedPrefWrapper {
                 ?.apply()
     }
 
-    fun saveCredentials(adminNo: String, pass: String) {
+    private fun saveCredentials(adminNo: String, pass: String) {
         if (authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
         authSP
                 ?.edit()
-                ?.putString("23gnoiasbrjaeorbin", Base64.encode(adminNo.toByteArray(), Base64.DEFAULT).toString())
-                ?.putString("argjoaierogjeoagij", Base64.encode(pass.toByteArray(), Base64.DEFAULT).toString())
+                ?.putString("23gnoiasbrjaeorbin",
+                        Base64.encode(adminNo.toByteArray(), Base64.DEFAULT)
+                                .map { it.toChar().toString() }
+                                .reduce { acc, c -> acc + c })
+                ?.putString("argjoaierogjeoagij",
+                        Base64.encode(pass.toByteArray(), Base64.DEFAULT)
+                                .map { it.toChar().toString() }
+                                .reduce { acc, c -> acc + c })
                 ?.apply()
+    }
+
+    fun isLoggedIn() : Boolean {
+        return getJwtToken() != null
     }
 
     /**
@@ -77,7 +87,33 @@ object Auth : SharedPrefWrapper {
             throw NotLoggedInException()
 
         // can be asserted because ^^^
-        return listOf(adminNo!!, pass!!)
+        return listOf(adminNo!!, pass!!).map {
+            Base64.decode(it.toByteArray(), Base64.DEFAULT)
+                    .map { it.toChar().toString() }
+                    .reduce { acc, s -> acc + s }
+        }
+    }
+
+    /**
+     * Initialize all necessary session data
+     */
+    fun login(jwtToken: String, adminNo: String, pass: String) {
+        setJwtToken(jwtToken)
+        saveCredentials(adminNo, pass)
+    }
+
+    /**
+     * Removes all the session data from the [authSP]
+     */
+    fun logout() {
+        if(isLoggedIn()) {
+            authSP
+                    ?.edit()
+                    ?.remove("token")
+                    ?.remove("23gnoiasbrjaeorbin")
+                    ?.remove("argjoaierogjeoagij")
+                    ?.apply()
+        }
     }
 
 }
@@ -152,8 +188,21 @@ object AppState : SharedPrefWrapper {
         return AppStateSP?.getString("active", "none")  ?: "none"
     }
 
-    fun foregroundActivityIs(activityID: String): Boolean {
+    infix fun foregroundIs(activityID: String): Boolean {
         return getForegroundActivity() == activityID
     }
 
+    infix fun foregroundIsnt(activityID: String): Boolean {
+        return getForegroundActivity() != activityID
+    }
+
+    /**
+     * If compared with [String], will use [foregroundIs]
+     */
+    override fun equals(other: Any?): Boolean {
+        return if (other is String)
+            foregroundIs(other)
+        else
+            super.equals(other)
+    }
 }

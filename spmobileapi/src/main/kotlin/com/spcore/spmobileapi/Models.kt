@@ -175,6 +175,23 @@ class ATSResult(override val error: Errors?) : CanErr<ATSResult.Errors> {
         object NOT_CONNECTED_TO_SCHOOL_WIFI : Errors()
         object INVALID_CREDENTIALS : Errors()
 
+        /**
+         * Converts the error monad into a human-readable error message
+         */
+        override fun toString() : String {
+            return when(this) {
+                ATSResult.Errors.INVALID_CODE -> "Invalid ATS code was entered, enter again."
+                ATSResult.Errors.ALREADY_ENTERED -> "ATS code was already submitted"
+                is ATSResult.Errors.WRONG_CLASS -> {
+                    val `class` = this.wrongClass
+                    "ATS code was for class $`class`"
+                }
+                ATSResult.Errors.NO_INTERNET -> "No internet connection"
+                ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI -> "Not connected to SPStudent WiFi"
+                ATSResult.Errors.INVALID_CREDENTIALS -> "SPice account password was just changed, log out and log in again"
+            }
+        }
+
         fun toSerializable() : _Serializable {
             return when(this) {
                 ATSResult.Errors.INVALID_CODE -> _Serializable("invalid code")

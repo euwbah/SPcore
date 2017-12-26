@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PorterDuff
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.view.View
@@ -19,10 +18,10 @@ import kotlinx.android.synthetic.main.activity_lesson_details.*
 import kotlinx.android.synthetic.main.content_lesson_details.*
 import kotlinx.coroutines.experimental.async
 
-class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity"),
-                                ATSEntryDialogFragment.OnATSEntryListener {
+class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity") {
     private lateinit var lesson: Lesson
-    private lateinit var atsDialogFragment: ATSEntryDialogFragment
+
+    private var atsDialogFragment: ATSEntryDialogFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -71,19 +70,15 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
 
         key_ats_fab.setOnClickListener { view ->
             atsDialogFragment = ATSEntryDialogFragment.newInstance("")
-            atsDialogFragment.show(supportFragmentManager, "key ats")
+            atsDialogFragment?.show(supportFragmentManager, "key ats")
         }
 
         ATSSubmissionResultReceiver().activateReceiver()
 
         if(intent.extras.getBoolean("open ats dialog", false)) {
-            atsDialogFragment = ATSEntryDialogFragment.newInstance("")
-            atsDialogFragment.show(supportFragmentManager, "key ats")
+            atsDialogFragment = ATSEntryDialogFragment.newInstance(intent.extras.getString("errmsg", ""))
+            atsDialogFragment?.show(supportFragmentManager, "key ats")
         }
-    }
-
-    override fun onATSSubmitted(uri: Uri) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -111,13 +106,20 @@ class LessonDetailsActivity :   AppStateTrackerActivity("LessonDetailsActivity")
         override fun onReceive(context: Context, intent: Intent) {
             when(intent.action) {
                 BROADCAST_ATS_SUCCESS -> {
-
+                    if(atsDialogFragment?.dialog?.isShowing == true)
+                        atsDialogFragment?.dismiss()
                 }
 
                 BROADCAST_ATS_FAILURE -> {
-                    val error =
+                    val errmsg =
                             (intent.getSerializableExtra("error") as ATSResult.Errors._Serializable)
-                                    .deserialize()
+                                    .deserialize().toString()
+
+                    if(atsDialogFragment?.dialog?.isShowing == true)
+                        atsDialogFragment?.errmsg = errmsg
+                    else {
+                        atsDialogFragment = ATSEntryDialogFragment.newInstance(errmsg)
+                    }
                 }
             }
         }

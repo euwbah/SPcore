@@ -28,8 +28,8 @@ internal const val NC_ATS_DN = "ATS Prompts"
  * Notification IDs
  */
 
-/** notif id for ATS_FAILURE */
 internal const val NID_ATS_FAILURE = 0
+internal const val NID_ATS_SUCCESS = 1
 
 /** Key to use when putting inline-reply response into Intent extras */
 internal const val K_IR_ATS = "com.spcore.extra.IR_ATS"
@@ -67,6 +67,17 @@ class CNotifications(context: Context) : ContextWrapper(context) {
             notifManager.createNotificationChannel(atsNotifChannel)
 
         }
+    }
+
+    fun notifyATSSuccess() {
+        val notificationBuilder =
+                NotificationCompat
+                        .Builder(this, NC_ATS)
+                        .setSmallIcon(R.drawable.ats) // FIXME: This is stupid
+                        .setLargeIcon(getDrawable(R.drawable.ats).toBitmap())
+                        .setContentTitle("ATS submitted")
+
+        notifManager.notify(NID_ATS_SUCCESS, notificationBuilder.build())
     }
 
     /**

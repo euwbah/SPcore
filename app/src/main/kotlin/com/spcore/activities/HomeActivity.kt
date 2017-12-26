@@ -10,7 +10,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
+import com.spcore.helpers.Auth
 import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
+import com.spcore.helpers._or
 import com.spcore.helpers.toCalendar
 import com.spcore.services.FrontendInterface
 
@@ -44,16 +46,17 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
             when(id) {
                 R.id.nav_day_view ->
-                        schedule_view.numberOfVisibleDays = 1
+                    schedule_view.numberOfVisibleDays = 1
                 R.id.nav_week_view ->
-                        schedule_view.numberOfVisibleDays = 7
-//                R.id.nav_logout ->
-//                        initJWTTokenSP().edit().remove("token").apply()
-//                        this@HomeActivity.startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                    schedule_view.numberOfVisibleDays = 7
+                R.id.nav_logout -> {
+                    Auth.logout()
+                    this@HomeActivity.startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                }
             }
 
             // TODO: Only return true if nav selection is to appear highlighted, if not, return false
-            return@navHandler true
+            return@navHandler R.id.nav_day_view _or R.id.nav_day_view _is id
         }
 
         toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.ENGLISH)

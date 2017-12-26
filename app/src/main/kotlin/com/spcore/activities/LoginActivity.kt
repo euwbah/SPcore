@@ -161,7 +161,7 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
             showProgress(false)
             when(status) {
                 is LoginStatus.SUCCESS -> {
-                    Auth.setJwtToken(status.response.token)
+                    Auth.login(status.response.token, adminNoStr, passwordStr)
 
                     this@LoginActivity.startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 }
