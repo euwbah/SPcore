@@ -13,8 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.spcore.R
 import com.spcore.models.Lesson
-import com.spcore.services.intents.SendATSIntentService
-import kotlinx.coroutines.experimental.*
+import com.spcore.services.SendATSIntentService
 import kotlinx.android.synthetic.main.fragment_atsentry_dialog.*
 
 /** String */

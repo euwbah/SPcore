@@ -1,4 +1,4 @@
-package com.spcore.services
+package com.spcore.apis
 
 import com.spcore.helpers.BACKEND_URL
 import retrofit2.Call

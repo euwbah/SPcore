@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
@@ -14,7 +13,7 @@ import com.spcore.helpers.Auth
 import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
 import com.spcore.helpers._or
 import com.spcore.helpers.toCalendar
-import com.spcore.services.FrontendInterface
+import com.spcore.apis.FrontendInterface
 
 import com.spcore.listeners.AppBarStateListener
 import com.spcore.models.Lesson

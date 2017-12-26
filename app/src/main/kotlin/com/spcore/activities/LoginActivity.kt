@@ -3,7 +3,6 @@ package com.spcore.activities
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 
 import android.os.AsyncTask
 
@@ -19,8 +18,8 @@ import android.widget.Toast
 
 import com.spcore.R
 import com.spcore.helpers.Auth
-import com.spcore.services.FrontendInterface
-import com.spcore.services.LoginResponse
+import com.spcore.apis.FrontendInterface
+import com.spcore.apis.LoginResponse
 import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
 import kotlinx.android.synthetic.main.activity_login.*

@@ -45,7 +45,7 @@
             android:theme="@style/AppTheme" />
 
         <service
-            android:name=".services.intents.SendATSIntentService"
+            android:name=".services.SendATSIntentService"
             android:exported="false"></service>
     </application>
 

@@ -1,4 +1,4 @@
-package com.spcore.services
+package com.spcore.apis
 
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.activities.LoginActivity.LoginStatus

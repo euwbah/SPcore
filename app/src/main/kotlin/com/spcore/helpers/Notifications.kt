@@ -11,7 +11,7 @@ import android.support.v4.app.RemoteInput
 import com.spcore.R
 import com.spcore.activities.LessonDetailsActivity
 import com.spcore.models.Lesson
-import com.spcore.services.intents.SendATSIntentService
+import com.spcore.services.SendATSIntentService
 
 
 /*

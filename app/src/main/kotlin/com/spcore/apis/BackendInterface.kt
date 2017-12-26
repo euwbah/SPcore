@@ -1,4 +1,4 @@
-package com.spcore.services
+package com.spcore.apis
 
 import retrofit2.Call
 import retrofit2.http.Field
