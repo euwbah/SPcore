@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.RemoteInput
 import com.spcore.R
 import com.spcore.activities.LessonDetailsActivity
+import com.spcore.models.Lesson
 import com.spcore.services.intents.SendATSIntentService
 
 
@@ -81,11 +82,12 @@ class CNotifications(context: Context) : ContextWrapper(context) {
     }
 
     /**
+     * @param lesson In event of an inline ATS re-entry, the [Lesson] needs to be passed to the [SendATSIntentService]
      * @param errmsg Error message to display
      * @param makeSticky Set true if notification should be sticky
      * @param inlineReply Set true to allow user to re-enter the ATS code inline
      */
-    fun notifyATSError(errmsg: String, makeSticky: Boolean, inlineReply: Boolean) {
+    fun notifyATSError(lesson: Lesson, errmsg: String, makeSticky: Boolean, inlineReply: Boolean) {
 
         val notificationBuilder =
                 NotificationCompat
@@ -120,7 +122,7 @@ class CNotifications(context: Context) : ContextWrapper(context) {
                     PendingIntent.getBroadcast(
                             applicationContext,
                             IR_RC_ATS,
-                            SendATSIntentService.newIntent(this),
+                            SendATSIntentService.newIntent(this, lesson),
                             PendingIntent.FLAG_UPDATE_CURRENT)
             val remoteInput =
                     RemoteInput.Builder(K_IR_ATS)
@@ -141,8 +143,6 @@ class CNotifications(context: Context) : ContextWrapper(context) {
     }
 
 }
-
-private var isInit = false
 
 /**
  * Remember to call [initializeNotifications] before accessing this!

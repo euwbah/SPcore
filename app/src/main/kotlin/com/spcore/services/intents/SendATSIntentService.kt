@@ -9,22 +9,23 @@ import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import android.widget.Toast
 import com.spcore.helpers.*
+import com.spcore.models.Lesson
 import com.spcore.spmobileapi.ATSResult
 import com.spcore.spmobileapi.Result
-import kotlinx.coroutines.experimental.*
 
 /**
  * Key to activate ATS submission function
  */
 const val K_ACTION_SUBMIT_ATS = "com.spcore.action.SUBMIT_ATS"
 const val K_ACTION_SUBMIT_ATS_INLINE = "com.spcore.action.SUBMIT_ATS_INLINE"
-    /**
-     * Param key containing the ATS code in the intent extras bundle
-     */
+
+    /** Param key of the ATS code [String] */
     const val K_PARAM_ATS_CODE = "com.spcore.extra.ATS_CODE"
+    /** Param key of the [Lesson] the ATS submission was for */
+    const val K_PARAM_LESSON = "com.spcore.extra.LESSON_ID"
 
 /**
- * [IntentService] for submitting ATS. Make sure to implement
+ * [IntentService] for submitting ATS
  */
 class SendATSIntentService() : IntentService("SendATSIntentService") {
 
@@ -32,20 +33,25 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
         when(intent.action) {
             K_ACTION_SUBMIT_ATS -> {
                 val ats = intent.extras.getString(K_PARAM_ATS_CODE)
-                submitAts(ats)
+                val lesson = intent.extras.getParcelable<Lesson>(K_PARAM_LESSON)
+                submitAts(ats, lesson)
             }
             K_ACTION_SUBMIT_ATS_INLINE -> {
                 val ats = RemoteInput.getResultsFromIntent(intent)?.getCharSequence(K_IR_ATS)
+                val lesson = intent.extras.getParcelable<Lesson>(K_PARAM_LESSON)
                 if(ats != null)
-                    submitAts(ats.toString())
+                    submitAts(ats.toString(), lesson)
                 else
                     Log.e("SPCORE", "UNEXPECTED IGNORED ERROR: ATS inline-reply results bundle was null")
             }
         }
     }
 
-    private fun submitAts(ats: String) {
+    private fun submitAts(ats: String, lesson: Lesson) {
         val (adminNo, pass) = Auth.getCredentials()
+
+        // Simulate server access
+        Thread.sleep(2000)
 
         val atsResult =
                 //SPMobileAPI.sendATS(adminNo, pass, ats)
@@ -54,16 +60,19 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
         Log.d("APP STATE", AppState.getForegroundActivity())
 
         when(atsResult) {
-            is Result.Ok ->
+            is Result.Ok -> {
+
+                ATS.markATSSubmitted(lesson)
+
                 when {
                     AppState foregroundIs "LessonDetailsActivity" -> {
                         val broadcast = Intent(BROADCAST_ATS_SUCCESS)
                         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
                         Handler(mainLooper).post({
-                                    Toast
-                                            .makeText(this@SendATSIntentService, "ATS Submitted Successfully", Toast.LENGTH_SHORT)
-                                            .show()
-                                })
+                            Toast
+                                    .makeText(this@SendATSIntentService, "ATS Submitted Successfully", Toast.LENGTH_SHORT)
+                                    .show()
+                        })
                     }
                     AppState foregroundIsnt "none" -> // If app is open, show toast message
                         Handler(mainLooper).post({
@@ -73,6 +82,7 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
                         })
                     else -> Notifications.notifyATSSuccess()
                 }
+            }
 
             is Result.Error ->
                 when {
@@ -90,6 +100,7 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
                         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast)
                     }
                     else -> Notifications.notifyATSError(
+                            lesson,
                             atsResult.errorValue.toString(),
 
                             atsResult.errorValue !is ATSResult.Errors.WRONG_CLASS,
@@ -115,10 +126,11 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
          */
         // TODO: Customize helper method
         @JvmStatic
-        fun startNew(context: Context, atsCode: String) {
+        fun startNew(context: Context, lesson: Lesson, atsCode: String) {
             val intent = Intent(context, SendATSIntentService::class.java).apply {
                 action = K_ACTION_SUBMIT_ATS
                 putExtra(K_PARAM_ATS_CODE, atsCode)
+                putExtra(K_PARAM_LESSON, lesson)
             }
             context.startService(intent)
         }
@@ -127,8 +139,11 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
          * @param atsCode If this is not provided, function assumes that ATS code needs to be
          *                extracted from the inline-reply Bundle
          */
-        fun newIntent(context: Context, atsCode: String? = null): Intent {
+        fun newIntent(context: Context, lesson: Lesson, atsCode: String? = null): Intent {
             return Intent(context, SendATSIntentService::class.java).apply {
+
+                putExtra(K_PARAM_LESSON, lesson)
+
                 action =
                         if(atsCode != null) {
                             putExtra(K_PARAM_ATS_CODE, atsCode)

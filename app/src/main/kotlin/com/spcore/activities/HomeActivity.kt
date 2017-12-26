@@ -143,7 +143,6 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
                     if (event is Lesson) {
                         val intent = Intent(this, LessonDetailsActivity::class.java)
                         intent.putExtra("event", event)
-                        intent
                     } else {
                         TODO("Unsupported event type")
                     }

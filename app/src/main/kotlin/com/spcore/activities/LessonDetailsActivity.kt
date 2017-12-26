@@ -18,7 +18,15 @@ import kotlinx.android.synthetic.main.activity_lesson_details.*
 import kotlinx.android.synthetic.main.content_lesson_details.*
 import kotlinx.coroutines.experimental.async
 
-class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity") {
+private const val ATS_SUBMITTED_COLOR = 0xFF_11_EE_33.toInt()
+private const val ATS_NOT_SUBMITTED_COLOR = 0xFF_EE_33_11.toInt()
+
+/**
+ * Keys for extras bundle:
+ *  - `event`: The parcelled [Lesson] object
+ */
+class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
+                              ATSEntryDialogFragment.ATSDialogEventsHander {
     private lateinit var lesson: Lesson
 
     private var atsDialogFragment: ATSEntryDialogFragment? = null
@@ -49,36 +57,47 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity") {
 
         lesson_details_location_text.text = lesson.location
 
+        key_ats_fab.visibility = View.GONE
+
         if (lesson.isATSKeyableNow()) {
             lesson_details_ats_status.let {
                 it.visibility = View.VISIBLE
 
                 if (ATS.checkATSSubmitted(lesson)) {
                     it.text = "Submitted"
-                    it.setTextColor(0xFF_11_EE_33.toInt())
+                    it.setTextColor(ATS_SUBMITTED_COLOR)
                 } else {
                     it.text = "Not Submitted"
-                    it.setTextColor(0xFF_EE_33_11.toInt())
+                    it.setTextColor(ATS_NOT_SUBMITTED_COLOR)
+                    key_ats_fab.visibility = View.VISIBLE
                 }
             }
-
-            key_ats_fab.visibility = View.VISIBLE
         } else {
             lesson_details_ats_status.visibility = View.GONE
-            key_ats_fab.visibility = View.GONE
         }
 
         key_ats_fab.setOnClickListener { view ->
-            atsDialogFragment = ATSEntryDialogFragment.newInstance("")
+            atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, "")
             atsDialogFragment?.show(supportFragmentManager, "key ats")
         }
 
         ATSSubmissionResultReceiver().activateReceiver()
 
         if(intent.extras.getBoolean("open ats dialog", false)) {
-            atsDialogFragment = ATSEntryDialogFragment.newInstance(intent.extras.getString("errmsg", ""))
+            atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, intent.extras.getString("errmsg", ""))
             atsDialogFragment?.show(supportFragmentManager, "key ats")
         }
+    }
+
+    /**
+     * This is invoked the instant the user clicks the "Submit ATS" button
+     * in the [ATSEntryDialogFragment]
+     */
+    override fun onSubmitATSButtonClick() {
+        atsDialogFragment?.dismiss()
+
+        // Temporarily deactivate the FAB while the submission requests are in progress
+        key_ats_fab.isEnabled = false
     }
 
     /**
@@ -108,6 +127,13 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity") {
                 BROADCAST_ATS_SUCCESS -> {
                     if(atsDialogFragment?.dialog?.isShowing == true)
                         atsDialogFragment?.dismiss()
+
+                    lesson_details_ats_status.apply {
+                        text = "Submitted"
+                        setTextColor(ATS_SUBMITTED_COLOR)
+                    }
+
+                    key_ats_fab.visibility = View.GONE
                 }
 
                 BROADCAST_ATS_FAILURE -> {
@@ -118,8 +144,11 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity") {
                     if(atsDialogFragment?.dialog?.isShowing == true)
                         atsDialogFragment?.errmsg = errmsg
                     else {
-                        atsDialogFragment = ATSEntryDialogFragment.newInstance(errmsg)
+                        atsDialogFragment = ATSEntryDialogFragment.newInstance(lesson, errmsg)
                     }
+
+                    // Re-activate the fab because the user needs to key it again
+                    key_ats_fab.isEnabled = true
                 }
             }
         }
