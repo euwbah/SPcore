@@ -102,22 +102,22 @@ object Auth : SharedPrefWrapper {
      * [com.spcore.apis.FrontendInterface.isUserInitializedOnServer], so there is no need to
      * call these in the view controllers
      */
-    fun setUserInitializedLocally() {
+    fun setUserInitializedLocally(username: String, displayedName: String? = null) {
         if(authSP == null)
             throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
 
         authSP
                 ?.edit()
                 ?.putBoolean("init", true)
+                ?.putString("username", username)
+                ?.putString("displayed name", displayedName)
                 ?.apply()
     }
 
     /**
      * Use this to retrieve whether [setUserInitializedLocally] has been called
      *
-     * NOTE: this method, along with [setUserInitializedLocally] are abstracted by
-     * [com.spcore.apis.FrontendInterface.isUserInitializedOnServer], so there is no need to
-     * call these in the view controllers
+     * NOTE: This method is abstracted by the FrontendInterface as this is cached data
      */
     fun getUserInitializedLocally(): Boolean {
         if(authSP == null)
@@ -125,6 +125,64 @@ object Auth : SharedPrefWrapper {
 
         return authSP?.getBoolean("init", false) ?: false
     }
+
+    /**
+     * Use this to retrieve the locally-stored username
+     * Will only work if [setUserInitializedLocally] or [setUsername] has been
+     * called prior, if not, it will return null.
+     *
+     * NOTE: This method is abstracted by the [com.spcore.apis.FrontendInterface] as this is cached data.
+     * Upon null return, the [com.spcore.apis.FrontendInterface] will then poll the server and update the
+     * locally cached values
+     */
+    fun getUsername() : String? {
+        if(authSP == null)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        return authSP?.getString("username", null)
+    }
+
+    /**
+     * Updates the cached username of the user
+     */
+    fun setUsername(un: String) {
+        if(authSP == null)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        authSP
+                ?.edit()
+                ?.putString("username", un)
+                ?.apply()
+    }
+
+    /**
+     * Gets the cached displayed name of the user (note that this may be null even if the
+     * user has been initialized already
+     *
+     * NOTE: This method is abstracted by the [com.spcore.apis.FrontendInterface] as this is cached data.
+     * Upon null return, the [com.spcore.apis.FrontendInterface] will then poll the server and update the
+     * locally cached values
+     */
+    fun getDisplayedName() : String? {
+        if(authSP == null)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        return authSP?.getString("displayed name", null)
+    }
+
+    /**
+     * Updates the cached displayed name of the user
+     */
+    fun setDisplayedName(dn: String?) {
+        if(authSP == null)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        authSP
+                ?.edit()
+                ?.putString("displayed name", dn)
+                ?.apply()
+    }
+
 
     /**
      * Initialize all necessary session data
@@ -135,15 +193,13 @@ object Auth : SharedPrefWrapper {
     }
 
     /**
-     * Removes all the session data from the [authSP]
+     * Removes all the session data and cached data from the [authSP]
      */
     fun logout() {
         if(isLoggedIn()) {
             authSP
                     ?.edit()
-                    ?.remove("token")
-                    ?.remove("23gnoiasbrjaeorbin")
-                    ?.remove("argjoaierogjeoagij")
+                    ?.clear()
                     ?.apply()
         }
     }

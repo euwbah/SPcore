@@ -1,6 +1,7 @@
 package com.spcore.apis
 
 import com.alamkanak.weekview.WeekViewEvent
+import com.spcore.activities.InitialLogin
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
 import com.spcore.models.Lesson
@@ -114,11 +115,25 @@ object FrontendInterface {
      * check if the user has been initialized on this device before, if it hasn't, it will
      * check the server.
      */
-    fun isUserInitializedOnServer(jwtToken: String) : Boolean {
+    fun isUserInitializedOnServer() : Boolean {
         if (HARDCODE_MODE) {
             // Simulate server access
             Thread.sleep(200)
             return Auth.getUserInitializedLocally()
+        } else {
+            TODO("i HaVe CrIpPlInG dEpReSsIoN")
+        }
+    }
+
+    fun setUserInitializedOnServer(username: String, displayedName: String?) : InitialLogin.SubmitInitStatus {
+        return if (HARDCODE_MODE) {
+            Thread.sleep(200)
+            if("natoshi_sakamoto" _or "ayylmao" _is username)
+                InitialLogin.SubmitInitStatus.USERNAME_TAKEN
+            else {
+                Auth.setUserInitializedLocally(username, displayedName)
+                InitialLogin.SubmitInitStatus.SUCCESS
+            }
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
         }

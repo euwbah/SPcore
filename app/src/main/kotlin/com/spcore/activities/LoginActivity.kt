@@ -155,7 +155,7 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
         override fun doInBackground(vararg params: Void) : Pair<LoginStatus, Boolean> {
             val status = FrontendInterface.performLogin(adminNoStr, passwordStr)
             if(status is LoginStatus.SUCCESS) {
-                return Pair(status, FrontendInterface.isUserInitializedOnServer(status.response.token))
+                return Pair(status, FrontendInterface.isUserInitializedOnServer())
             }
 
             return Pair(status, false)

@@ -24,7 +24,7 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
 
                     val jwt = Auth.getJwtToken()
                     if (jwt != null) {
-                        if(FrontendInterface.isUserInitializedOnServer(jwt))
+                        if(FrontendInterface.isUserInitializedOnServer())
                             HomeActivity::class.java
                         else
                             InitialLogin::class.java
