@@ -46,7 +46,9 @@
 
         <service
             android:name=".services.SendATSIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".activities.EventDetailsActivity"></activity>
     </application>
 
 </manifest>
