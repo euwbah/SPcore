@@ -129,7 +129,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         // Note: month here is 1-based
         schedule_view.setMonthChangeListener {
             year, month ->
-                FrontendInterface.getSchedule(year, month)
+                Auth.user.getSchedule(year, month)
         }
 
         schedule_view.setScrollListener {

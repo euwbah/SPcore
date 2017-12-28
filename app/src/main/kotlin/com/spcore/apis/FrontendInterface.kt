@@ -56,7 +56,7 @@ object FrontendInterface {
     }
 
     // NOTE: month is 1-based
-    fun getSchedule(year: Int, month: Int) : List<WeekViewEvent> {
+    fun getSchedule(adminNo: String, year: Int, month: Int) : List<WeekViewEvent> {
         val schedule = ArrayList<WeekViewEvent>()
 
         if(HARDCODE_MODE) {

@@ -6,6 +6,7 @@ import android.util.Base64
 import com.spcore.R
 import com.spcore.exceptions.NotLoggedInException
 import com.spcore.models.Lesson
+import com.spcore.models.User
 
 /**
  * Call this once during the splash screen
@@ -21,6 +22,17 @@ interface SharedPrefWrapper {
 
 object Auth : SharedPrefWrapper {
     private var authSP: SharedPreferences? = null
+
+    private var currUser: User? = null
+
+    /**
+     * **Only access this property once the user has been logged in and initialized on the
+     * server and locally, you can only call this once [com.spcore.activities.HomeActivity] is started**
+     *
+     * Property alias for [_getUser]
+     */
+    val user: User
+        get() = _getUser()
 
     override fun <T : Context> initializeSP(context: T) {
         if(authSP == null)
@@ -183,6 +195,25 @@ object Auth : SharedPrefWrapper {
                 ?.apply()
     }
 
+    /**
+     * Abstracted by the [user] property for easier access
+     *
+     * There will be NPEs if this is called before the user has been initialized
+     * both on the server and locally on the device, simply put, **you can only call this
+     * once [com.spcore.activities.HomeActivity] is started**
+     *
+     * @throws NullPointerException
+     */
+    private fun _getUser(): User {
+        // This implementation caches the user instance, but can be reset by
+        // setting currUser to null as in the logout() function
+        if (currUser != null)
+            return currUser!!
+
+        currUser = User(getCredentials()[0], getUsername()!!, getDisplayedName())
+        return currUser!!
+    }
+
 
     /**
      * Initialize all necessary session data
@@ -197,6 +228,7 @@ object Auth : SharedPrefWrapper {
      */
     fun logout() {
         if(isLoggedIn()) {
+            currUser = null
             authSP
                     ?.edit()
                     ?.clear()
