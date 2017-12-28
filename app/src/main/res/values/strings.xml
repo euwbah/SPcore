@@ -11,6 +11,18 @@
     <string name="error_incorrect_password">Wrong admin number/password</string>
     <string name="error_field_required">This field is required</string>
 
+    <!-- Initial Login screen strings -->
+    <string name="username_hint">Username (required)</string>
+    <string name="username_description">
+        You can allow friends to schedule meetups and share your timetable by giving them
+        your username
+    </string>
+
+    <string name="displayed_name_hint">Displayed Name (optional)</string>
+    <string name="displayed_name_description">
+        Providing your actual name makes it easier for people to know who you are
+    </string>
+
 
     <!-- Home screen action bar strings -->
     <string name="title_activity_home">HomeActivity</string>

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import com.spcore.helpers.*
 import com.spcore.R
+import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.SPLASH_SCREEN_MIN_DUR
 import kotlinx.coroutines.experimental.*
 
@@ -21,8 +22,13 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
                 async {
                     initSharedPrefs()
 
-                    if (Auth.getJwtToken() != null)
-                        HomeActivity::class.java
+                    val jwt = Auth.getJwtToken()
+                    if (jwt != null) {
+                        if(FrontendInterface.isUserInitializedOnServer(jwt))
+                            HomeActivity::class.java
+                        else
+                            InitialLogin::class.java
+                    }
                     else
                         LoginActivity::class.java
                 }

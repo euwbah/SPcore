@@ -19,6 +19,8 @@ import kotlin.collections.ArrayList
 object FrontendInterface {
     fun performLogin(adminNo: String, password: String) : LoginStatus {
         if (HARDCODE_MODE) {
+            // Simulate server access
+            Thread.sleep(500)
             val fakeResponse = LoginResponse("Fake JWT Token")
             return when (adminNo) {
                 "1234567" -> LoginStatus.SUCCESS(fakeResponse)
@@ -112,8 +114,10 @@ object FrontendInterface {
      * check if the user has been initialized on this device before, if it hasn't, it will
      * check the server.
      */
-    fun isUserInitializedOnServer() : Boolean {
+    fun isUserInitializedOnServer(jwtToken: String) : Boolean {
         if (HARDCODE_MODE) {
+            // Simulate server access
+            Thread.sleep(200)
             return Auth.getUserInitializedLocally()
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")

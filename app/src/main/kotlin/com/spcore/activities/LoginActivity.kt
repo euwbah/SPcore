@@ -150,27 +150,39 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
      *
      */
     inner class UserLoginTask internal constructor(private val adminNoStr: String, private val passwordStr: String) :
-            AsyncTask<Void, Void, LoginStatus>() {
+            AsyncTask<Void, Void, Pair<LoginStatus, Boolean>>() {
 
-        override fun doInBackground(vararg params: Void) =
-                FrontendInterface.performLogin(adminNoStr, passwordStr)
+        override fun doInBackground(vararg params: Void) : Pair<LoginStatus, Boolean> {
+            val status = FrontendInterface.performLogin(adminNoStr, passwordStr)
+            if(status is LoginStatus.SUCCESS) {
+                return Pair(status, FrontendInterface.isUserInitializedOnServer(status.response.token))
+            }
 
-        override fun onPostExecute(status: LoginStatus) {
+            return Pair(status, false)
+        }
+
+        override fun onPostExecute(resp: Pair<LoginStatus, Boolean>) {
             mAuthTask = null
-            showProgress(false)
+
+            // Ignore userInitialized if status isnt LoginStatus.SUCCESS
+            val (status, userInitialized) = resp
+
             when(status) {
                 is LoginStatus.SUCCESS -> {
                     Auth.login(status.response.token, adminNoStr, passwordStr)
 
-                    this@LoginActivity.startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                    if(!userInitialized)
+                        this@LoginActivity.startActivity(Intent(this@LoginActivity, InitialLogin::class.java))
+                    else
+                        this@LoginActivity.startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 }
 
-                is LoginStatus.INVALID_CREDENTIALS -> {
+                LoginStatus.INVALID_CREDENTIALS -> {
                     password.error = getString(R.string.error_incorrect_password)
                     password.requestFocus()
                 }
 
-                is LoginStatus.SP_SERVER_DOWN ->
+                LoginStatus.SP_SERVER_DOWN ->
                     Toast.makeText(this@LoginActivity.applicationContext,
                             "SP's server is down, try again later",
                             Toast.LENGTH_SHORT)
@@ -183,13 +195,15 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
                             .show()
                 }
 
-                is LoginStatus.VOID -> {
+                LoginStatus.VOID -> {
                     Toast.makeText(this@LoginActivity.applicationContext,
                             "Unknown error",
                             Toast.LENGTH_SHORT)
                             .show()
                 }
             }
+
+            showProgress(false)
         }
 
         override fun onCancelled() {
