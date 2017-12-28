@@ -117,13 +117,13 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
     private fun showProgress(show: Boolean) {
         val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime)
 
-        login_form_scroll.visibility = if (show) View.GONE else View.VISIBLE
-        login_form_scroll.animate()
+        login_form_layout.visibility = if (show) View.GONE else View.VISIBLE
+        login_form_layout.animate()
                 .setDuration(shortAnimTime.toLong())
                 .alpha((if (show) 0 else 1).toFloat())
                 .setListener(
                     onAnimationEnd {
-                        login_form_scroll.visibility = if (show) View.GONE else View.VISIBLE
+                        login_form_layout.visibility = if (show) View.GONE else View.VISIBLE
                     }
                 )
 
