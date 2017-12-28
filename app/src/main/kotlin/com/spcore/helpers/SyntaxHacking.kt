@@ -1,6 +1,5 @@
 package com.spcore.helpers
 
-import android.os.AsyncTask
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -25,14 +24,14 @@ infix fun <T> T._and(b: T) : CompoundEqualityBuilder<T> = CompoundEqualityBuilde
  * Use [_and] to chain, and end the chain with [_is]
  * E.g.: `x _or y _or z _or asdfhjkl _is c`
  */
-class OptionalEqualityBuilder<V>(val value: V, val stillRemainsTrue: Boolean) {
+class OptionalEqualityBuilder<V>(val value: V, val wasTrueAlready: Boolean) {
     fun _or(b: V): OptionalEqualityBuilder<V> =
-            OptionalEqualityBuilder(value, stillRemainsTrue || value == b)
+            OptionalEqualityBuilder(value, wasTrueAlready || value == b)
 
-    infix fun _is(other: V): Boolean = stillRemainsTrue || value == other
+    infix fun _is(other: V): Boolean = wasTrueAlready || value == other
 }
 
-infix fun <T> T._or(b: T) : OptionalEqualityBuilder<T> = OptionalEqualityBuilder(this, this == b)
+infix fun <T> T._or(b: T) : OptionalEqualityBuilder<T> = OptionalEqualityBuilder(this, false)
 
 // Prepare uranuses for the ultimate hack...
 
