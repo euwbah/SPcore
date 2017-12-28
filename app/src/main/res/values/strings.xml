@@ -14,8 +14,8 @@
     <!-- Initial Login screen strings -->
     <string name="username_hint">Username (required)</string>
     <string name="username_description">
-        You can allow friends to schedule meetups and share your timetable by giving them
-        your username
+        By sharing your username with friends, you can let them see your timetable
+        and schedule meetups with you
     </string>
 
     <string name="displayed_name_hint">Displayed Name (optional)</string>
