@@ -104,4 +104,19 @@ object FrontendInterface {
 
         return schedule
     }
+
+    /**
+     * Gets whether the user has been initialized.
+     *
+     * It will first check using [com.spcore.helpers.Auth.getUserInitializedLocally] to
+     * check if the user has been initialized on this device before, if it hasn't, it will
+     * check the server.
+     */
+    fun isUserInitializedOnServer() : Boolean {
+        if (HARDCODE_MODE) {
+            return Auth.getUserInitializedLocally()
+        } else {
+            TODO("i HaVe CrIpPlInG dEpReSsIoN")
+        }
+    }
 }

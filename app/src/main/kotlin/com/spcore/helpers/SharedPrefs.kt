@@ -95,6 +95,38 @@ object Auth : SharedPrefWrapper {
     }
 
     /**
+     * Use this to mark the user as initialized locally so that the app only
+     * needs to check with the server once.
+     *
+     * NOTE: this method, along with [getUserInitializedLocally] are abstracted by
+     * [com.spcore.apis.FrontendInterface.isUserInitializedOnServer], so there is no need to
+     * call these in the view controllers
+     */
+    fun setUserInitializedLocally() {
+        if(authSP == null)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        authSP
+                ?.edit()
+                ?.putBoolean("init", true)
+                ?.apply()
+    }
+
+    /**
+     * Use this to retrieve whether [setUserInitializedLocally] has been called
+     *
+     * NOTE: this method, along with [setUserInitializedLocally] are abstracted by
+     * [com.spcore.apis.FrontendInterface.isUserInitializedOnServer], so there is no need to
+     * call these in the view controllers
+     */
+    fun getUserInitializedLocally(): Boolean {
+        if(authSP == null)
+            throw UnsupportedOperationException("JWT Token shared preferences not initialized yet!")
+
+        return authSP?.getBoolean("init", false) ?: false
+    }
+
+    /**
      * Initialize all necessary session data
      */
     fun login(jwtToken: String, adminNo: String, pass: String) {
