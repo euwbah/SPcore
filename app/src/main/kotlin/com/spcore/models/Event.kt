@@ -3,10 +3,19 @@ package com.spcore.models
 import android.os.Parcel
 import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
+import com.spcore.helpers.isFrom
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Event : WeekViewEvent, Parcelable {
+
+private const val UNRESPONDED_EVENT_COLOUR = 0xff_aa_88_33.toInt()
+private const val GOING_EVENT_COLOUR       = 0xff_33_aa_55.toInt()
+private const val NOT_GOING_EVENT_COLOUR   = 0xff_22_22_22.toInt()
+
+// Note that there isn't any "Deleted invitiation" colour, because the event would simply not exist
+// on the schedule
+
+class Event : WeekViewEvent, Parcelable, Nowable {
 
     val eventDesc: String
     val creator: User
@@ -55,6 +64,13 @@ class Event : WeekViewEvent, Parcelable {
         this.notGoing = notGoing
         this.haventReplied = haventReplied
         this.deletedInvite = deletedInvite
+    }
+
+    /**
+     * Determines whether the event is currently on-going
+     */
+    override fun isNow() : Boolean {
+        return Calendar.getInstance() isFrom startTime upTo endTime
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

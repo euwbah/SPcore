@@ -10,16 +10,25 @@ import com.spcore.helpers.isFrom
 import com.spcore.helpers.minus
 import java.util.*
 
+/** Shared with [Event] also */
+const val         UPCOMING_EVENT_COLOUR                 = 0xff_33_55_ff.toInt()
+
+private const val DEFAULT_LESSON_COLOUR                 = 0xff_44_77_dd.toInt()
+private const val ONGOING_LESSON_UNSUBMITTED_ATS_COLOUR = 0xff_dd_55_22.toInt()
+private const val ONGOING_LESSON_SUBMITTED_ATS_COLOUR   = 0xff_aa_44_aa.toInt()
+
+
 /**
  * Parcelling implementation:
  *
  * 1. WeekViewEvent (Parcelable Object)
  * 2. moduleCode (String)
  */
-class Lesson : WeekViewEvent, Parcelable {
+class Lesson : WeekViewEvent, Parcelable, Nowable {
 
     val moduleCode: String
     val atsKeyed = false
+
 
     /**
      * @param moduleName    e.g. MAPP
@@ -57,7 +66,7 @@ class Lesson : WeekViewEvent, Parcelable {
     /**
      * Determines whether the lesson is currently on-going
      */
-    fun isNow() : Boolean {
+    override fun isNow() : Boolean {
         return Calendar.getInstance() isFrom startTime upTo endTime
     }
 
