@@ -45,7 +45,7 @@ internal const val IR_RC_ATS = 0
  *
  * [How to remove sticky notifications](https://stackoverflow.com/questions/19268450/how-to-remove-notification-from-notification-bar-programmatically-in-android)
  */
-class CNotifications(context: Context) : ContextWrapper(context) {
+class CNotifications(val context: Context) : ContextWrapper(context) {
     private val notifManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     /**
      * Note: This will be null if not Android Oreo
@@ -130,7 +130,7 @@ class CNotifications(context: Context) : ContextWrapper(context) {
                     PendingIntent.getBroadcast(
                             applicationContext,
                             IR_RC_ATS,
-                            DirectReplyATSBroadcastReceiver.newIntent(applicationContext, lesson),
+                            DirectReplyATSBroadcastReceiver.newIntent(context, lesson),
                             PendingIntent.FLAG_UPDATE_CURRENT)
             val remoteInput =
                     RemoteInput.Builder(K_IR_ATS)

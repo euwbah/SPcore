@@ -22,6 +22,8 @@
         android:gravity="center"
         android:inputType="number"
         android:textSize="24sp"
+        android:imeActionId="1337"
+        android:imeOptions="actionDone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

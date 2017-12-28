@@ -8,21 +8,23 @@ import android.util.Log
 import com.spcore.helpers.K_IR_ATS
 import com.spcore.models.Lesson
 import com.spcore.services.K_PARAM_LESSON
+import com.spcore.services.SendATSIntentService
 
 const val ATS_ACTION_INLINE = "com.spcore.inline.ATS_ACTION"
 
 class DirectReplyATSBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        Log.d("Direct Reply", "onReceive")
         val ats = RemoteInput.getResultsFromIntent(intent)?.getCharSequence(K_IR_ATS)
         val lesson = intent.extras.getParcelable<Lesson>(K_PARAM_LESSON)
         if(ats != null)
-            submitAts(ats.toString(), lesson)
+            submitAts(context, ats.toString(), lesson)
         else
             Log.e("SPCORE", "UNEXPECTED IGNORED ERROR: ATS inline-reply results bundle was null")
     }
 
-    private fun submitAts(ats: String, lesson: Lesson) {
-        // TODO: Spawn a SendATSIntentService
+    private fun submitAts(context: Context, ats: String, lesson: Lesson) {
+        SendATSIntentService.startNew(context, lesson, ats)
     }
 
     companion object {

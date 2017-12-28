@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import com.spcore.R
 import com.spcore.models.Lesson
 import com.spcore.services.SendATSIntentService
@@ -69,9 +70,8 @@ class ATSEntryDialogFragment : DialogFragment() {
         // giving the synthetic properties time to load
         Handler(Looper.getMainLooper()).post {
             ats_input.requestFocus()
-            submit_ats_button.setOnClickListener {
 
-
+            fun submitAts() {
                 ats_error_message.text = ats_input.text.length.let {
                     when {
                         it == 0 -> "Input is empty"
@@ -83,6 +83,20 @@ class ATSEntryDialogFragment : DialogFragment() {
                         }
                     }
                 }
+            }
+
+            ats_input.setOnEditorActionListener listener@ {
+                textView, i, keyEvent ->
+
+                if(i == EditorInfo.IME_ACTION_DONE) {
+                    submitAts()
+                    return@listener true
+                }
+
+                false
+            }
+            submit_ats_button.setOnClickListener {
+                submitAts()
             }
         }
 
