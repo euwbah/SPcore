@@ -6,6 +6,7 @@ import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.Lesson
+import com.spcore.models.User
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -116,7 +117,11 @@ object FrontendInterface {
                         Calendar.getInstance().apply {
                             set(2018, 0, 15, 15, 0, 0)
                         },
-
+                        Auth.user,
+                        going = arrayListOf(NatoshiSakamoto),
+                        notGoing = arrayListOf(DerpMcDerpson),
+                        haventReplied = arrayListOf(AdamNeely),
+                        deletedInvite = arrayListOf(SimonFransman)
                 ))
             }
 

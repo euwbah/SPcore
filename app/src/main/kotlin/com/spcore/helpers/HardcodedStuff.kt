@@ -24,6 +24,7 @@ fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
                 "David Jones' Server Room",
                 start,
                 end,
+                NatoshiSakamoto,
                 deletedInvite = arrayListOf(DerpMcDerpson)
         ))
     }
@@ -50,9 +51,14 @@ fun derpSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
                 "Some house's basement",
                 start,
                 end,
+                DerpMcDerpson,
                 deletedInvite = arrayListOf(NatoshiSakamoto)
         ))
     }
 
     return schedule
 }
+
+val SimonFransman = User("3333333", "yalikejazz", "Simon Fransman", arrayListOf())
+
+val AdamNeely = User("4444444", "thelick", "BASS", arrayListOf())
