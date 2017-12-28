@@ -32,7 +32,7 @@
 
     <!-- Side nav strings -->
     <string name="nav_day_str">Day</string>
-    <string name="nav_week_str">Week</string>
+    <string name="nav_5_day_str">5-Days</string>
     <string name="nav_logout_str">Logout</string>
     <string name="nav_settings_str">Settings</string>
 

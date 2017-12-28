@@ -5,16 +5,23 @@ import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.apis.FrontendInterface
 
-class User(val adminNo: String, val username: String, val displayName: String?): Parcelable {
+class User(
+        val adminNo: String,
+        val username: String,
+        val displayName: String?,
+        val friends: ArrayList<User>): Parcelable {
+
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
-            parcel.readString())
+            parcel.readString(),
+            parcel.createTypedArrayList(User.CREATOR))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(adminNo)
         parcel.writeString(username)
         parcel.writeString(displayName)
+        parcel.writeTypedList(friends)
     }
 
     override fun describeContents() = 0

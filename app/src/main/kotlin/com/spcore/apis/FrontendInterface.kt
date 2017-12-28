@@ -4,6 +4,7 @@ import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.activities.InitialLogin
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
+import com.spcore.models.Event
 import com.spcore.models.Lesson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -60,6 +61,7 @@ object FrontendInterface {
         val schedule = ArrayList<WeekViewEvent>()
 
         if(HARDCODE_MODE) {
+
             val cal = Calendar.getInstance()
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, month - 1) // java's calendar's month is 0-based
@@ -92,14 +94,31 @@ object FrontendInterface {
 
             val now = Calendar.getInstance()
             // only add now for the current month
-            if (now.get(Calendar.MONTH) == month - 1)
+            if (now.get(Calendar.MONTH) == month - 1) {
                 schedule.add(Lesson(
                         "NOW",
                         "1715N0W",
                         "Nowland",
-                        now - Duration(hours=1),
-                        now + Duration(hours=1)
+                        now - Duration(hours = 1),
+                        now + Duration(hours = 1)
                 ))
+            }
+
+            if (now.get(Calendar.MONTH) == Calendar.JANUARY) {
+
+                schedule.add(Event(
+                        "Pre-SIP Lunch",
+                        "Hanging out with mah lads before the big SIPPP",
+                        "J Cube",
+                        Calendar.getInstance().apply {
+                            set(2018, 0, 15, 13, 0, 0)
+                        },
+                        Calendar.getInstance().apply {
+                            set(2018, 0, 15, 15, 0, 0)
+                        },
+
+                ))
+            }
 
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")

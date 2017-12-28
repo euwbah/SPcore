@@ -68,8 +68,6 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
         val openDialog = intent.extras.getBoolean("open ats dialog", false)
         val dismissNotifID = intent.extras.getInt("dismiss notification", -1337)
 
-        Log.d("LessonDetailsAct.. LDA", "Lesson ID: ${lesson.id}")
-
         lesson_details_toolbar_title.text = "[${lesson.moduleCode}] ${lesson.name}"
 
         val _24dp = 24.dpToPx()

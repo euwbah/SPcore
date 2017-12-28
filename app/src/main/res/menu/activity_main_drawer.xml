@@ -11,9 +11,9 @@
             android:icon="@drawable/ic_view_day"
             android:title="@string/nav_day_str" />
         <item
-            android:id="@+id/nav_week_view"
+            android:id="@+id/nav_5_day_view"
             android:icon="@drawable/ic_view_week"
-            android:title="@string/nav_week_str"/>
+            android:title="@string/nav_5_day_str"/>
     </group>
 
     <group

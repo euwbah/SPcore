@@ -13,7 +13,6 @@ import com.spcore.helpers.Auth
 import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
 import com.spcore.helpers._or
 import com.spcore.helpers.toCalendar
-import com.spcore.apis.FrontendInterface
 
 import com.spcore.listeners.AppBarStateListener
 import com.spcore.models.Lesson
@@ -46,8 +45,11 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
             when(id) {
                 R.id.nav_day_view ->
                     schedule_view.numberOfVisibleDays = 1
-                R.id.nav_week_view ->
-                    schedule_view.numberOfVisibleDays = 7
+                R.id.nav_5_day_view -> {
+                    schedule_view.numberOfVisibleDays = 5
+                    // TODO: Automatically shift the 5 weekdays in view if the current selected date on the schedule view
+                    // is a weekday. Otherwise, put the current selected date as the 3rd visible date (as the middle)
+                }
                 R.id.nav_logout -> {
                     Auth.logout()
                     this@HomeActivity.startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
