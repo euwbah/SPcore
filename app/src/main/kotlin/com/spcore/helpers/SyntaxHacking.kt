@@ -2,6 +2,9 @@ package com.spcore.helpers
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.view.View
+import com.spcore.R
+import kotlinx.android.synthetic.main.activity_login.view.*
 
 /**
  * A shorter way to type `x == y && y == z`
@@ -34,6 +37,31 @@ class OptionalEqualityBuilder<V>(val value: MutableList<V>) {
 }
 
 infix fun <T> T._or(b: T) : OptionalEqualityBuilder<T> = OptionalEqualityBuilder(mutableListOf(this, b))
+
+
+/**
+ * Allows for using the array index access operator to
+ * perform a findViewById on children of a [View] using [resourceID] values
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * val x: TextView = myParentView[R.id.some_text, TextView::class.java]
+ * // OR
+ * val y: EditText = myParentView.get<EditText>(R.id.some_edit_text)
+ * ```
+ *
+ * @param resourceID The resource ID of the View to get (as per `R.id.<view id>`
+ * @param clazz      Provide a class in order for type inference to work if using the
+ *                   array element accessor syntax
+ *
+ * @return Returns the child of this [View] with the given [resourceID], or **null** if no
+ *         child matches the [resourceID]
+ */
+operator fun <T : View> View.get(resourceID: Int, clazz: Class<T>? = null) : T? {
+    return this.findViewById(resourceID) as T
+}
+
 
 
 
