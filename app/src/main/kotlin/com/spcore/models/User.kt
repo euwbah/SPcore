@@ -1,8 +1,11 @@
 package com.spcore.models
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
+import com.spcore.R
 import com.spcore.apis.FrontendInterface
 
 class User(
@@ -17,6 +20,15 @@ class User(
             parcel.readString(),
             parcel.createTypedArrayList(User.CREATOR))
 
+    fun getSchedule(year: Int, month: Int) : List<WeekViewEvent> {
+        return FrontendInterface.getSchedule(adminNo, year, month)
+    }
+
+    fun getProfilePic(context: Context): Drawable {
+        // TODO: this is HARDCODE_MODE
+        return context.getDrawable(R.drawable.ic_profile_pic)
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(adminNo)
         parcel.writeString(username)
@@ -25,10 +37,6 @@ class User(
     }
 
     override fun describeContents() = 0
-
-    fun getSchedule(year: Int, month: Int) : List<WeekViewEvent> {
-        return FrontendInterface.getSchedule(adminNo, year, month)
-    }
 
     companion object CREATOR : Parcelable.Creator<User> {
         override fun createFromParcel(parcel: Parcel): User {
