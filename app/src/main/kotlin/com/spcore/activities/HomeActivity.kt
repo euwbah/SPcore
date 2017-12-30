@@ -15,6 +15,7 @@ import com.spcore.helpers._or
 import com.spcore.helpers.toCalendar
 
 import com.spcore.listeners.AppBarStateListener
+import com.spcore.models.Event
 import com.spcore.models.Lesson
 
 import kotlinx.android.synthetic.main.activity_home.*
@@ -140,14 +141,16 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         }
 
         schedule_view.setOnEventClickListener { event, eventRect ->
-            startActivity(
-                    if (event is Lesson) {
-                        val intent = Intent(this, LessonDetailsActivity::class.java)
-                        intent.putExtra("event", event)
-                    } else {
-                        TODO("Unsupported event type")
+            val intent =
+                    when(event) {
+                        is Lesson -> Intent(this, LessonDetailsActivity::class.java)
+                        is Event -> Intent(this, EventDetailsActivity::class.java)
+                        else -> TODO("Unsupported event type")
                     }
-            )
+
+            intent.putExtra("event", event)
+
+            startActivity(intent)
         }
 
         schedule_view.hourHeight = Resources.getSystem().getDisplayMetrics().heightPixels / 15

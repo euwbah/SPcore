@@ -12,7 +12,7 @@ class User(
         val adminNo: String,
         val username: String,
         val displayName: String?,
-        val friends: ArrayList<User>): Parcelable {
+        val friends: ArrayList<User> = arrayListOf()): Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),

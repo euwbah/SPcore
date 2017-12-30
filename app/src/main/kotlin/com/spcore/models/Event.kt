@@ -17,7 +17,7 @@ private const val NOT_GOING_EVENT_COLOUR   = 0xff_22_22_22.toInt()
 
 class Event : WeekViewEvent, Parcelable, Nowable {
 
-    val eventDesc: String
+    val eventDetails: String
     val creator: User
     val going: ArrayList<User>
     val notGoing: ArrayList<User>
@@ -25,7 +25,7 @@ class Event : WeekViewEvent, Parcelable, Nowable {
     val deletedInvite: ArrayList<User>
 
     constructor(parcel: Parcel) : super(parcel) {
-        this.eventDesc = parcel.readString()
+        this.eventDetails = parcel.readString()
         creator = parcel.readParcelable(User::class.java.classLoader)
         going = parcel.createTypedArrayList(User.CREATOR)
         notGoing = parcel.createTypedArrayList(User.CREATOR)
@@ -58,12 +58,19 @@ class Event : WeekViewEvent, Parcelable, Nowable {
                 deletedInvite: ArrayList<User> = arrayListOf(),
                 id: Int = Objects.hash(eventName, location, start)
     ) : super(id.toLong(), eventName, location, start, end) {
-        this.eventDesc = eventDesc
+        this.eventDetails = eventDesc
         this.creator = creator
         this.going = going
         this.notGoing = notGoing
         this.haventReplied = haventReplied
         this.deletedInvite = deletedInvite
+    }
+
+    /**
+     * Simple helper infix function that looks good
+     */
+    infix fun isCreatedBy(user: User): Boolean {
+        return user == creator
     }
 
     /**
@@ -75,7 +82,7 @@ class Event : WeekViewEvent, Parcelable, Nowable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         super.writeToParcel(parcel, flags)
-        parcel.writeString(eventDesc)
+        parcel.writeString(eventDetails)
         parcel.writeParcelable(creator, flags)
         parcel.writeTypedList(going)
         parcel.writeTypedList(notGoing)
