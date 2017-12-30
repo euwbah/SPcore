@@ -107,7 +107,7 @@
                     android:focusedByDefault="false"
                     android:hint="@string/displayed_name_hint"
                     android:imeOptions="actionGo"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords|textPersonName"
                     tools:focusedByDefault="false" />
             </android.support.design.widget.TextInputLayout>
 
