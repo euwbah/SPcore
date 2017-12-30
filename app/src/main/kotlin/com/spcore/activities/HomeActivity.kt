@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
@@ -62,9 +63,21 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
             return@navHandler R.id.nav_day_view _or R.id.nav_day_view _is id
         }
 
-        nav_header_image_view.setImageDrawable(Auth.user.getProfilePic(this))
-        nav_header_username_text.text = Auth.user.username
-        nav_header_name_text.text = Auth.user.displayName
+        home_drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            var initHeader = false
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerOpened(drawerView: View) {
+                if(!initHeader) {
+                    nav_header_image_view.setImageDrawable(Auth.user.getProfilePic(this@HomeActivity))
+                    nav_header_username_text.text = "@${Auth.user.username}"
+                    nav_header_name_text.text = Auth.user.displayName
+                    initHeader = true
+                }
+            }
+        })
+
 
         toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.ENGLISH)
         toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
