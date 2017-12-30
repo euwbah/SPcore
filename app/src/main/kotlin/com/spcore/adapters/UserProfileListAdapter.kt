@@ -6,20 +6,17 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.spcore.R
+import com.spcore.helpers.dpToPx
 import com.spcore.helpers.get
 import com.spcore.models.User
 
-abstract class UserProfileListAdapter(context: Context, val users: List<User>) :
-        ArrayAdapter<User>(context, R.layout.template_user_list_item_layout, users),
-        View.OnClickListener {
-
-
-
-    abstract override fun onClick(view: View)
+class UserProfileListAdapter(context: Context, val users: List<User>) :
+        ArrayAdapter<User>(context, R.layout.template_user_list_item_layout, users) {
 
     /**
      * Used to keep track of the most recently added item's position in the list
@@ -35,7 +32,6 @@ abstract class UserProfileListAdapter(context: Context, val users: List<User>) :
      * The [convertView] parameter represents a particular `View?` within C,
      * that would be the previous return value from [getView] itself.
      *
-     * This allows simply returning
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val user: User = getItem(position) ?: return null
@@ -56,7 +52,17 @@ abstract class UserProfileListAdapter(context: Context, val users: List<User>) :
                 text = user.displayName
             }
         }
-        view[R.id.username_text, TextView::class.java]?.text = user.username
+        view[R.id.username_text, TextView::class.java]?.apply {
+            text = user.username
+            textSize =
+                    if(user.displayName == null)
+                        18f
+                    else
+                        14f
+        }
+
+        view.startAnimation(AnimationUtils.loadAnimation(context,
+                if(position > lastPosition) R.anim.slide_up_in else R.anim.slide_down_in))
 
         return view
     }
