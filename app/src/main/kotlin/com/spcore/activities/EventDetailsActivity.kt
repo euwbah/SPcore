@@ -32,7 +32,7 @@ class EventDetailsActivity : AppCompatActivity() {
                 else
                     View.GONE
 
-
+        
 
     }
 }

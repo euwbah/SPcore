@@ -18,7 +18,7 @@
         app:civ_border_width="4dp"
         app:civ_shadow="true"
         app:civ_shadow_color="#ff333333"
-        app:civ_shadow_radius="10f"
+        app:civ_shadow_radius="10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

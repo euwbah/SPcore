@@ -20,6 +20,7 @@ import com.spcore.models.Lesson
 
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
+import kotlinx.android.synthetic.main.home_nav_header.*
 import java.util.*
 
 class HomeActivity : AppStateTrackerActivity("HomeActivity") {
@@ -60,6 +61,10 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
             // TODO: Only return true if nav selection is to appear highlighted, if not, return false
             return@navHandler R.id.nav_day_view _or R.id.nav_day_view _is id
         }
+
+        nav_header_image_view.setImageDrawable(Auth.user.getProfilePic(this))
+        nav_header_username_text.text = Auth.user.username
+        nav_header_name_text.text = Auth.user.displayName
 
         toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.ENGLISH)
         toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
