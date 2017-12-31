@@ -18,6 +18,12 @@ fun Calendar.startOfDay(): Calendar {
     return cal
 }
 
+fun newCalendar(year: Int, month: Int, day: Int, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) : Calendar {
+    return Calendar.getInstance().apply {
+        set(year, month, day, hours, minutes, seconds)
+    }
+}
+
 fun Calendar.isYesterday(): Boolean {
     return this.startOfDay() + Duration(days=1) == Calendar.getInstance().startOfDay()
 }

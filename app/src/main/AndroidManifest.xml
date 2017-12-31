@@ -44,9 +44,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
-        <service
-            android:name=".services.SendATSIntentService"
-            android:exported="false" />
 
         <activity android:name=".activities.EventDetailsActivity"
             android:screenOrientation="portrait"
@@ -56,6 +53,10 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.EventDetailsActivity"
             />
+        
+        <service
+            android:name=".services.SendATSIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>

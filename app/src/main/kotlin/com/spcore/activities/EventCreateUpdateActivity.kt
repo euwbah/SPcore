@@ -4,11 +4,16 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.spcore.helpers.*
 import com.spcore.R
+import com.spcore.fragments.DatePickerFragment
 import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_create_update.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
+import java.util.*
 
-class EventCreateUpdateActivity : AppCompatActivity() {
+class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActivity"),
+                                  DatePickerFragment.DateSetListener {
+
+    private var datePicker: DatePickerFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,9 +25,6 @@ class EventCreateUpdateActivity : AppCompatActivity() {
         if(intent.extras.getString("mode") == "update")
             initUpdateMode(intent.extras.getParcelable("event"))
 
-        event_crud_start_date_input.setOnClickListener {
-
-        }
     }
 
     private fun initUpdateMode(event: Event) {
@@ -33,6 +35,11 @@ class EventCreateUpdateActivity : AppCompatActivity() {
         event_crud_start_time_input.textStr = event.startTime.getHumanReadableTime(false)
         event_crud_end_date_input.textStr = event.endTime.getHumanReadableDate(true)
         event_crud_end_time_input.textStr = event.endTime.getHumanReadableTime(false)
+
+        event_crud_start_date_input.setOnClickListener {
+            datePicker = DatePickerFragment.newInstance(event.startTime.timeInMillis)
+            datePicker?.show(supportFragmentManager, "start")
+        }
 
         event_crud_cancel_button.setOnClickListener {
             setResult(UPDATE_EVENT_DETAILS,
@@ -52,6 +59,13 @@ class EventCreateUpdateActivity : AppCompatActivity() {
                             .putExtra("refresh", true)
                             .putExtra("event", event)
             )
+        }
+    }
+
+    override fun onDatePicked(calendar: Calendar, tag: String) {
+        when(tag) {
+            "start" -> TODO()
+            "end" -> TODO()
         }
     }
 }
