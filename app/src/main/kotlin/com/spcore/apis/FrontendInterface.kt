@@ -105,7 +105,8 @@ object FrontendInterface {
                 ))
             }
 
-            if (now.get(Calendar.MONTH) == Calendar.JANUARY) {
+            // Hardcode add event in january
+            if (month == 1) {
 
                 schedule.add(Event(
                         "Pre-SIP Lunch",
