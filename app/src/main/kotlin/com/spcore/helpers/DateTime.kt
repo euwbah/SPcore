@@ -63,37 +63,9 @@ fun humanReadableTimeRange(time1: Calendar, time2: Calendar) : String {
                 time2.get(Calendar.DAY_OF_MONTH).toString() + " " +
                 time2.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
 
-    val firstTimeStr =
-            time1.get(Calendar.HOUR).let {
-                if(it == 0)
-                    12
-                else
-                    it
-            }.toString() +
-            time1.get(Calendar.MINUTE).let {
-                if(it == 0)
-                    ""
-                else
-                    ":%02d".format(it)
-            } +
-            " " +
-            if(time1.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+    val firstTimeStr = time1.getHumanReadableTime(false)
 
-    val secondTimeStr =
-            time2.get(Calendar.HOUR).let {
-                if(it == 0)
-                    12
-                else
-                    it
-            }.toString() +
-            time2.get(Calendar.MINUTE).let {
-                if(it == 0)
-                    ""
-                else
-                    ":%02d".format(it)
-            } +
-            " " +
-            if(time2.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+    val secondTimeStr = time2.getHumanReadableTime(false)
 
     return if(showSecondDate) {
         "$firstDateStr$firstYearString, $firstTimeStr -\n" +
@@ -102,6 +74,46 @@ fun humanReadableTimeRange(time1: Calendar, time2: Calendar) : String {
         "$firstDateStr$firstYearString\n" +
         "$firstTimeStr - $secondTimeStr"
     }
+}
+
+fun Calendar.getHumanReadableDate(shortened: Boolean) : String {
+    val formatStyle =
+            if(shortened)
+                Calendar.SHORT
+            else
+                Calendar.LONG
+
+    val day = this.get(Calendar.DAY_OF_MONTH)
+    val month = getDisplayName(Calendar.MONTH, formatStyle, Locale.getDefault())
+    val year = get(Calendar.YEAR)
+    return "$day $month $year"
+}
+
+fun Calendar.getHumanReadableTime(_24hr: Boolean) : String {
+    val hour =
+            if(_24hr)
+                this.get(Calendar.HOUR_OF_DAY)
+            else
+                this.get(Calendar.HOUR).let {
+                    if(it == 0) 12
+                    else it
+                }
+
+    val minute =
+            this.get(Calendar.MINUTE).let {
+                if(it == 0)
+                    ""
+                else
+                    ":%02d".format(it)
+            }
+
+    val am_pm =
+            if(!_24hr)
+                " " + if(this.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+            else
+                ""
+
+    return "$hour$minute$am_pm"
 }
 
 /**
