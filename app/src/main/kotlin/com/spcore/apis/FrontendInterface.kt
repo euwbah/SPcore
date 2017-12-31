@@ -105,26 +105,9 @@ object FrontendInterface {
                 ))
             }
 
-            // Hardcode add event in january
-            if (month == 1) {
-
-                schedule.add(Event(
-                        "Pre-SIP Lunch",
-                        "Hanging out with mah lads before the big SIPPP",
-                        "J Cube",
-                        Calendar.getInstance().apply {
-                            set(2018, 0, 15, 13, 0, 0)
-                        },
-                        Calendar.getInstance().apply {
-                            set(2018, 0, 15, 15, 0, 0)
-                        },
-                        Auth.user,
-                        going = arrayListOf(NatoshiSakamoto),
-                        notGoing = arrayListOf(DerpMcDerpson),
-                        haventReplied = arrayListOf(AdamNeely),
-                        deletedInvite = arrayListOf(SimonFransman)
-                ))
-            }
+            HardcodedEvents
+                    .filter { it.startTime.get(Calendar.MONTH) == month - 1 }
+                    .forEach { schedule.add(it) }
 
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
@@ -163,4 +146,6 @@ object FrontendInterface {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
         }
     }
+
+
 }

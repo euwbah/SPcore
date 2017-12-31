@@ -1,7 +1,9 @@
 package com.spcore.activities
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.models.Event
@@ -29,5 +31,12 @@ class EventCreateUpdateActivity : AppCompatActivity() {
         event_crud_start_time_input.textStr = event.startTime.getHumanReadableTime(false)
         event_crud_end_date_input.textStr = event.endTime.getHumanReadableDate(true)
         event_crud_end_time_input.textStr = event.endTime.getHumanReadableTime(false)
+
+        event_crud_cancel_button.setOnClickListener {
+            startActivity(
+                    Intent(this, EventDetailsActivity::class.java)
+                            .putExtra("event", event)
+            )
+        }
     }
 }

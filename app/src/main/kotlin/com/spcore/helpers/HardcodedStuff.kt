@@ -5,6 +5,11 @@ import com.spcore.models.Event
 import com.spcore.models.User
 import java.util.*
 
+/*
+    HARDCODE_MODE
+
+    Hardcoded Users:
+ */
 val NatoshiSakamoto = User("1111111", "natoshi_sakamoto", "Natoshi Sakamoto", arrayListOf())
 
 fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
@@ -62,3 +67,26 @@ fun derpSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
 val SimonFransman = User("3333333", "yalikejazz", "Simon Fransman", arrayListOf())
 
 val AdamNeely = User("4444444", "thelick", "BASS", arrayListOf())
+
+/*
+    HARDCODE_MODE
+
+    Hardcoded events
+ */
+
+val HardcodedEvents = listOf(Event(
+        "Pre-SIP Lunch",
+        "Hanging out with mah lads before the big SIPPP",
+        "J Cube",
+        Calendar.getInstance().apply {
+            set(2018, 0, 15, 13, 0, 0)
+        },
+        Calendar.getInstance().apply {
+            set(2018, 0, 15, 15, 0, 0)
+        },
+        Auth.user,
+        going = arrayListOf(NatoshiSakamoto),
+        notGoing = arrayListOf(DerpMcDerpson),
+        haventReplied = arrayListOf(AdamNeely),
+        deletedInvite = arrayListOf(SimonFransman)
+))
