@@ -1,5 +1,6 @@
 package com.spcore.activities
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -37,7 +38,13 @@ class EventDetailsActivity : AppCompatActivity() {
                 else
                     View.GONE
 
-        
+        edit_event_fab.setOnClickListener {
+            startActivity(
+                    Intent(this, EventCreateUpdateActivity::class.java)
+                            .putExtra("mode", "update")
+                            .putExtra("event", event)
+            )
+        }
 
     }
 }
