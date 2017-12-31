@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.spcore.R
+import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.Auth
 import com.spcore.helpers.humanReadableTimeRange
 import com.spcore.models.Event
@@ -31,6 +32,10 @@ class EventDetailsActivity : AppCompatActivity() {
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
         event_details_location_text.text = event.location
         event_details_desc_text.text = event.description
+        event_details_is_going.text = "Yes (${event.going.size})"
+
+        event_details_going_lv.adapter = UserProfileListAdapter(this,event.going)
+
 
         edit_event_fab.visibility =
                 if(event isCreatedBy Auth.user)

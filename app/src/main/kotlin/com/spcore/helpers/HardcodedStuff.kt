@@ -11,6 +11,9 @@ import java.util.*
     Hardcoded Users:
  */
 val NatoshiSakamoto = User("1111111", "natoshi_sakamoto", "Natoshi Sakamoto", arrayListOf())
+val NatoshiSakamoto1 = User("1111112", "natoshi_sakamoto1", "Natoshi Sakamoto", arrayListOf())
+val NatoshiSakamoto2 = User("1111113", "natoshi_sakamoto2", "Natoshi Sakamoto", arrayListOf())
+val NatoshiSakamoto3 = User("1111114", "natoshi_sakamoto3", "Natoshi Sakamoto", arrayListOf())
 
 fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()
@@ -85,7 +88,7 @@ val HardcodedEvents = listOf(Event(
             set(2018, 0, 15, 15, 0, 0)
         },
         Auth.user,
-        going = arrayListOf(NatoshiSakamoto),
+        going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1,NatoshiSakamoto2,NatoshiSakamoto3),
         notGoing = arrayListOf(DerpMcDerpson),
         haventReplied = arrayListOf(AdamNeely),
         deletedInvite = arrayListOf(SimonFransman),
