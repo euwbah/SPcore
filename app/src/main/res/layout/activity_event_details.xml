@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.LessonDetailsActivity">
+    tools:context=".activities.EventDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/event_details_app_bar"

@@ -48,7 +48,8 @@
             android:name=".services.SendATSIntentService"
             android:exported="false" />
 
-        <activity android:name=".activities.EventDetailsActivity"></activity>
+        <activity android:name=".activities.EventDetailsActivity" />
+        <activity android:name=".activities.EventCreateUpdateActivity"></activity>
     </application>
 
 </manifest>

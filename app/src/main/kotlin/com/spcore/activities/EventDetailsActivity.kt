@@ -19,6 +19,10 @@ class EventDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_event_details)
         setSupportActionBar(event_details_toolbar)
 
+        setSupportActionBar(event_details_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         event = intent.extras.getParcelable("event")
 
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
