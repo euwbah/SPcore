@@ -15,7 +15,6 @@ class EventCreateUpdateActivity : AppCompatActivity() {
         setContentView(R.layout.activity_event_create_update)
 
         setSupportActionBar(event_crud_toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         if(intent.extras.getString("mode") == "update")
@@ -23,7 +22,7 @@ class EventCreateUpdateActivity : AppCompatActivity() {
     }
 
     private fun initUpdateMode(event: Event) {
-        event_crud_toolbar_title.text = event.name
+        event_crud_toolbar_title.textStr = event.name
         event_crud_location_input.textStr = event.location
         event_crud_description_input.textStr = event.eventDesc
         event_crud_start_date_input.textStr = event.startTime.getHumanReadableDate(true)

@@ -30,7 +30,6 @@ class EventDetailsActivity : AppCompatActivity() {
         event_details_location_text.text = event.location
         event_details_desc_text.text = event.eventDesc
 
-
         edit_event_fab.visibility =
                 if(event isCreatedBy Auth.user)
                     View.VISIBLE

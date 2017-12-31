@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.support.design.widget.TextInputEditText
 import android.text.Editable
 import android.view.View
+import android.widget.EditText
 import com.spcore.R
 import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlin.reflect.KProperty
@@ -70,13 +71,26 @@ operator fun <T : View> View.get(resourceID: Int, clazz: Class<T>? = null) : T? 
  * use [textStr] and give it a [String] instead.
  */
 var TextInputEditText.textStr : String
-get() = this.text.substring(0)
-set(value) {
-    this.text.apply {
-        clear()
-        insert(0, value)
+    get() = this.text.substring(0)
+    set(value) {
+        this.text.apply {
+            clear()
+            insert(0, value)
+        }
     }
-}
+
+/**
+ * Instead of having to pass an [Editable] to set text on a [EditText] field,
+ * use [textStr] and give it a [String] instead.
+ */
+var EditText.textStr : String
+    get() = this.text.substring(0)
+    set(value) {
+        this.text.apply {
+            clear()
+            insert(0, value)
+        }
+    }
 
 
 inline fun <reified T> parcelableCreator(crossinline create: (Parcel) -> T) =
