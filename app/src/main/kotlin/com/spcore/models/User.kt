@@ -29,6 +29,17 @@ class User(
         return context.getDrawable(R.drawable.ic_profile_pic)
     }
 
+    override fun equals(other: Any?): Boolean {
+        return if(other is User)
+                    this.adminNo == other.adminNo
+                else
+                    false
+    }
+
+    override fun hashCode(): Int {
+        return this.adminNo.toInt()
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(adminNo)
         parcel.writeString(username)
