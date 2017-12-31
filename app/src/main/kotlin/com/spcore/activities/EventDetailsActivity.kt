@@ -25,6 +25,7 @@ class EventDetailsActivity : AppCompatActivity() {
 
         event = intent.extras.getParcelable("event")
 
+        event_details_toolbar_title.text = event.name
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
         event_details_location_text.text = event.location
         event_details_desc_text.text = event.eventDetails
