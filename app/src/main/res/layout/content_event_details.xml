@@ -84,7 +84,7 @@
             android:includeFontPadding="false"
             android:text="Going (n)"
             android:textColor="#BB000000"
-            android:textSize="18sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

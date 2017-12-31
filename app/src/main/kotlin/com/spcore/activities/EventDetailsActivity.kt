@@ -47,8 +47,6 @@ class EventDetailsActivity : AppCompatActivity() {
             }
         }
 
-
-
         edit_event_fab.visibility =
                 if(event isCreatedBy Auth.user)
                     View.VISIBLE
@@ -67,9 +65,9 @@ class EventDetailsActivity : AppCompatActivity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if(requestCode == UPDATE_EVENT_DETAILS) {
-
+            event = data.getParcelableExtra("event")
         }
     }
 }
