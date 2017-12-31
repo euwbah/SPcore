@@ -90,11 +90,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_details_desc_text" />
 
+
         <ListView
             android:id="@+id/event_details_going_lv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:divider="@null"
@@ -103,13 +103,110 @@
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:scrollbars="none"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/event_details_going_text"
             app:layout_constraintStart_toStartOf="@+id/event_details_going_text"
             app:layout_constraintTop_toBottomOf="@+id/event_details_going_text" />
 
+        <TextView
+            android:id="@+id/event_details_not_going_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:paddingLeft="48dp"
+            android:text="Not Going (n)"
+            android:textColor="#BB000000"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_details_going_lv" />
+
+
+        <ListView
+            android:id="@+id/event_details_not_going_lv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="@+id/event_details_not_going_text"
+            app:layout_constraintStart_toStartOf="@+id/event_details_not_going_text"
+            app:layout_constraintTop_toBottomOf="@+id/event_details_not_going_text" />
+
+        <TextView
+            android:id="@+id/event_details_havent_replied_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:paddingLeft="48dp"
+            android:text="Not Responded (n)"
+            android:textColor="#BB000000"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_details_not_going_lv" />
+
+
+        <ListView
+            android:id="@+id/event_details_havent_replied_lv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="@+id/event_details_havent_replied_text"
+            app:layout_constraintStart_toStartOf="@+id/event_details_havent_replied_text"
+            app:layout_constraintTop_toBottomOf="@+id/event_details_havent_replied_text" />
+
+        <TextView
+            android:id="@+id/event_details_deleted_invite_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:paddingLeft="48dp"
+            android:text="Declined Invite (n)"
+            android:textColor="#BB000000"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_details_havent_replied_lv" />
+
+
+        <ListView
+            android:id="@+id/event_details_deleted_invite_lv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/event_details_deleted_invite_text"
+            app:layout_constraintStart_toStartOf="@+id/event_details_deleted_invite_text"
+            app:layout_constraintTop_toBottomOf="@+id/event_details_deleted_invite_text" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -32,7 +32,14 @@ class EventDetailsActivity : AppCompatActivity() {
 
         event = intent.extras.getParcelable("event")
 
-        val adapter = async { UserProfileListAdapter(this@EventDetailsActivity, event.going) }
+        val adapters = async {
+            listOf(
+                    UserProfileListAdapter(this@EventDetailsActivity, event.going),
+                    UserProfileListAdapter(this@EventDetailsActivity, event.notGoing),
+                    UserProfileListAdapter(this@EventDetailsActivity, event.haventReplied),
+                    UserProfileListAdapter(this@EventDetailsActivity, event.deletedInvite)
+            )
+        }
 
         event_details_toolbar_title.text = event.name
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
@@ -42,8 +49,18 @@ class EventDetailsActivity : AppCompatActivity() {
 
         Handler(mainLooper).post {
             runBlocking {
-                event_details_going_lv.adapter = adapter.await()
-                event_details_going_lv.setHeightToWrapContent()
+                val (goingAdapter,
+                     notGoingAdapter,
+                     haventRepliedAdapter,
+                     deletedInviteAdapter) = adapters.await()
+
+                event_details_going_lv.adapter = goingAdapter
+                event_details_not_going_lv.adapter = notGoingAdapter
+                event_details_havent_replied_lv.adapter = haventRepliedAdapter
+                event_details_deleted_invite_lv.adapter = deletedInviteAdapter
+
+                forceListViewsHeightToWrapContent()
+
             }
         }
 
@@ -63,6 +80,11 @@ class EventDetailsActivity : AppCompatActivity() {
             )
         }
 
+    }
+
+    private fun forceListViewsHeightToWrapContent() {
+        arrayOf(event_details_going_lv, event_details_deleted_invite_lv, event_details_havent_replied_lv, event_details_not_going_lv)
+                .forEach { it.setHeightToWrapContent() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
