@@ -21,12 +21,15 @@ class EventCreateUpdateActivity : AppCompatActivity() {
 
         if(intent.extras.getString("mode") == "update")
             initUpdateMode(intent.extras.getParcelable("event"))
+
+
+
     }
 
     private fun initUpdateMode(event: Event) {
         event_crud_toolbar_title.textStr = event.name
         event_crud_location_input.textStr = event.location
-        event_crud_description_input.textStr = event.eventDesc
+        event_crud_description_input.textStr = event.description
         event_crud_start_date_input.textStr = event.startTime.getHumanReadableDate(true)
         event_crud_start_time_input.textStr = event.startTime.getHumanReadableTime(false)
         event_crud_end_date_input.textStr = event.endTime.getHumanReadableDate(true)
