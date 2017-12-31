@@ -30,7 +30,7 @@ class EventDetailsActivity : AppCompatActivity() {
         event_details_toolbar_title.text = event.name
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
         event_details_location_text.text = event.location
-        event_details_desc_text.text = event.eventDesc
+        event_details_desc_text.text = event.description
 
         edit_event_fab.visibility =
                 if(event isCreatedBy Auth.user)
@@ -42,9 +42,17 @@ class EventDetailsActivity : AppCompatActivity() {
             startActivityForResult(
                     Intent(this, EventCreateUpdateActivity::class.java)
                             .putExtra("mode", "update")
-                            .putExtra("event", event), UPDATE_EVENT_DETAILS
+                            .putExtra("event", event),
+
+                    UPDATE_EVENT_DETAILS
             )
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == UPDATE_EVENT_DETAILS) {
+
+        }
     }
 }

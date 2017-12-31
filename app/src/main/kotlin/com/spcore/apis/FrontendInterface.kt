@@ -118,6 +118,7 @@ object FrontendInterface {
 
     fun getEvent(id: Long): Event? {
         if(HARDCODE_MODE) {
+            Thread.sleep(200)
             return HardcodedEvents.firstOrNull { it.id == id }
         } else
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
