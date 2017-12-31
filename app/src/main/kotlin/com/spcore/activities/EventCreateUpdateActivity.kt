@@ -33,10 +33,11 @@ class EventCreateUpdateActivity : AppCompatActivity() {
         event_crud_end_time_input.textStr = event.endTime.getHumanReadableTime(false)
 
         event_crud_cancel_button.setOnClickListener {
-            startActivity(
-                    Intent(this, EventDetailsActivity::class.java)
-                            .putExtra("event", event)
-            )
+            finish()
+        }
+
+        event_crud_save_button.setOnClickListener {
+
         }
     }
 }

@@ -11,6 +11,8 @@ import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_details.*
 import kotlinx.android.synthetic.main.content_event_details.*
 
+const val UPDATE_EVENT_DETAILS = 1
+
 class EventDetailsActivity : AppCompatActivity() {
 
     private lateinit var event: Event
@@ -37,10 +39,10 @@ class EventDetailsActivity : AppCompatActivity() {
                     View.GONE
 
         edit_event_fab.setOnClickListener {
-            startActivity(
+            startActivityForResult(
                     Intent(this, EventCreateUpdateActivity::class.java)
                             .putExtra("mode", "update")
-                            .putExtra("event", event)
+                            .putExtra("event", event), UPDATE_EVENT_DETAILS
             )
         }
 

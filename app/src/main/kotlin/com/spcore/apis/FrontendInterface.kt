@@ -116,6 +116,13 @@ object FrontendInterface {
         return schedule
     }
 
+    fun getEvent(id: Long): Event? {
+        if(HARDCODE_MODE) {
+            return HardcodedEvents.firstOrNull { it.id == id }
+        } else
+            TODO("i HaVe CrIpPlInG dEpReSsIoN")
+    }
+
     /**
      * Gets whether the user has been initialized.
      *

@@ -88,5 +88,6 @@ val HardcodedEvents = listOf(Event(
         going = arrayListOf(NatoshiSakamoto),
         notGoing = arrayListOf(DerpMcDerpson),
         haventReplied = arrayListOf(AdamNeely),
-        deletedInvite = arrayListOf(SimonFransman)
+        deletedInvite = arrayListOf(SimonFransman),
+        id = 0
 ))
