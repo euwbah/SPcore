@@ -3,14 +3,18 @@ package com.spcore.activities
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.Auth
 import com.spcore.helpers.humanReadableTimeRange
+import com.spcore.helpers.setHeightToWrapContent
 import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_details.*
 import kotlinx.android.synthetic.main.content_event_details.*
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
 
 const val UPDATE_EVENT_DETAILS = 1
 
@@ -28,13 +32,21 @@ class EventDetailsActivity : AppCompatActivity() {
 
         event = intent.extras.getParcelable("event")
 
+        val adapter = async { UserProfileListAdapter(this@EventDetailsActivity, event.going) }
+
         event_details_toolbar_title.text = event.name
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
         event_details_location_text.text = event.location
         event_details_desc_text.text = event.description
-        event_details_is_going.text = "Yes (${event.going.size})"
+        event_details_going_text.text = "Going (${event.going.size})"
 
-        event_details_going_lv.adapter = UserProfileListAdapter(this,event.going)
+        Handler(mainLooper).post {
+            runBlocking {
+                event_details_going_lv.adapter = adapter.await()
+                event_details_going_lv.setHeightToWrapContent()
+            }
+        }
+
 
 
         edit_event_fab.visibility =

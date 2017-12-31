@@ -20,7 +20,8 @@
             android:layout_height="150dp"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:layout_collapseMode="none">
+            app:layout_collapseMode="none"
+            >
 
             <!-- For displaying event title -->
             <TextView
