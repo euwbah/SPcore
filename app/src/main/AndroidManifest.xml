@@ -50,11 +50,11 @@
 
         <activity android:name=".activities.EventDetailsActivity"
             android:screenOrientation="portrait"
-
+            android:parentActivityName=".activities.HomeActivity"
             />
         <activity android:name=".activities.EventCreateUpdateActivity"
             android:screenOrientation="portrait"
-
+            android:parentActivityName=".activities.EventDetailsActivity"
             />
     </application>
 
