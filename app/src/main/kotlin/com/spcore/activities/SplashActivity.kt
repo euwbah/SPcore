@@ -1,10 +1,12 @@
 package com.spcore.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
+import com.spcore.spmobileapi.SPMobileAPI
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -21,6 +23,8 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
             val start = System.currentTimeMillis()
 
             initSharedPrefs()
+            SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
+
 
             val jwt = Auth.getJwtToken()
 

@@ -1,7 +1,6 @@
 package com.spcore.activities
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -158,7 +157,7 @@ class EventDetailsActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if(requestCode == UPDATE_EVENT_DETAILS) {
+        if(resultCode == RC_EVENT_UPDATED) {
             event = data.getParcelableExtra("event")
 
             updateUI()

@@ -134,6 +134,15 @@ object FrontendInterface {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
     }
 
+    fun createEvent(event: Event) {
+        if(HARDCODE_MODE) {
+            Thread.sleep(200)
+
+            HardcodedEvents.add(event)
+        } else
+            TODO("i HaVe CrIpPlInG dEpReSsIoN")
+    }
+
     /**
      * Gets whether the user has been initialized.
      *

@@ -22,6 +22,9 @@ import com.spcore.models.Lesson
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 import kotlinx.android.synthetic.main.home_nav_header.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.startActivity
 import java.util.*
 
 class HomeActivity : AppStateTrackerActivity("HomeActivity") {
@@ -106,7 +109,6 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
                 AppBarStateListener {
                     state, prev ->
                         appBarState = state
-//                        Log.d("STATE", state.toString())
                         when(state) {
                             is AppBarStateListener.State.COLLAPSED -> {
                                 date_picker_arrow.rotation = -180f
@@ -179,12 +181,23 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
             setScheduleViewDate(Date())
         }, 50)
 
+        create_event_fab.setOnClickListener {
+            // TODO: Change this to startActivityForResult
+            startActivity<EventCreateUpdateActivity>("mode" to "create")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
+        // this is really really inefficient, but it works for now.
+        schedule_view.notifyDatasetChanged()
     }
 
     private fun setScheduleViewDate(date: Date) {
         val cal = date.toCalendar()
         schedule_view.goToDate(cal)
-        schedule_view.goToEarliestVisibleEvent()
+        schedule_view.goToEarliestVisibleEvent(2.0)
         setMYTextView(date)
     }
 
@@ -226,7 +239,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.action_home_ats -> {
-                startActivity(Intent(this,InvitationActivity::class.java))
+                startActivity(Intent(this, InvitationActivity::class.java))
                 true
             }
             R.id.action_home_refresh -> {
