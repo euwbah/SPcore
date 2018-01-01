@@ -240,6 +240,58 @@ class Duration {
                 days    * 1000 * 60 * 60 * 24
     }
 
+    /**
+     * Divides the duration into spans of size [span], and returns the
+     * hypothetical upper bounds of the last partial span
+     *
+     * Or in plain english, round up.
+     *
+     * Usage: `oneHour30Mins.roundUpToNearest(Duration(hours=1))` will return 2 hours
+     */
+    fun roundUpToNearest(span: Duration): Duration {
+       return this - (this % span) + span
+    }
+    fun roundUpToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
+        val span = Duration(days, hours, minutes, seconds, millis)
+        return roundUpToNearest(span)
+    }
+
+    /**
+     * Divides the duration into spans of size [span], and returns the
+     * lower bounds of the last partial span
+     *
+     * Or in plain english, round down.
+     *
+     * Usage: `oneHour30Mins.roundUpToNearest(Duration(hours=1))` will return 2 hours
+     */
+    fun roundDownToNearest(span: Duration): Duration {
+        return this - (this % span)
+    }
+    fun roundDownToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
+        val span = Duration(days, hours, minutes, seconds, millis)
+        return roundDownToNearest(span)
+    }
+
+    /**
+     * Divides the duration into spans of size [span], and returns the
+     * hypothetical upper or lower bounds of the last partial span, depending on whether the
+     * duration tends closer to the hypothetical upper or lower bounds respectively.
+     *
+     * Or in plain english, normal standard rounding.
+     *
+     * Usage: `oneHour30Mins.roundUpToNearest(Duration(hours=1))` will return 2 hours
+     *
+     */
+    fun roundToNearest(span: Duration): Duration {
+        val rem = this % span
+        val roundUp = rem >= span / 2
+        return this - rem + if (roundUp) span else ZERO
+    }
+    fun roundToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
+        val span = Duration(days, hours, minutes, seconds, millis)
+        return roundToNearest(span)
+    }
+
     operator fun plus(that: Duration): Duration {
         return Duration(millis = this.toMillisAccurate() + that.toMillisAccurate())
     }
@@ -248,8 +300,37 @@ class Duration {
         return Duration(millis = this.toMillisAccurate() - that.toMillisAccurate())
     }
 
+    operator fun times(scalarMultiple: Double): Duration {
+        return Duration(millis = this.toMillisAccurate() * scalarMultiple)
+    }
+
+    operator fun times(scalarMultiple: Int): Duration {
+        return Duration(millis = this.toMillisAccurate() * scalarMultiple)
+    }
+
+    operator fun div(scalarDenominator: Double): Duration {
+        return Duration(millis = this.toMillisAccurate() / scalarDenominator)
+    }
+
+    operator fun div(scalarDenominator: Int): Duration {
+        return Duration(millis = this.toMillisAccurate() / scalarDenominator)
+    }
+
+    operator fun rem(that: Duration): Duration {
+        return Duration(millis = this.toMillisAccurate() % that.toMillisAccurate())
+    }
+
+    operator fun compareTo(duration: Duration): Int {
+        return this.toMillisAccurate().compareTo(duration.toMillisAccurate())
+    }
+
     override fun toString(): String {
         return "$days days, $hours hours, $minutes minutes, and $seconds seconds"
+    }
+
+
+    companion object {
+        val ZERO = Duration()
     }
 }
 
