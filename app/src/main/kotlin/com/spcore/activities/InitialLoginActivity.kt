@@ -14,7 +14,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
 
-class InitialLogin : AppCompatActivity() {
+class InitialLoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +105,11 @@ class InitialLogin : AppCompatActivity() {
                             username_input.requestFocus()
                         }
                         is SubmitInitStatus.UNKNOWN_ERROR -> {
-                            Toast.makeText(this@InitialLogin, "Unknown error: ${res.errmsg}", Toast.LENGTH_SHORT)
+                            Toast.makeText(this@InitialLoginActivity, "Unknown error: ${res.errmsg}", Toast.LENGTH_SHORT)
                                     .show()
                         }
                         SubmitInitStatus.SUCCESS -> {
-                            startActivity(Intent(this@InitialLogin, HomeActivity::class.java))
+                            startActivity(Intent(this@InitialLoginActivity, HomeActivity::class.java))
                         }
                     }
                 }

@@ -1,18 +1,12 @@
 package com.spcore.activities
 
-import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
-import com.spcore.helpers.SPLASH_SCREEN_MIN_DUR
-import kotlinx.coroutines.experimental.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import kotlin.system.measureTimeMillis
 
 
 class SplashActivity : AppStateTrackerActivity("SplashActivity") {
@@ -35,7 +29,7 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
                         if(FrontendInterface.isUserInitializedOnServer())
                             HomeActivity::class.java
                         else
-                            InitialLogin::class.java
+                            InitialLoginActivity::class.java
                     }
                     else
                         LoginActivity::class.java

@@ -19,7 +19,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.InitialLogin"
+            android:name=".activities.InitialLoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
@@ -53,7 +53,7 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.EventDetailsActivity"
             />
-        
+
         <service
             android:name=".services.SendATSIntentService"
             android:exported="false" />

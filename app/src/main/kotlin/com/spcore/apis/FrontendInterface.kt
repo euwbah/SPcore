@@ -1,12 +1,11 @@
 package com.spcore.apis
 
 import com.alamkanak.weekview.WeekViewEvent
-import com.spcore.activities.InitialLogin
+import com.spcore.activities.InitialLoginActivity
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.Lesson
-import com.spcore.models.User
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -152,14 +151,14 @@ object FrontendInterface {
         }
     }
 
-    fun setUserInitializedOnServer(username: String, displayedName: String?) : InitialLogin.SubmitInitStatus {
+    fun setUserInitializedOnServer(username: String, displayedName: String?) : InitialLoginActivity.SubmitInitStatus {
         return if (HARDCODE_MODE) {
             Thread.sleep(200)
             if("natoshi_sakamoto" _or "ayylmao" _is username)
-                InitialLogin.SubmitInitStatus.USERNAME_TAKEN
+                InitialLoginActivity.SubmitInitStatus.USERNAME_TAKEN
             else {
                 Auth.setUserInitializedLocally(username, displayedName)
-                InitialLogin.SubmitInitStatus.SUCCESS
+                InitialLoginActivity.SubmitInitStatus.SUCCESS
             }
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")

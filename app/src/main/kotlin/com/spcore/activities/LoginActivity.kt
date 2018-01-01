@@ -3,14 +3,12 @@ package com.spcore.activities
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
-import android.inputmethodservice.InputMethodService
 
 import android.os.AsyncTask
 
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -181,7 +179,7 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
                     Auth.login(status.response.token, adminNoStr, passwordStr)
 
                     if(!userInitialized)
-                        this@LoginActivity.startActivity(Intent(this@LoginActivity, InitialLogin::class.java))
+                        this@LoginActivity.startActivity(Intent(this@LoginActivity, InitialLoginActivity::class.java))
                     else
                         this@LoginActivity.startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 }

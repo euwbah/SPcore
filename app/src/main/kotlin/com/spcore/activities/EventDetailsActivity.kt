@@ -147,6 +147,8 @@ class EventDetailsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if(requestCode == UPDATE_EVENT_DETAILS) {
             event = data.getParcelableExtra("event")
+
+            updateUI()
         }
     }
 }
