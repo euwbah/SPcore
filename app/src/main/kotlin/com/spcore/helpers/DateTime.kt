@@ -249,7 +249,8 @@ class Duration {
      * Usage: `oneHour30Mins.roundUpToNearest(Duration(hours=1))` will return 2 hours
      */
     fun roundUpToNearest(span: Duration): Duration {
-       return this - (this % span) + span
+        val rem = (this % span)
+        return this - (this % span) + if(rem == ZERO) ZERO else span
     }
     fun roundUpToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
@@ -367,4 +368,40 @@ operator fun Calendar.minus(duration: Duration): Calendar {
  */
 operator fun Calendar.minus(that: Calendar): Duration {
     return Duration(millis=this.timeInMillis.toDouble() - that.timeInMillis.toDouble())
+}
+
+/**
+ * Rounds up the time segment of the calendar to the nearest [duration]
+ */
+fun Calendar.roundUpToNearest(duration: Duration): Calendar {
+    return this.startOfDay() + this.getTimeAsDuration().roundUpToNearest(duration)
+}
+
+fun Calendar.roundUpToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Calendar {
+    val span = Duration(days, hours, minutes, seconds, millis)
+    return this.roundUpToNearest(span)
+}
+
+/**
+ * Rounds down the time segment of the calendar to the nearest [duration]
+ */
+fun Calendar.roundDownToNearest(duration: Duration): Calendar {
+    return this.startOfDay() + this.getTimeAsDuration().roundDownToNearest(duration)
+}
+
+fun Calendar.roundDownToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Calendar {
+    val span = Duration(days, hours, minutes, seconds, millis)
+    return this.roundDownToNearest(span)
+}
+
+/**
+ * Rounds up or down the time segment of the calendar to the nearest [duration]
+ */
+fun Calendar.roundToNearest(duration: Duration): Calendar {
+    return this.startOfDay() + this.getTimeAsDuration().roundToNearest(duration)
+}
+
+fun Calendar.roundToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Calendar {
+    val span = Duration(days, hours, minutes, seconds, millis)
+    return this.roundToNearest(span)
 }
