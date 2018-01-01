@@ -66,6 +66,14 @@ class Event : WeekViewEvent, Parcelable, Nowable {
         this.deletedInvite = deletedInvite
     }
 
+    override fun hashCode(): Int {
+        return this.id.toInt()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is Event && other.id == this.id
+    }
+
     /**
      * Simple helper infix function that looks good
      */

@@ -3,18 +3,20 @@ package com.spcore.activities
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
+import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.Auth
 import com.spcore.helpers.humanReadableTimeRange
 import com.spcore.helpers.setHeightToWrapContent
 import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_details.*
 import kotlinx.android.synthetic.main.content_event_details.*
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.toast
 
 const val UPDATE_EVENT_DETAILS = 1
 
@@ -32,13 +34,57 @@ class EventDetailsActivity : AppCompatActivity() {
 
         event = intent.extras.getParcelable("event")
 
-        val adapters = async {
-            listOf(
-                    UserProfileListAdapter(this@EventDetailsActivity, event.going),
-                    UserProfileListAdapter(this@EventDetailsActivity, event.notGoing),
-                    UserProfileListAdapter(this@EventDetailsActivity, event.haventReplied),
-                    UserProfileListAdapter(this@EventDetailsActivity, event.deletedInvite)
+        updateUI()
+
+        edit_event_fab.setOnClickListener {
+            startActivityForResult(
+                    Intent(this, EventCreateUpdateActivity::class.java)
+                            .putExtra("mode", "update")
+                            .putExtra("event", event),
+
+                    UPDATE_EVENT_DETAILS
             )
+        }
+
+        // Ensure that displayed data is up-to-date
+
+        async(UI) {
+            val asyncUpdatedEvent = bg { FrontendInterface.getEvent(event.id) }
+
+            val updatedEvent = asyncUpdatedEvent.await()
+
+            if (updatedEvent == null) {
+                toast("Event no longer exists")
+                finish()
+            } else {
+                event = updatedEvent
+                updateUI()
+            }
+        }
+    }
+
+    private fun updateUI() {
+        async(UI) {
+            val adapters = bg {
+                listOf(
+                        UserProfileListAdapter(this@EventDetailsActivity, event.going),
+                        UserProfileListAdapter(this@EventDetailsActivity, event.notGoing),
+                        UserProfileListAdapter(this@EventDetailsActivity, event.haventReplied),
+                        UserProfileListAdapter(this@EventDetailsActivity, event.deletedInvite)
+                )
+            }
+
+            val (goingAdapter,
+                    notGoingAdapter,
+                    haventRepliedAdapter,
+                    deletedInviteAdapter) = adapters.await()
+
+            event_details_going_lv.adapter = goingAdapter
+            event_details_not_going_lv.adapter = notGoingAdapter
+            event_details_havent_replied_lv.adapter = haventRepliedAdapter
+            event_details_deleted_invite_lv.adapter = deletedInviteAdapter
+
+            forceListViewsHeightToWrapContent()
         }
 
         event_details_toolbar_title.text = event.name
@@ -52,7 +98,7 @@ class EventDetailsActivity : AppCompatActivity() {
         }
 
         event_details_desc_text.apply {
-            if(event.description != null && event.description.isNotBlank())
+            if(event.description.isNotBlank())
                 text = event.description
             else
                 visibility = View.GONE
@@ -86,39 +132,11 @@ class EventDetailsActivity : AppCompatActivity() {
             event_details_deleted_invite_lv.visibility = View.GONE
         }
 
-        Handler(mainLooper).post {
-            runBlocking {
-                val (goingAdapter,
-                     notGoingAdapter,
-                     haventRepliedAdapter,
-                     deletedInviteAdapter) = adapters.await()
-
-                event_details_going_lv.adapter = goingAdapter
-                event_details_not_going_lv.adapter = notGoingAdapter
-                event_details_havent_replied_lv.adapter = haventRepliedAdapter
-                event_details_deleted_invite_lv.adapter = deletedInviteAdapter
-
-                forceListViewsHeightToWrapContent()
-
-            }
-        }
-
         edit_event_fab.visibility =
                 if(event isCreatedBy Auth.user)
                     View.VISIBLE
                 else
                     View.GONE
-
-        edit_event_fab.setOnClickListener {
-            startActivityForResult(
-                    Intent(this, EventCreateUpdateActivity::class.java)
-                            .putExtra("mode", "update")
-                            .putExtra("event", event),
-
-                    UPDATE_EVENT_DETAILS
-            )
-        }
-
     }
 
     private fun forceListViewsHeightToWrapContent() {

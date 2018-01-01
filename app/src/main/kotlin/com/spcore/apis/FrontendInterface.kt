@@ -124,6 +124,17 @@ object FrontendInterface {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
     }
 
+    fun updateEvent(event: Event) {
+        if(HARDCODE_MODE) {
+            Thread.sleep(200)
+            // This works as the Event.equals() and .hashCode() functions are overriden to
+            // use Event.id instead
+            HardcodedEvents.remove(event)
+            HardcodedEvents.add(event)
+        } else
+            TODO("i HaVe CrIpPlInG dEpReSsIoN")
+    }
+
     /**
      * Gets whether the user has been initialized.
      *

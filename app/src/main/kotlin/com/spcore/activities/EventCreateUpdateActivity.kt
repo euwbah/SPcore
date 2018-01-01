@@ -2,15 +2,20 @@ package com.spcore.activities
 
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
-import android.view.MotionEvent
+import android.view.View
 import com.spcore.helpers.*
 import com.spcore.R
+import com.spcore.apis.FrontendInterface
 import com.spcore.fragments.DatePickerFragment
 import com.spcore.fragments.TimePickerFragment
 import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_create_update.*
+import kotlinx.android.synthetic.main.activity_initial_login.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.toast
 import java.util.*
 
 
@@ -136,11 +141,25 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
             setResult(UPDATE_EVENT_DETAILS,
                     intent
-                            .putExtra("reftesh", true)
+                            .putExtra("refresh", true)
                             .putExtra("event", event)
             )
 
+            event_crud_progress_indicator.visibility = View.VISIBLE
+            event_crud_save_button.visibility = View.GONE
 
+            async(UI) {
+                val updater = bg { FrontendInterface.updateEvent(event) }
+
+                updater.await()
+
+                event_crud_progress_indicator.visibility = View.GONE
+                event_crud_save_button.visibility = View.VISIBLE
+
+                toast("Event updated")
+
+                finish()
+            }
         }
     }
 

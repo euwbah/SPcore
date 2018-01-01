@@ -77,7 +77,7 @@ val AdamNeely = User("4444444", "thelick", "BASS", arrayListOf())
     Hardcoded events
  */
 
-val HardcodedEvents = listOf(Event(
+val HardcodedEvents = mutableListOf(Event(
         "Pre-SIP Lunch",
         "Hanging out with mah lads before the big SIPPP",
         "J Cube",

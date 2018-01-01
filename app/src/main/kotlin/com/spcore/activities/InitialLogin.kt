@@ -1,7 +1,6 @@
 package com.spcore.activities
 
 import android.content.Intent
-import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -11,10 +10,11 @@ import android.widget.Toast
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import kotlinx.android.synthetic.main.activity_initial_login.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.bg
 
 class InitialLogin : AppCompatActivity() {
-
-    private var submitInitTask: SubmitInitTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +85,34 @@ class InitialLogin : AppCompatActivity() {
                                     })
                 }
 
-                progress_indicator.visibility = View.VISIBLE
-                submitInitTask = SubmitInitTask(username_input.text.toString(), displayed_name_input.text.toString())
-                submitInitTask?.execute()
+                initial_login_progress_indicator.visibility = View.VISIBLE
+
+                async(UI) {
+                    val asyncRes =
+                            bg {
+                                FrontendInterface.setUserInitializedOnServer(
+                                        username_input.text.toString(),
+                                        displayed_name_input.text.toString())
+                            }
+
+                    val res = asyncRes.await()
+
+                    initial_login_progress_indicator.visibility = View.GONE
+
+                    when(res) {
+                        SubmitInitStatus.USERNAME_TAKEN -> {
+                            username_input.error = "Username taken"
+                            username_input.requestFocus()
+                        }
+                        is SubmitInitStatus.UNKNOWN_ERROR -> {
+                            Toast.makeText(this@InitialLogin, "Unknown error: ${res.errmsg}", Toast.LENGTH_SHORT)
+                                    .show()
+                        }
+                        SubmitInitStatus.SUCCESS -> {
+                            startActivity(Intent(this@InitialLogin, HomeActivity::class.java))
+                        }
+                    }
+                }
             }
         }
 
@@ -138,30 +163,5 @@ class InitialLogin : AppCompatActivity() {
         object SUCCESS : SubmitInitStatus()
         object USERNAME_TAKEN : SubmitInitStatus()
         class UNKNOWN_ERROR(val errmsg: String) : SubmitInitStatus()
-    }
-
-    inner class SubmitInitTask internal constructor(private val username: String, private val displayName: String) :
-            AsyncTask<Void, Void, SubmitInitStatus>() {
-        override fun doInBackground(vararg p0: Void?): SubmitInitStatus {
-            return FrontendInterface.setUserInitializedOnServer(username, displayName)
-        }
-
-        override fun onPostExecute(result: SubmitInitStatus) {
-            progress_indicator.visibility = View.GONE
-            when(result) {
-                SubmitInitStatus.USERNAME_TAKEN -> {
-                    username_input.error = "Username taken"
-                    username_input.requestFocus()
-                }
-                is SubmitInitStatus.UNKNOWN_ERROR -> {
-                    Toast.makeText(this@InitialLogin, "Unknown error: ${result.errmsg}", Toast.LENGTH_SHORT)
-                            .show()
-                }
-                SubmitInitStatus.SUCCESS -> {
-                    startActivity(Intent(this@InitialLogin, HomeActivity::class.java))
-                }
-            }
-        }
-
     }
 }
