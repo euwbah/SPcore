@@ -240,6 +240,13 @@ class Duration {
                 days    * 1000 * 60 * 60 * 24
     }
 
+    fun getAbsolute(): Duration {
+        return  if (this.toMillisAccurate() < 0)
+                    -this
+                else
+                    this
+    }
+
     /**
      * Divides the duration into spans of size [span], and returns the
      * hypothetical upper bounds of the last partial span
@@ -250,13 +257,13 @@ class Duration {
      */
     fun roundUpToNearest(span: Duration): Duration {
         val rem = (this % span)
-        return this - (this % span) + if(rem == ZERO) ZERO else span
+        return this - rem + if(rem == ZERO || this < ZERO) ZERO else span
     }
+
     fun roundUpToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
         return roundUpToNearest(span)
     }
-
     /**
      * Divides the duration into spans of size [span], and returns the
      * lower bounds of the last partial span
@@ -266,13 +273,14 @@ class Duration {
      * Usage: `oneHour30Mins.roundUpToNearest(Duration(hours=1))` will return 2 hours
      */
     fun roundDownToNearest(span: Duration): Duration {
-        return this - (this % span)
+        val rem = this % span
+        return this - rem - if(this < ZERO && rem != ZERO) span else ZERO
     }
+
     fun roundDownToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
         return roundDownToNearest(span)
     }
-
     /**
      * Divides the duration into spans of size [span], and returns the
      * hypothetical upper or lower bounds of the last partial span, depending on whether the
@@ -284,13 +292,20 @@ class Duration {
      *
      */
     fun roundToNearest(span: Duration): Duration {
-        val rem = this % span
+        val abs = this.getAbsolute()
+        val rem = abs % span
         val roundUp = rem >= span / 2
-        return this - rem + if (roundUp) span else ZERO
+        val absRnd = abs - rem + if (roundUp) span else ZERO
+        return if(this < ZERO) -absRnd else absRnd
     }
+
     fun roundToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
         return roundToNearest(span)
+    }
+
+    private operator fun unaryMinus(): Duration {
+        return Duration(millis = -this.toMillisAccurate())
     }
 
     operator fun plus(that: Duration): Duration {
@@ -372,6 +387,8 @@ operator fun Calendar.minus(that: Calendar): Duration {
 
 /**
  * Rounds up the time segment of the calendar to the nearest [duration]
+ *
+ * NOTE: Values will not roll but will carry over, e.g. 23:59 round up to nearest hour will be 00:00 the next day
  */
 fun Calendar.roundUpToNearest(duration: Duration): Calendar {
     return this.startOfDay() + this.getTimeAsDuration().roundUpToNearest(duration)
