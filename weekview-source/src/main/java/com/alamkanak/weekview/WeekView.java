@@ -2001,7 +2001,21 @@ public class WeekView extends View {
         invalidate();
     }
 
+    /**
+     * Automatically scroll to the first event of the day
+     *
+     * Same as calling `goToEarliestVisibleEvent(0)`
+     *
+     */
     public void goToEarliestVisibleEvent() {
+        goToEarliestVisibleEvent(0);
+    }
+
+    /**
+     * Automatically scroll to the first event of the day
+     * @param hoursBefore The number of hours before the first event (e.g. passing 1 will scroll to 10 AM for an 11AM event)
+     */
+    public void goToEarliestVisibleEvent(double hoursBefore) {
 
         if(mCurrentPeriodEvents == null) {
             goToHour(12);
@@ -2030,6 +2044,8 @@ public class WeekView extends View {
             goToHour(12);
         } else {
             int hour = earliestEventStartTime.get(Calendar.HOUR_OF_DAY);
+            hour -= hoursBefore;
+            if (hour < 0) hour = 0;
             goToHour(hour);
         }
     }
