@@ -2,7 +2,6 @@ package com.spcore.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.*
@@ -23,7 +22,7 @@ class InvitationActivity: AppCompatActivity() {
         done.onClick {
             performSearh(arrayListOfSearchedUsers)
         }
-        event_crud_cancel_button.onClick {
+        invitation_cancel_button.onClick {
             finish()
         }
     }
