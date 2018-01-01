@@ -46,6 +46,9 @@ class EventDetailsActivity : AppCompatActivity() {
         event_details_location_text.text = event.location
         event_details_desc_text.text = event.description
         event_details_going_text.text = "Going (${event.going.size})"
+        event_details_not_going_text.text = "Not Going (${event.notGoing.size})"
+        event_details_havent_replied_text.text = "Not Responded (${event.haventReplied.size})"
+        event_details_deleted_invite_text.text = "Declined Invite (${event.deletedInvite.size})"
 
         Handler(mainLooper).post {
             runBlocking {

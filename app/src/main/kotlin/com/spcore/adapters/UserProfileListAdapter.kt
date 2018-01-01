@@ -53,7 +53,7 @@ class UserProfileListAdapter(context: Context, val users: List<User>) :
             }
         }
         view[R.id.username_text, TextView::class.java]?.apply {
-            text = user.username
+            text = "@${user.username}"
             textSize =
                     if(user.displayName == null)
                         18f
