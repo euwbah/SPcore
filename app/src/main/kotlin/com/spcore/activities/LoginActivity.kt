@@ -76,9 +76,6 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
             x: String -> x.matches(Regex("[pP]?\\d{7}"))
         }
 
-        Log.d("NIGGA LOGIN", "$adminNoStr, $passwordStr: ${TextUtils.isEmpty(passwordStr)}")
-
-
         if (TextUtils.isEmpty(passwordStr)) {
             password.error = getString(R.string.error_field_required)
             focusView = password

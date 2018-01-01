@@ -3,6 +3,7 @@ package com.spcore.activities
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
+import android.view.MotionEvent
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.fragments.DatePickerFragment
@@ -11,6 +12,8 @@ import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_create_update.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
 import java.util.*
+
+
 
 class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActivity"),
                                   DatePickerFragment.DateSetListener,
@@ -164,8 +167,6 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
                 val prevStart = start
 
                 start = start.startOfDay() + duration
-
-                Log.d("ORIG DIFF", (start - prevStart).toString())
 
                 if (start >= end)
                     // If `start` happens to be equal/after `end`, postpone `end` such that the duration between

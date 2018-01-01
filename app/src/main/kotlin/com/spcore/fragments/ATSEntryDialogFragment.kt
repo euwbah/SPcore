@@ -50,8 +50,6 @@ class ATSEntryDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.d("CREATE", "oaiegaerg")
-
         arguments?.let {
             lesson = it.getParcelable(ARG_LESSON)
             errmsg = it.getString(ARG_ERR_MSG)
@@ -60,7 +58,6 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d("CREATE VIEW", "oaiegaerg")
 
         val view = inflater.inflate(R.layout.fragment_atsentry_dialog, container, false)
         dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
@@ -106,7 +103,6 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("ATTACH", "oaiegaerg")
 
         if(context is ATSDialogEventsHandler) {
             listener = context
@@ -117,7 +113,6 @@ class ATSEntryDialogFragment : DialogFragment() {
 
     override fun onDetach() {
         super.onDetach()
-        Log.d("DETACH", "oaiegaerg")
     }
 
     /**

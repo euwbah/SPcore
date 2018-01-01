@@ -52,7 +52,6 @@
                 android:hint="Description"
                 android:inputType="text|textCapSentences|textAutoCorrect|textAutoComplete|textMultiLine"
                 android:paddingBottom="24dp"
-                android:maxLines="12"
                 android:singleLine="false" />
         </android.support.design.widget.TextInputLayout>
 

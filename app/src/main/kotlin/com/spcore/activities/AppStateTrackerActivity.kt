@@ -38,8 +38,6 @@ abstract class AppStateTrackerActivity(private val activitySPIdentity: String) :
     override fun onResume() {
         super.onResume()
 
-        Log.d("RESUMED", activitySPIdentity)
-
         getSharedPreferences("com.spcore.appstate", Context.MODE_PRIVATE)
                 .edit()
                 .putString("active", activitySPIdentity)
@@ -48,8 +46,6 @@ abstract class AppStateTrackerActivity(private val activitySPIdentity: String) :
 
     override fun onPause() {
         super.onPause()
-
-        Log.d("PAUSED", activitySPIdentity)
 
         getSharedPreferences("com.spcore.appstate", Context.MODE_PRIVATE)
                 .edit()
