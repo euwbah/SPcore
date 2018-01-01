@@ -4,6 +4,7 @@ import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.models.Event
 import com.spcore.models.User
 import java.util.*
+import kotlin.collections.ArrayList
 
 /*
     HARDCODE_MODE
@@ -14,6 +15,8 @@ val NatoshiSakamoto = User("1111111", "natoshi_sakamoto", "Natoshi Sakamoto", ar
 val NatoshiSakamoto1 = User("1111112", "natoshi_sakamoto1", "Natoshi Sakamoto", arrayListOf())
 val NatoshiSakamoto2 = User("1111113", "natoshi_sakamoto2", "Natoshi Sakamoto", arrayListOf())
 val NatoshiSakamoto3 = User("1111114", "natoshi_sakamoto3", "Natoshi Sakamoto", arrayListOf())
+
+val arListUsers = ArrayList<User>()
 
 fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()

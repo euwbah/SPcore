@@ -1,39 +1,47 @@
 package com.spcore.activities
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.widget.SearchView
+import android.widget.Toast
 import com.spcore.R
+import com.spcore.adapters.UserProfileListAdapter
+import com.spcore.helpers.*
+import com.spcore.helpers.arListUsers
+import kotlinx.android.synthetic.main.activity_invitations.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
-
-
-
-/**
- * Created by Budi Syahiddin on 31/12/2017.
- */
 
 class InvitationActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_invitations)
+
+        done.onClick {
+            performSearh()
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the options menu from XML
-        val inflater = menuInflater
-        inflater.inflate(R.menu.search_menu, menu)
+    private fun performSearh(){
+        arListUsers.add(NatoshiSakamoto)
+        arListUsers.add(NatoshiSakamoto1)
+        arListUsers.add(NatoshiSakamoto2)
+        arListUsers.add(NatoshiSakamoto3)
 
-        // Get the SearchView and set the searchable configuration
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search).actionView as SearchView
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView.setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
 
-        return true
+        if(userSearch.text == null)
+            finish()
+        else {
+            arListUsers.forEach {
+                if(it.username == userSearch.text.toString()){
+                    invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arListUsers)
+                }
+
+            }
+
+        }
+
     }
+
+
 }
