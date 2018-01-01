@@ -1,7 +1,7 @@
 package com.spcore.helpers
 
+import android.util.Log
 import android.widget.ListView
-
 
 /**
  * Sets ListView height dynamically based on the height of the items.
