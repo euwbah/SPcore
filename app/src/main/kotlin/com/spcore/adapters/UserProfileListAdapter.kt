@@ -15,7 +15,7 @@ import com.spcore.helpers.dpToPx
 import com.spcore.helpers.get
 import com.spcore.models.User
 
-class UserProfileListAdapter(context: Context, val users: List<User>) :
+class UserProfileListAdapter(context: Context, val users: List<User>, val userRoleMapping: Map<User, String> = mapOf()) :
         ArrayAdapter<User>(context, R.layout.template_user_list_item_layout, users) {
 
     /**
@@ -59,6 +59,14 @@ class UserProfileListAdapter(context: Context, val users: List<User>) :
                         18f
                     else
                         14f
+        }
+        view[R.id.role_text, TextView::class.java]?.apply {
+            userRoleMapping[user]?.let {
+                this.visibility = View.VISIBLE
+                this.text = it
+            } ?: run {
+                this.visibility = View.GONE
+            }
         }
 
         view.startAnimation(AnimationUtils.loadAnimation(context,

@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_event_details.*
 import kotlinx.android.synthetic.main.content_event_details.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.toast
 
@@ -67,13 +68,24 @@ class EventDetailsActivity : AppCompatActivity() {
 
     private fun updateUI() {
         async(UI) {
+            // TODO: To prevent this absolute horror, make a more generalized ListAdapter which supports
+            // multiple data types to allow for automated generation of list headers.
             val adapters = bg {
-                listOf(
-                        UserProfileListAdapter(this@EventDetailsActivity, event.going),
-                        UserProfileListAdapter(this@EventDetailsActivity, event.notGoing),
-                        UserProfileListAdapter(this@EventDetailsActivity, event.haventReplied),
-                        UserProfileListAdapter(this@EventDetailsActivity, event.deletedInvite)
-                )
+                val userRoleMapping = mapOf(event.creator to "Organizer")
+
+                listOf(event.going, event.notGoing, event.haventReplied, event.deletedInvite)
+                        .map {
+                            UserProfileListAdapter(
+                                    this@EventDetailsActivity,
+                                    it.sortedBy {
+                                        // make sure the organizer appears first
+                                        if (it == event.creator)
+                                            "\u0001"
+                                        else
+                                            it.username
+                                    },
+                                    userRoleMapping)
+                        }
             }
 
             val (goingAdapter,
@@ -86,6 +98,7 @@ class EventDetailsActivity : AppCompatActivity() {
             event_details_havent_replied_lv.adapter = haventRepliedAdapter
             event_details_deleted_invite_lv.adapter = deletedInviteAdapter
 
+            delay(50)
             forceListViewsHeightToWrapContent()
         }
 

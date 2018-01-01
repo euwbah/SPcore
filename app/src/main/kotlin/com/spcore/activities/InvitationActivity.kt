@@ -36,7 +36,6 @@ class InvitationActivity: AppCompatActivity() {
                 if(it.username == userSearch.text.toString()){
                     invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arListUsers)
                 }
-
             }
 
         }

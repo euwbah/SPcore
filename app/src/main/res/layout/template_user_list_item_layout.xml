@@ -26,28 +26,47 @@
 
     <TextView
         android:id="@+id/display_name_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="Archibald Bob Carson Doe"
         android:textColor="@android:color/background_dark"
         android:textSize="16sp"
         android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/role_text"
         app:layout_constraintStart_toEndOf="@+id/profile_pic"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/username_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="\@xXX_abcd_XXx"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/role_text"
         app:layout_constraintStart_toEndOf="@+id/profile_pic"
         app:layout_constraintTop_toBottomOf="@+id/display_name_text" />
+
+    <TextView
+        android:id="@+id/role_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_bevel_rectangle_border"
+        android:foregroundGravity="center"
+        android:padding="3dp"
+        android:text="Organizer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

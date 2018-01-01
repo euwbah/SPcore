@@ -87,7 +87,7 @@ val HardcodedEvents = mutableListOf(Event(
         newCalendar(2018, 0, 15, 13),
         newCalendar(2018, 0, 15, 15, 0, 0),
         Auth.user,
-        going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1,NatoshiSakamoto2,NatoshiSakamoto3),
+        going = arrayListOf(Auth.user, NatoshiSakamoto,NatoshiSakamoto1,NatoshiSakamoto2,NatoshiSakamoto3),
         notGoing = arrayListOf(DerpMcDerpson),
         haventReplied = arrayListOf(AdamNeely),
         deletedInvite = arrayListOf(SimonFransman),

@@ -22,6 +22,7 @@ fun ListView.setHeightToWrapContent(): Boolean {
             val item = listAdapter.getView(itemPos, null, this)
             item.measure(0, 0)
             totalItemsHeight += item.measuredHeight
+            Log.d("measured height", item.measuredHeight.toString())
         }
 
         // Get total height of all item dividers.
