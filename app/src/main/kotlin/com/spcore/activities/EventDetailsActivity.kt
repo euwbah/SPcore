@@ -43,12 +43,48 @@ class EventDetailsActivity : AppCompatActivity() {
 
         event_details_toolbar_title.text = event.name
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)
-        event_details_location_text.text = event.location
-        event_details_desc_text.text = event.description
-        event_details_going_text.text = "Going (${event.going.size})"
-        event_details_not_going_text.text = "Not Going (${event.notGoing.size})"
-        event_details_havent_replied_text.text = "Not Responded (${event.haventReplied.size})"
-        event_details_deleted_invite_text.text = "Declined Invite (${event.deletedInvite.size})"
+
+        event_details_location_text.apply {
+            if(event.location != null && event.location.isNotBlank())
+                text = event.location
+            else
+                visibility = View.GONE
+        }
+
+        event_details_desc_text.apply {
+            if(event.description != null && event.description.isNotBlank())
+                text = event.description
+            else
+                visibility = View.GONE
+        }
+
+        if(event.going.size != 0)
+            event_details_going_text.text = "Going (${event.going.size})"
+        else {
+            event_details_going_text.visibility = View.GONE
+            event_details_going_lv.visibility = View.GONE
+        }
+
+        if(event.notGoing.size != 0)
+            event_details_not_going_text.text = "Not Going (${event.notGoing.size})"
+        else {
+            event_details_not_going_text.visibility = View.GONE
+            event_details_not_going_lv.visibility = View.GONE
+        }
+
+        if(event.haventReplied.size != 0)
+            event_details_havent_replied_text.text = "Not Responded (${event.haventReplied.size})"
+        else {
+            event_details_havent_replied_text.visibility = View.GONE
+            event_details_havent_replied_lv.visibility = View.GONE
+        }
+
+        if(event.deletedInvite.size != 0)
+            event_details_deleted_invite_text.text = "Declined Invite (${event.deletedInvite.size})"
+        else {
+            event_details_deleted_invite_text.visibility = View.GONE
+            event_details_deleted_invite_lv.visibility = View.GONE
+        }
 
         Handler(mainLooper).post {
             runBlocking {

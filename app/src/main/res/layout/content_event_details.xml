@@ -11,7 +11,8 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp">
+        android:layout_marginTop="32dp"
+        android:paddingBottom="40dp">
 
         <!-- IMPORTANT: Remember to use includeFontPadding to properly vertical-center the text
                             in relation to the drawable icon
@@ -186,6 +187,7 @@
             android:text="Declined Invite (n)"
             android:textColor="#BB000000"
             android:textSize="14sp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_details_havent_replied_lv" />
@@ -195,7 +197,6 @@
             android:id="@+id/event_details_deleted_invite_lv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:divider="@null"
@@ -203,6 +204,7 @@
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:scrollbars="none"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/event_details_deleted_invite_text"
             app:layout_constraintStart_toStartOf="@+id/event_details_deleted_invite_text"
