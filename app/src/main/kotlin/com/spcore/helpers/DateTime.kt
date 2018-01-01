@@ -183,19 +183,68 @@ fun Calendar.getTimeAsDuration() : Duration {
             get(Calendar.SECOND))
 }
 
-class Duration(
-        val days: Int = 0,
-        val hours: Int = 0,
-        val minutes: Int = 0,
-        val seconds: Int = 0,
-        val millis: Int = 0
-) {
+/**
+ * Honestly because Java datetime and calendar sucks so much
+ */
+class Duration {
+    var days: Int = 0
+        private set
+    var hours: Int = 0
+        private set
+    var minutes: Int = 0
+        private set
+    var seconds: Int = 0
+        private set
+    var millis: Double = 0.0
+        private set
+
+
+    constructor(
+            days: Int = 0,
+            hours: Int = 0,
+            minutes: Int = 0,
+            seconds: Int = 0,
+            millis: Double = 0.0
+    ) {
+        this.millis = millis % 1000
+        this.seconds = seconds + millis.toInt() / 1000
+
+        this.minutes = minutes + this.seconds / 60
+        this.seconds %= 60
+
+        this.hours = hours + minutes / 60
+        this.minutes %= 60
+
+        this.days = days + hours / 24
+        this.hours %= 24
+    }
+
     fun toMillis(): Int {
+        return  millis.toInt() +
+                seconds * 1000 +
+                minutes * 1000 * 60 +
+                hours   * 1000 * 60 * 60 +
+                days    * 1000 * 60 * 60 * 24
+    }
+
+    fun toMillisAccurate(): Double {
         return  millis +
                 seconds * 1000 +
                 minutes * 1000 * 60 +
                 hours   * 1000 * 60 * 60 +
                 days    * 1000 * 60 * 60 * 24
+    }
+
+    operator fun plus(that: Duration): Duration {
+        return Duration(millis = this.toMillisAccurate() + that.toMillisAccurate())
+    }
+
+    operator fun minus(that: Duration): Duration {
+        return Duration(millis = this.toMillisAccurate() - that.toMillisAccurate())
+    }
+
+    override fun toString(): String {
+        return "$days days, $hours hours, $minutes minutes, and $seconds.${"%03d".format(millis)} seconds"
     }
 }
 

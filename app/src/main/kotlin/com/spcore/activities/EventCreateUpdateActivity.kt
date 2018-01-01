@@ -5,19 +5,22 @@ import android.os.Bundle
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.fragments.DatePickerFragment
+import com.spcore.fragments.TimePickerFragment
 import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_create_update.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
 import java.util.*
 
 class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActivity"),
-                                  DatePickerFragment.DateSetListener {
-
+                                  DatePickerFragment.DateSetListener,
+                                  TimePickerFragment.TimeSetListener {
+    // These fragment references are only necessary to prevent memory leaks
     private var datePicker: DatePickerFragment? = null
 
+    private var timePicker: TimePickerFragment? = null
     private var newStart: Calendar? = null
-    private var newEnd: Calendar? = null
 
+    private var newEnd: Calendar? = null
     private lateinit var event: Event
 
     /*
@@ -64,6 +67,20 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             datePicker?.show(supportFragmentManager, "end")
         }
 
+        event_crud_start_time_input.setOnClickListener {
+            timePicker = TimePickerFragment.newInstance(
+                    (newStart ?: event.startTime).getTimeAsDuration())
+
+            timePicker?.show(supportFragmentManager, "start")
+        }
+
+        event_crud_end_time_input.setOnClickListener {
+            timePicker = TimePickerFragment.newInstance(
+                    (newEnd ?: event.endTime).getTimeAsDuration())
+
+            timePicker?.show(supportFragmentManager, "end")
+        }
+
         event_crud_cancel_button.setOnClickListener {
             cancel()
         }
@@ -86,12 +103,25 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
     override fun onDatePicked(calendar: Calendar, tag: String) {
         when(tag) {
             "start" -> {
-                newStart = calendar + event.startTime.getTimeAsDuration()
+                newStart = calendar + (newStart ?: event.startTime).getTimeAsDuration()
                 event_crud_start_date_input.textStr = newStart?.getHumanReadableDate(true) ?: "NPE"
             }
             "end" -> {
-                newEnd = calendar + event.endTime.getTimeAsDuration()
+                newEnd = calendar + (newEnd ?: event.endTime).getTimeAsDuration()
                 event_crud_end_date_input.textStr = newEnd?.getHumanReadableDate(true) ?: "NPE"
+            }
+        }
+    }
+
+    override fun onTimePicked(duration: Duration, tag: String) {
+        when(tag) {
+            "start" -> {
+                newStart = (newStart ?: event.startTime).startOfDay() + duration
+                event_crud_start_time_input.textStr = newStart?.getHumanReadableTime(false) ?: "NPE"
+            }
+            "end" -> {
+                newEnd = (newEnd ?: event.endTime).startOfDay() + duration
+                event_crud_end_time_input.textStr = newEnd?.getHumanReadableTime(false) ?: "NPE"
             }
         }
     }
