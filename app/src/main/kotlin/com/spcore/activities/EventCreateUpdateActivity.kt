@@ -1,6 +1,7 @@
 package com.spcore.activities
 
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import com.spcore.helpers.*
 import com.spcore.R
@@ -114,7 +115,7 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             event_crud_toolbar_title.apply {
                 if (textStr.isBlank()) {
                     ok = false
-                    error = "Title is required"
+                    error = Html.fromHtml("<font color='#eeeeee'>Title is required</font>")
                     requestFocus()
                 } else
                     error = null
