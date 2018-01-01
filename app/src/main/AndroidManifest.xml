@@ -59,6 +59,17 @@
             android:windowSoftInputMode="stateVisible"
             />
 
+        <activity android:name=".activities.InvitationActivity"
+            android:label="InvitationActivity"
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
+
         <service
             android:name=".services.SendATSIntentService"
             android:exported="false" />
