@@ -36,10 +36,6 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
         setContentView(R.layout.activity_login)
 
 
-        // Assuming LoginActivity is the first activity:
-
-        SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
-
         password.setOnEditorActionListener(TextView.OnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 attemptLogin()

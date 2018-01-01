@@ -10,15 +10,16 @@ import com.spcore.fragments.DatePickerFragment
 import com.spcore.fragments.TimePickerFragment
 import com.spcore.models.Event
 import kotlinx.android.synthetic.main.activity_event_create_update.*
-import kotlinx.android.synthetic.main.activity_initial_login.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.*
 
-
+const val RC_EVENT_UPDATE_CANCELLED = 0
+const val RC_EVENT_UPDATED = 1
 
 class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActivity"),
                                   DatePickerFragment.DateSetListener,
@@ -74,6 +75,8 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
         if(mode == "update") {
             event = intent.getParcelableExtra("event")
             initUpdateMode()
+        } else if (mode == "create") {
+            initCreateMode()
         }
 
         event_crud_start_date_input.setOnClickListener {
@@ -102,6 +105,50 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
     }
 
+    private fun initCreateMode() {
+        event_crud_toolbar_title.apply {
+            textStr = "New Event"
+            requestFocus()
+        }
+
+        start = Calendar.getInstance().roundUpToNearest(hours = 1)
+        end = (Calendar.getInstance() + Duration(hours = 1)).roundUpToNearest(hours = 1)
+
+        event_crud_save_button.setOnClickListener {
+
+            if (!isInputValid()) {
+                return@setOnClickListener
+            }
+
+            event = Event(
+                    event_crud_toolbar_title.textStr.trim(),
+                    event_crud_description_input.textStr.trim(),
+                    event_crud_location_input.textStr.trim(),
+                    start,
+                    end,
+                    Auth.user,
+                    going = arrayListOf(Auth.user))
+
+            async(UI) {
+                val asyncCreateEvent = bg {
+                    FrontendInterface.createEvent(event!!)
+                }
+
+                event_crud_save_button.visibility = View.GONE
+                event_crud_progress_indicator.visibility = View.VISIBLE
+
+                asyncCreateEvent.await()
+
+                event_crud_save_button.visibility = View.VISIBLE
+                event_crud_progress_indicator.visibility = View.GONE
+
+                finish()
+
+                startActivity<EventDetailsActivity>("event" to event)
+            }
+        }
+    }
+
     private fun initUpdateMode() {
         // Shadow global nullable event with asserted non-null version because in
         // no case should event be null in here
@@ -118,18 +165,7 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
         event_crud_save_button.setOnClickListener {
 
-            var ok = true
-
-            event_crud_toolbar_title.apply {
-                if (textStr.isBlank()) {
-                    ok = false
-                    error = Html.fromHtml("<font color='#eeeeee'>Title is required</font>")
-                    requestFocus()
-                } else
-                    error = null
-            }
-
-            if (!ok) {
+            if (!isInputValid()) {
                 return@setOnClickListener
             }
 
@@ -139,10 +175,8 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             event.startTime = start
             event.endTime = end
 
-            setResult(UPDATE_EVENT_DETAILS,
-                    intent
-                            .putExtra("refresh", true)
-                            .putExtra("event", event)
+            setResult(RC_EVENT_UPDATED,
+                    intent.putExtra("event", event)
             )
 
             event_crud_progress_indicator.visibility = View.VISIBLE
@@ -161,6 +195,21 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
                 finish()
             }
         }
+    }
+
+    private fun isInputValid(): Boolean {
+        var ok = true
+
+        event_crud_toolbar_title.apply {
+            if (textStr.isBlank()) {
+                ok = false
+                error = Html.fromHtml("<font color='#eeeeee'>Title is required</font>")
+                requestFocus()
+            } else
+                error = null
+        }
+
+        return ok
     }
 
     override fun onDatePicked(calendar: Calendar, tag: String) {
@@ -215,12 +264,12 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
     fun cancel() {
         when(mode) {
             "update" -> {
-                setResult(UPDATE_EVENT_DETAILS,
+                setResult(RC_EVENT_UPDATE_CANCELLED,
                         intent.putExtra("refresh", false))
                 finish()
             }
             "create" -> {
-                TODO()
+                finish()
             }
         }
     }

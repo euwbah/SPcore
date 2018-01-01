@@ -49,9 +49,14 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.HomeActivity"
             />
+        <!--
+            Note that the EventCreateUpdateActivity doesn't really have a parent activity
+            as it will spawn various activities depending on how it is used
+        -->
         <activity android:name=".activities.EventCreateUpdateActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".activities.EventDetailsActivity"
+            android:parentActivityName=".activities.HomeActivity"
+            android:windowSoftInputMode="stateVisible"
             />
 
         <service

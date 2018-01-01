@@ -326,3 +326,14 @@ object AppState : SharedPrefWrapper {
             super.equals(other)
     }
 }
+
+object CacheState : SharedPrefWrapper {
+    private var CacheStateSP : SharedPreferences? = null
+
+    override fun <T : Context> initializeSP(context: T) {
+        if (CacheStateSP != null)
+            CacheStateSP = context.getSharedPreferences(
+                    "com.spcore.cachestate",
+                    Context.MODE_PRIVATE)
+    }
+}
