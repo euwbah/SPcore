@@ -33,7 +33,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
      * @param month Note that the month param is 0-based
      */
     override fun onDateSet(picker: DatePicker?, year: Int, month: Int, day: Int) {
-        listener?.onDatePicked(newCalendar(year, month + 1, day), tag ?: "")
+        listener?.onDatePicked(newCalendar(year, month, day), tag ?: "")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

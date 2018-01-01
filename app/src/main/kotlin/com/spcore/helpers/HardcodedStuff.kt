@@ -18,7 +18,7 @@ val NatoshiSakamoto3 = User("1111114", "natoshi_sakamoto3", "Natoshi Sakamoto", 
 fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()
 
-    val cal = Calendar.getInstance().apply { clear(); set(year, month, 1) }
+    val cal = newCalendar(year, month, 1)
 
     val lastDate = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
 
@@ -45,7 +45,7 @@ val DerpMcDerpson = User("2222222", "derpmcderpson", "Derp McDerpson", arrayList
 fun derpSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()
 
-    val cal = Calendar.getInstance().apply { clear(); set(year, month, 1) }
+    val cal = newCalendar(year, month, 1)
 
     val lastDate = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
 
@@ -81,12 +81,8 @@ val HardcodedEvents = listOf(Event(
         "Pre-SIP Lunch",
         "Hanging out with mah lads before the big SIPPP",
         "J Cube",
-        Calendar.getInstance().apply {
-            set(2018, 0, 15, 13, 0, 0)
-        },
-        Calendar.getInstance().apply {
-            set(2018, 0, 15, 15, 0, 0)
-        },
+        newCalendar(2018, 0, 15, 13),
+        newCalendar(2018, 0, 15, 15, 0, 0),
         Auth.user,
         going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1,NatoshiSakamoto2,NatoshiSakamoto3),
         notGoing = arrayListOf(DerpMcDerpson),

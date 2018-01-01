@@ -18,9 +18,13 @@ fun Calendar.startOfDay(): Calendar {
     return cal
 }
 
-fun newCalendar(year: Int, month: Int, day: Int, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) : Calendar {
+/**
+ * @param month Note that the `month` param is 0-based
+ */
+fun newCalendar(year: Int, month: Int, day: Int, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Int = 0) : Calendar {
     return Calendar.getInstance().apply {
         set(year, month, day, hours, minutes, seconds)
+        set(Calendar.MILLISECOND, millis)
     }
 }
 
@@ -180,7 +184,8 @@ fun Calendar.getTimeAsDuration() : Duration {
             0,
             get(Calendar.HOUR_OF_DAY),
             get(Calendar.MINUTE),
-            get(Calendar.SECOND))
+            get(Calendar.SECOND),
+            get(Calendar.MILLISECOND).toDouble())
 }
 
 /**
@@ -212,10 +217,10 @@ class Duration {
         this.minutes = minutes + this.seconds / 60
         this.seconds %= 60
 
-        this.hours = hours + minutes / 60
+        this.hours = hours + this.minutes / 60
         this.minutes %= 60
 
-        this.days = days + hours / 24
+        this.days = days + this.hours / 24
         this.hours %= 24
     }
 
@@ -244,7 +249,7 @@ class Duration {
     }
 
     override fun toString(): String {
-        return "$days days, $hours hours, $minutes minutes, and $seconds.${"%03d".format(millis)} seconds"
+        return "$days days, $hours hours, $minutes minutes, and $seconds seconds"
     }
 }
 
@@ -270,4 +275,15 @@ operator fun Calendar.minus(duration: Duration): Calendar {
     val newCalendar = this.clone() as Calendar
     newCalendar.add(Calendar.MILLISECOND, -duration.toMillis())
     return newCalendar
+}
+
+/**
+ * Gets the difference between two [Calendar] objects
+ *
+ * Usage: `val durationTaken: Duration = endCalendar - startCalendar`
+ *
+ * @returns A [Duration] representing the signed (non-absolute) difference of [this] minus [that]
+ */
+operator fun Calendar.minus(that: Calendar): Duration {
+    return Duration(millis=this.timeInMillis.toDouble() - that.timeInMillis.toDouble())
 }
