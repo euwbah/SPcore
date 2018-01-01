@@ -60,10 +60,11 @@
             <!-- For displaying event title -->
             <EditText
                 android:id="@+id/event_crud_toolbar_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|start"
                 android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
                 android:text="placeholder title"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />

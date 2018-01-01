@@ -109,16 +109,34 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
         event_crud_save_button.setOnClickListener {
 
+            var ok = true
+
+            event_crud_toolbar_title.apply {
+                if (textStr.isBlank()) {
+                    ok = false
+                    error = "Title is required"
+                    requestFocus()
+                } else
+                    error = null
+            }
+
+            if (!ok) {
+                return@setOnClickListener
+            }
+
             event.name = event_crud_toolbar_title.textStr.trim()
             event.location = event_crud_location_input.textStr.trim()
             event.description = event_crud_description_input.textStr.trim()
-
+            event.startTime = start
+            event.endTime = end
 
             setResult(UPDATE_EVENT_DETAILS,
                     intent
-                            .putExtra("refresh", true)
+                            .putExtra("reftesh", true)
                             .putExtra("event", event)
             )
+
+
         }
     }
 
