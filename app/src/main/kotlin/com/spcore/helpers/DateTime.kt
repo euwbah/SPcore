@@ -175,6 +175,14 @@ infix fun Calendar.isFrom(start: Calendar): CalendarRangeBuilder {
 
 }
 
+fun Calendar.getTimeAsDuration() : Duration {
+    return Duration(
+            0,
+            get(Calendar.HOUR_OF_DAY),
+            get(Calendar.MINUTE),
+            get(Calendar.SECOND))
+}
+
 class Duration(
         val days: Int = 0,
         val hours: Int = 0,

@@ -15,6 +15,18 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
     private var datePicker: DatePickerFragment? = null
 
+    private var newStart: Calendar? = null
+    private var newEnd: Calendar? = null
+
+    private lateinit var event: Event
+
+    /*
+        Note: Do NOT mutate any of the event's properties until
+        the save button is clicked. Room persistent storage is planned
+        for the future and the Event models along with the other models will
+        cause the local cache to update upon reassignment.
+     */
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_create_update)
@@ -22,12 +34,14 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
         setSupportActionBar(event_crud_toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        event = intent.getParcelableExtra("event")
+
         if(intent.extras.getString("mode") == "update")
-            initUpdateMode(intent.extras.getParcelable("event"))
+            initUpdateMode()
 
     }
 
-    private fun initUpdateMode(event: Event) {
+    private fun initUpdateMode() {
         event_crud_toolbar_title.textStr = event.name
         event_crud_location_input.textStr = event.location
         event_crud_description_input.textStr = event.description
@@ -37,14 +51,21 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
         event_crud_end_time_input.textStr = event.endTime.getHumanReadableTime(false)
 
         event_crud_start_date_input.setOnClickListener {
-            datePicker = DatePickerFragment.newInstance(event.startTime.timeInMillis)
+            datePicker = DatePickerFragment.newInstance(
+                    (newStart ?: event.startTime).startOfDay().timeInMillis
+            )
             datePicker?.show(supportFragmentManager, "start")
         }
 
+        event_crud_end_date_input.setOnClickListener {
+            datePicker = DatePickerFragment.newInstance(
+                    (newEnd ?: event.endTime).startOfDay().timeInMillis
+            )
+            datePicker?.show(supportFragmentManager, "end")
+        }
+
         event_crud_cancel_button.setOnClickListener {
-            setResult(UPDATE_EVENT_DETAILS,
-                    intent.putExtra("refresh", false))
-            finish()
+            cancel()
         }
 
         event_crud_save_button.setOnClickListener {
@@ -64,8 +85,24 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
     override fun onDatePicked(calendar: Calendar, tag: String) {
         when(tag) {
-            "start" -> TODO()
-            "end" -> TODO()
+            "start" -> {
+                newStart = calendar + event.startTime.getTimeAsDuration()
+                event_crud_start_date_input.textStr = newStart?.getHumanReadableDate(true) ?: "NPE"
+            }
+            "end" -> {
+                newEnd = calendar + event.endTime.getTimeAsDuration()
+                event_crud_end_date_input.textStr = newEnd?.getHumanReadableDate(true) ?: "NPE"
+            }
         }
+    }
+
+    override fun onBackPressed() {
+        cancel()
+    }
+
+    fun cancel() {
+        setResult(UPDATE_EVENT_DETAILS,
+                intent.putExtra("refresh", false))
+        finish()
     }
 }
