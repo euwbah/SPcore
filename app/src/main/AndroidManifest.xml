@@ -62,6 +62,7 @@
         <activity android:name=".activities.InvitationActivity"
             android:label="InvitationActivity"
             android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
