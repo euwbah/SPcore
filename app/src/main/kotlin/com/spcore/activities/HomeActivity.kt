@@ -18,21 +18,22 @@ import com.spcore.models.Lesson
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 import kotlinx.android.synthetic.main.home_nav_header.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 import org.jetbrains.anko.startActivity
 import java.util.*
 
-class HomeActivity : AppStateTrackerActivity("HomeActivity") {
+private const val CCV_CURRDATE_TAG_ID = 156376132
+
+class HomeActivity : AppStateTrackerActivity("HomeActivity"),
+                     AnkoLogger {
 
     private var isAppBarExpanded = false
 
     private var toggleListener: ActionBarDrawerToggle? = null
-
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-
-        setScheduleViewDate(Calendar.getInstance())
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +88,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
         toolbar_dropdown_calendar.setListener(object : CompactCalendarView.CompactCalendarViewListener {
             override fun onDayClick(dateClicked: Date) {
-                setScheduleViewDate(dateClicked.toCalendar())
+                val cal = dateClicked.toCalendar()
+                setScheduleViewDate(cal)
+                toolbar_dropdown_calendar.setTag(CCV_CURRDATE_TAG_ID, cal)
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
@@ -114,6 +117,14 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
         schedule_view.setScrollListener {
             newFirstVisibleDay, oldFirstVisibleDay ->
+            // NOTE: WeekView.ScrollListener will activate whenever its displayed date(s) changes,
+            // whether the result of a direct or indirect action. This means selecting a date
+            // on the toolbar_dropdown_calendar, which in turn calls setScheduleViewDate,
+            // will ultimately cause ScrollListener to be evoked. (Which results in a repeat call of
+            // setCalendarDate). Hence this check is necessary to avoid utter failure especially
+            // when it comes to the synchronicity of cueing and triggering goToEarliestVisibleEvent
+
+            if ((toolbar_dropdown_calendar.getTag(CCV_CURRDATE_TAG_ID) as? Calendar)?.startOfDay() != newFirstVisibleDay.startOfDay())
                 setCalendarDate(newFirstVisibleDay)
         }
 
@@ -122,7 +133,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
                     when(event) {
                         is Lesson -> Intent(this, LessonDetailsActivity::class.java)
                         is Event -> Intent(this, EventDetailsActivity::class.java)
-                        else -> TODO("Unsupported event type")
+                        else -> return@setOnEventClickListener
                     }
 
             intent.putExtra("event", event)
@@ -132,7 +143,20 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
         schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 15
 
-        schedule_view.eventPadding = 3.dpToPx().toInt()
+        schedule_view.eventMarginVertical = 1.5.dpToPx().toInt()
+
+        async(UI) {
+            // The delay is necessary as the week view needs some time to load
+            // in order for goToEarliestEvent and its related event listeners
+            // to function reliably.
+
+            // There's no other way to fix this other than to rewrite the
+            // WeekView package from scratch with more robust and canonical synchronicity,
+            // obviously I'm not gonna do that so guess we'll have to deal with this stupid
+            // hack.
+            delay(40)
+            setScheduleViewDate(Calendar.getInstance())
+        }
 
         create_event_fab.setOnClickListener {
             // TODO: Change this to startActivityForResult
@@ -145,16 +169,38 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
         // this is really really inefficient, but it works for now.
         schedule_view.notifyDatasetChanged()
+
+    }
+
+    /**
+     * Method body is self-explanatory
+     */
+    private fun setGoToEarliestVisibleEventLoadTrigger() {
+        debug("event loaded listener cued")
+        schedule_view.setEventsLoadedListener {
+            // once-off event
+            schedule_view.goToEarliestVisibleEvent(2.0)
+            removeGoToEarliestVisibleEventLoadTrigger()
+
+            debug("event loaded listener triggered")
+        }
+    }
+
+    private fun removeGoToEarliestVisibleEventLoadTrigger() {
+        schedule_view.eventsLoadedListener = null
+
+        debug("event loaded listener trigger cancelled")
     }
 
     private fun setScheduleViewDate(cal: Calendar) {
+        setGoToEarliestVisibleEventLoadTrigger()
         schedule_view.goToDate(cal)
-        schedule_view.goToEarliestVisibleEvent(2.0)
         setMYTextView(cal)
     }
 
 
     private fun setCalendarDate(cal: Calendar) {
+        debug("setCalendarDate")
         setMYTextView(cal)
         toolbar_dropdown_calendar.setCurrentDate(cal.toDate())
     }

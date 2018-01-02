@@ -1056,8 +1056,12 @@ public class WeekView extends View {
             computePositionOfEvents(eventRects);
         }
 
-        if(mEventsLoadedListener != null)
+        Log.d("WeekView", "PRE triggered events loaded listener");
+
+        if(mEventsLoadedListener != null) {
             mEventsLoadedListener.onEventsLoaded();
+            Log.d("WeekView", "triggered events loaded listener");
+        }
     }
 
     /**
@@ -2034,8 +2038,8 @@ public class WeekView extends View {
 
         List<WeekViewEvent> visibleEvents = new ArrayList<>();
 
-        Calendar lastDayEnd = (Calendar) mLastVisibleDay.clone();
-        lastDayEnd.add(Calendar.DAY_OF_MONTH, 1);
+        Calendar lastDayEnd = (Calendar) mFirstVisibleDay.clone();
+        lastDayEnd.add(Calendar.DAY_OF_MONTH, mNumberOfVisibleDays);
         lastDayEnd.add(Calendar.MILLISECOND, -1);
         for(WeekViewEvent e : mCurrentPeriodEvents)
             if (e.getStartTime().compareTo(mFirstVisibleDay) >= 0 &&
