@@ -28,7 +28,7 @@ class InvitationActivity: AppCompatActivity() {
         invitation_cancel_button.onClick {
             finish()
         }
-    }
+    }\
 
     private fun performSearch(arrayList: ArrayList<User>) {
         arrayList.clear()
