@@ -155,6 +155,7 @@ public class WeekView extends View {
     private EmptyViewLongPressListener mEmptyViewLongPressListener;
     private DateTimeInterpreter mDateTimeInterpreter;
     private ScrollListener mScrollListener;
+    private EventsLoadedListener mEventsLoadedListener;
 
     // Behaviour options
     private boolean mDisplayDayOrdinalOfMultiDayEvents = true;
@@ -1054,6 +1055,9 @@ public class WeekView extends View {
             }
             computePositionOfEvents(eventRects);
         }
+
+        if(mEventsLoadedListener != null)
+            mEventsLoadedListener.onEventsLoaded();
     }
 
     /**
@@ -1301,6 +1305,12 @@ public class WeekView extends View {
     public ScrollListener getScrollListener(){
         return mScrollListener;
     }
+
+    public void setEventsLoadedListener(EventsLoadedListener l) {
+        this.mEventsLoadedListener = l;
+    }
+
+    public EventsLoadedListener getEventsLoadedListener() { return mEventsLoadedListener; }
 
     /**
      * Get the interpreter which provides the text to show in the header column and the header row.
@@ -2119,5 +2129,12 @@ public class WeekView extends View {
          * @param oldFirstVisibleDay The old first visible day (is null on the first call).
          */
         void onFirstVisibleDayChanged(Calendar newFirstVisibleDay, Calendar oldFirstVisibleDay);
+    }
+
+    public interface EventsLoadedListener {
+        /**
+         * A simple callback which will get called every time getMoreEvents is called
+         */
+        void onEventsLoaded();
     }
 }

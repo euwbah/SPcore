@@ -132,6 +132,8 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
         schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 15
 
+        schedule_view.eventPadding = 3.dpToPx().toInt()
+
         create_event_fab.setOnClickListener {
             // TODO: Change this to startActivityForResult
             startActivity<EventCreateUpdateActivity>("mode" to "create")

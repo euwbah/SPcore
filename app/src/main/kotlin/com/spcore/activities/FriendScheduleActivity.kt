@@ -71,7 +71,7 @@ class FriendScheduleActivity : AppCompatActivity() {
 //                        is Lesson -> Intent(this, LessonDetailsActivity::class.java)
 //                        is Event -> Intent(this, EventDetailsActivity::class.java)
 //                        else -> TODO("Unsupported event type")
-//                    }
+//                    }des
 //
 //            intent.putExtra("event", event)
 //
