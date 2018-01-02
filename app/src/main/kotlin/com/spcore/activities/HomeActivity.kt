@@ -45,6 +45,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         home_drawer_layout.addDrawerListener(toggleListener!!)
         toggleListener!!.syncState()
 
+        nav_view.setCheckedItem(R.id.nav_day_view)
 
         nav_view.setNavigationItemSelectedListener navHandler@ {
 
