@@ -8,7 +8,6 @@ import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.Auth
-import com.spcore.helpers.NatoshiSakamoto
 import com.spcore.helpers.humanReadableTimeRange
 import com.spcore.helpers.setHeightToWrapContent
 import com.spcore.models.Event

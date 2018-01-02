@@ -16,8 +16,6 @@ val NatoshiSakamoto1 = User("1111112", "natoshi_sakamoto1", "Natoshi Sakamoto", 
 val NatoshiSakamoto2 = User("1111113", "natoshi_sakamoto2", "Natoshi Sakamoto", arrayListOf())
 val NatoshiSakamoto3 = User("1111114", "natoshi_sakamoto3", "Natoshi Sakamoto", arrayListOf())
 
-val arListUsers = ArrayList<User>()
-
 fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()
 
@@ -73,6 +71,19 @@ fun derpSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
 val SimonFransman = User("3333333", "yalikejazz", "Simon Fransman", arrayListOf())
 
 val AdamNeely = User("4444444", "thelick", "BASS", arrayListOf())
+
+val arListUsers = arrayListOf(
+        NatoshiSakamoto, NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3,
+        DerpMcDerpson, SimonFransman, AdamNeely)
+
+
+/*
+   Hardcoded lessons
+ */
+
+val HardcodedLessons = mapOf(
+
+)
 
 /*
     HARDCODE_MODE

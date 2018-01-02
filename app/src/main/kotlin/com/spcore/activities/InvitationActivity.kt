@@ -27,12 +27,7 @@ class InvitationActivity: AppCompatActivity() {
         }
     }
 
-    private fun performSearh(arrayList: ArrayList<User>){
-        // dummy data
-        arListUsers.add(NatoshiSakamoto)
-        arListUsers.add(NatoshiSakamoto1)
-        arListUsers.add(NatoshiSakamoto2)
-        arListUsers.add(NatoshiSakamoto3)
+    private fun performSearh(arrayList: ArrayList<User>) {
 
         if(userSearch.text.isNullOrBlank())
             finish()
