@@ -2,6 +2,7 @@ package com.spcore.helpers
 
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.models.Event
+import com.spcore.models.Lesson
 import com.spcore.models.User
 import java.util.*
 import kotlin.collections.ArrayList
@@ -81,8 +82,30 @@ val arListUsers = arrayListOf(
    Hardcoded lessons
  */
 
-val HardcodedLessons = mapOf(
+/**
+ * Only used for [HARDCODE_MODE]
+ */
+class WeeklyLesson(val moduleName: String, val moduleCode: String, val location: String, val lessonType: String,
+                   val startTime: Duration, val endTime: Duration)
 
+val HardcodedLessons = mapOf(
+    Calendar.MONDAY to listOf(
+            WeeklyLesson("DSAL", "ST0218", "T2013", "TUT",
+                    Duration(hours=8, minutes = 30),
+                    Duration(hours=9, minutes = 30))
+        ),
+        Calendar.TUESDAY to listOf(
+
+        ),
+        Calendar.WEDNESDAY to listOf(
+
+        ),
+        Calendar.THURSDAY to listOf(
+
+        ),
+        Calendar.FRIDAY to listOf(
+
+        )
 )
 
 /*
