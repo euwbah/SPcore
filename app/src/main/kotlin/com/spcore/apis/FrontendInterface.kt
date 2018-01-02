@@ -62,7 +62,19 @@ object FrontendInterface {
 
         if(HARDCODE_MODE) {
 
-
+            val cal = newCalendar(year, month-1, 1)
+            for(day in 1..cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                cal.set(Calendar.DAY_OF_MONTH, day)
+                HardcodedLessons[cal.get(Calendar.DAY_OF_WEEK)]?.forEach {
+                    it.apply {
+                        schedule.add(
+                                Lesson(moduleName, moduleCode, location, lessonType,
+                                        cal.startOfDay() + startTime,
+                                        cal.startOfDay() + endTime)
+                        )
+                    }
+                }
+            }
 
             val now = Calendar.getInstance()
             // only add now for the current month
@@ -71,6 +83,7 @@ object FrontendInterface {
                         "NOW",
                         "1715N0W",
                         "Nowland",
+                        "TUT",
                         now - Duration(hours = 1),
                         now + Duration(hours = 1)
                 ))
