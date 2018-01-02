@@ -3,27 +3,21 @@ package com.spcore.activities
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.os.Handler
+import android.os.PersistableBundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
-import com.spcore.helpers.Auth
-import com.spcore.helpers.FULL_MONTH_YEAR_DATE_FORMAT
-import com.spcore.helpers._or
-import com.spcore.helpers.toCalendar
+import com.spcore.helpers.*
 
-import com.spcore.listeners.AppBarStateListener
 import com.spcore.models.Event
 import com.spcore.models.Lesson
 
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 import kotlinx.android.synthetic.main.home_nav_header.*
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.startActivity
 import java.util.*
 
@@ -31,6 +25,14 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
     private var isAppBarExpanded = false
 
+    private var toggleListener: ActionBarDrawerToggle? = null
+
+    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onPostCreate(savedInstanceState, persistentState)
+
+        setScheduleViewDate(Calendar.getInstance())
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +41,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
         title = "My Timetable"
 
-        val toggleListener = ActionBarDrawerToggle(this, home_drawer_layout, toolbar, R.string.nav_tts_open, R.string.nav_tts_close)
-        home_drawer_layout.addDrawerListener(toggleListener)
-
-        toggleListener.syncState()
+        toggleListener = ActionBarDrawerToggle(this, home_drawer_layout, toolbar, R.string.nav_tts_open, R.string.nav_tts_close)
+        home_drawer_layout.addDrawerListener(toggleListener!!)
+        toggleListener!!.syncState()
 
         nav_view.setNavigationItemSelectedListener navHandler@ {
 
@@ -82,72 +83,28 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         })
 
 
-        toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.ENGLISH)
+        toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.getDefault())
         toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
         toolbar_dropdown_calendar.setListener(object : CompactCalendarView.CompactCalendarViewListener {
             override fun onDayClick(dateClicked: Date) {
-                setScheduleViewDate(dateClicked)
+                setScheduleViewDate(dateClicked.toCalendar())
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
-                setMYTextView(firstDayOfNewMonth)
+                setMYTextView(firstDayOfNewMonth.toCalendar())
             }
         })
 
         // Set to today
-        setCalendarDate(Date())
+        setCalendarDate(Calendar.getInstance())
 
-        run show_hide_calendar_AppBar@ {
-            var appBarState: AppBarStateListener.State = AppBarStateListener.State.COLLAPSED
-
-            date_picker_dropdown_button.setOnClickListener {
-                isAppBarExpanded = !isAppBarExpanded
-                home_app_bar_layout.setExpanded(isAppBarExpanded, true)
-            }
-
-            home_app_bar_layout.addOnOffsetChangedListener(
-                AppBarStateListener {
-                    state, prev ->
-                        appBarState = state
-                        when(state) {
-                            is AppBarStateListener.State.COLLAPSED -> {
-                                date_picker_arrow.rotation = -180f
-                                isAppBarExpanded = false
-
-                                schedule_view.invalidate()
-                            }
-                            is AppBarStateListener.State.EXPANDED -> {
-                                date_picker_arrow.rotation = 0f
-                                isAppBarExpanded = true
-
-                                schedule_view.invalidate()
-                            }
-                            is AppBarStateListener.State.QUANTUM_FLUX_SUPERPOSITION -> {
-                                date_picker_arrow.rotation = (state.expandedness - 1).toFloat() * 180
-                            }
-                            is AppBarStateListener.State.STUCK_IN_FUTURE_TIMELINE_SUPERPOSITION -> {
-
-                                // It is logical to assusme that if the user wishes to interact
-                                // with the AppBarLayout, the user's ultimate intention would be to
-                                // toggle the calendar view. As such, the threshold of which a
-                                // semi-collapsed/expanded toolbar should constitute as
-                                // "to be expanded" or "to be collapsed" should differ
-                                // according to the previous stable state of the AppBarLayout
-
-                                val expandingThreshold =
-                                        if (prev is AppBarStateListener.State.COLLAPSED)
-                                            0.2
-                                        else
-                                            0.8
-
-                                val toExpand = state.originalExpandedness >= expandingThreshold
-                                isAppBarExpanded = toExpand
-                                home_app_bar_layout.setExpanded(toExpand, true)
-                            }
-                        }
-                }
-            )
-        }
+        isAppBarExpanded =
+                initCoolCalendarDropDown(
+                        date_picker_dropdown_button,
+                        home_app_bar_layout,
+                        isAppBarExpanded,
+                        date_picker_arrow,
+                        schedule_view)
 
         // Note: month here is 1-based
         schedule_view.setMonthChangeListener {
@@ -157,7 +114,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
 
         schedule_view.setScrollListener {
             newFirstVisibleDay, oldFirstVisibleDay ->
-                setCalendarDate(newFirstVisibleDay.time)
+                setCalendarDate(newFirstVisibleDay)
         }
 
         schedule_view.setOnEventClickListener { event, eventRect ->
@@ -173,13 +130,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
             startActivity(intent)
         }
 
-        schedule_view.hourHeight = Resources.getSystem().getDisplayMetrics().heightPixels / 15
-
-        Handler().postDelayed({
-            // Give some time to load the hard-coded data before snapping the earliest visible event
-            // into view
-            setScheduleViewDate(Date())
-        }, 50)
+        schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 15
 
         create_event_fab.setOnClickListener {
             // TODO: Change this to startActivityForResult
@@ -194,21 +145,20 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity") {
         schedule_view.notifyDatasetChanged()
     }
 
-    private fun setScheduleViewDate(date: Date) {
-        val cal = date.toCalendar()
+    private fun setScheduleViewDate(cal: Calendar) {
         schedule_view.goToDate(cal)
         schedule_view.goToEarliestVisibleEvent(2.0)
-        setMYTextView(date)
+        setMYTextView(cal)
     }
 
 
-    private fun setCalendarDate(date: Date) {
-        setMYTextView(date)
-        toolbar_dropdown_calendar.setCurrentDate(date)
+    private fun setCalendarDate(cal: Calendar) {
+        setMYTextView(cal)
+        toolbar_dropdown_calendar.setCurrentDate(cal.toDate())
     }
 
-    private fun setMYTextView(date: Date) {
-        month_year_text_view.text = FULL_MONTH_YEAR_DATE_FORMAT.format(date)
+    private fun setMYTextView(cal: Calendar) {
+        month_year_text_view.text = FULL_MONTH_YEAR_DATE_FORMAT.format(cal.toDate())
     }
 
     override fun setTitle(newTitle: CharSequence) {

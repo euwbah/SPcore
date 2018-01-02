@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.EditText
 import com.spcore.R
 import kotlinx.android.synthetic.main.activity_login.view.*
+import java.security.KeyStore
 import kotlin.reflect.KProperty
 
 /**

@@ -8,6 +8,10 @@ fun Date.toCalendar(): Calendar {
     return cal
 }
 
+fun Calendar.toDate(): Date {
+    return Date(this.timeInMillis)
+}
+
 fun Calendar.startOfDay(): Calendar {
     val cal = this.clone() as Calendar
     cal.set(Calendar.MILLISECOND, 0)
@@ -55,13 +59,14 @@ fun humanReadableTimeRange(time1: Calendar, time2: Calendar) : String {
     val showSecondDate = time1.startOfDay() != time2.startOfDay()
 
     val firstDateStr =
-            if(time1.isYesterday()) "Yesterday"
-            else if(time1.isToday()) "Today"
-            else if(time1.isTomorrow()) "Tomorrow"
-            else
-                time1.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) + " " +
-                time1.get(Calendar.DAY_OF_MONTH).toString() + " " +
-                time1.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
+            when {
+                time1.isYesterday() -> "Yesterday"
+                time1.isToday() -> "Today"
+                time1.isTomorrow() -> "Tomorrow"
+                else -> time1.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) + " " +
+                        time1.get(Calendar.DAY_OF_MONTH).toString() + " " +
+                        time1.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
+            }
 
     val secondDateStr =
             if(!showSecondDate) ""

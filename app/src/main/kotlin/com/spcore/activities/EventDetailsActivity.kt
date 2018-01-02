@@ -11,12 +11,15 @@ import com.spcore.helpers.Auth
 import com.spcore.helpers.humanReadableTimeRange
 import com.spcore.helpers.setHeightToWrapContent
 import com.spcore.models.Event
+import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_event_details.*
 import kotlinx.android.synthetic.main.content_event_details.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
 const val UPDATE_EVENT_DETAILS = 1
@@ -40,13 +43,19 @@ class EventDetailsActivity : AppCompatActivity() {
         event_details_scroll_view.scrollY = 0
 
         edit_event_fab.setOnClickListener {
-            startActivityForResult(
-                    Intent(this, EventCreateUpdateActivity::class.java)
-                            .putExtra("mode", "update")
-                            .putExtra("event", event),
+            startActivityForResult<EventCreateUpdateActivity>(
+                    UPDATE_EVENT_DETAILS,
+                    "mode" to "updat",
+                    "event" to event)
+        }
 
-                    UPDATE_EVENT_DETAILS
-            )
+        listOf(event_details_going_lv, event_details_not_going_lv, event_details_havent_replied_lv,
+                event_details_deleted_invite_lv).forEach {
+            it.setOnItemClickListener { adapterView, view, i, l ->
+                val user = view.tag as User
+
+                startActivity<FriendScheduleActivity>("user" to user)
+            }
         }
 
         // Ensure that displayed data is up-to-date
@@ -97,6 +106,8 @@ class EventDetailsActivity : AppCompatActivity() {
             event_details_not_going_lv.adapter = notGoingAdapter
             event_details_havent_replied_lv.adapter = haventRepliedAdapter
             event_details_deleted_invite_lv.adapter = deletedInviteAdapter
+
+
 
             delay(50)
             forceListViewsHeightToWrapContent()
