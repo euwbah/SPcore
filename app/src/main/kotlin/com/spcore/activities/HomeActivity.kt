@@ -3,7 +3,6 @@ package com.spcore.activities
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -26,7 +25,7 @@ import org.jetbrains.anko.debug
 import org.jetbrains.anko.startActivity
 import java.util.*
 
-private const val CCV_CURRDATE_TAG_ID = 156376132
+const val TAG_ID_CCV_CURRDATE = 156376132
 
 class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                      AnkoLogger {
@@ -45,6 +44,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         toggleListener = ActionBarDrawerToggle(this, home_drawer_layout, toolbar, R.string.nav_tts_open, R.string.nav_tts_close)
         home_drawer_layout.addDrawerListener(toggleListener!!)
         toggleListener!!.syncState()
+
 
         nav_view.setNavigationItemSelectedListener navHandler@ {
 
@@ -65,7 +65,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
 
             // TODO: Only return true if nav selection is to appear highlighted, if not, return false
-            return@navHandler R.id.nav_day_view _or R.id.nav_day_view _is id
+            return@navHandler R.id.nav_day_view _or R.id.nav_5_day_view _is id
         }
 
         home_drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {
@@ -90,7 +90,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             override fun onDayClick(dateClicked: Date) {
                 val cal = dateClicked.toCalendar()
                 setScheduleViewDate(cal)
-                toolbar_dropdown_calendar.setTag(CCV_CURRDATE_TAG_ID, cal)
+                toolbar_dropdown_calendar.setTag(TAG_ID_CCV_CURRDATE, cal)
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
@@ -124,7 +124,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             // setCalendarDate). Hence this check is necessary to avoid utter failure especially
             // when it comes to the synchronicity of cueing and triggering goToEarliestVisibleEvent
 
-            if ((toolbar_dropdown_calendar.getTag(CCV_CURRDATE_TAG_ID) as? Calendar)?.startOfDay() != newFirstVisibleDay.startOfDay())
+            if ((toolbar_dropdown_calendar.getTag(TAG_ID_CCV_CURRDATE) as? Calendar)?.startOfDay() != newFirstVisibleDay.startOfDay())
                 setCalendarDate(newFirstVisibleDay)
         }
 
