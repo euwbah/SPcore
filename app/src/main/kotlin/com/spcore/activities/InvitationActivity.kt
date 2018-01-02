@@ -17,19 +17,33 @@ import org.jetbrains.anko.wrapContent
 class InvitationActivity: AppCompatActivity() {
 
     private val arrayListOfSearchedUsers = ArrayList<User>()
+    private val arrayListOfAddedGuest = ArrayList<User>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_invitations)
 
-        invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arrayListOfSearchedUsers)
-        userSearch.onEditorAction { _, _, _ -> performSearch((arrayListOfSearchedUsers))}
+
+        userSearch.onEditorAction { _, _, _ ->
+            invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arrayListOfSearchedUsers)
+            performSearch((arrayListOfSearchedUsers))
+        }
+
         invitation_cancel_button.onClick {
             finish()
         }
+
+        invitation_lv.setOnItemClickListener { _, view, _, _ ->
+            arrayListOfAddedGuest.add(view.tag as User)
+            invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arrayListOfAddedGuest)
+        }
     }
 
+    /**
+     * Simple search function that uses startsWith
+     * @param arrayList of User added. To be changed in the future to integrate with the database
+     */
     private fun performSearch(arrayList: ArrayList<User>) {
         arrayList.clear()
         if(userSearch.text.isNullOrBlank())
@@ -46,6 +60,7 @@ class InvitationActivity: AppCompatActivity() {
         }
 
     }
+
 
 
 }
