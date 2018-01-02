@@ -76,7 +76,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".FriendScheduleActivity"
+            android:name=".activities.FriendScheduleActivity"
             android:label="@string/title_activity_friend_schedule"
             android:theme="@style/AppTheme"></activity>
     </application>

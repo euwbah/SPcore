@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.alamkanak.weekview.WeekView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friend_schedule_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".FriendScheduleActivity"
-    tools:showIn="@layout/activity_friend_schedule">
+    app:columnGap="8dp"
+    app:dayBackgroundColor="#05000000"
+    app:eventTextColor="@android:color/white"
+    app:headerColumnBackground="#ffffffff"
+    app:headerColumnPadding="8dp"
+    app:headerColumnTextColor="#8f000000"
+    app:headerRowBackgroundColor="#ffefefef"
+    app:headerRowPadding="12dp"
+    app:hourHeight="60dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
 
-</android.support.constraint.ConstraintLayout>
+    app:noOfVisibleDays="1"
+    app:textSize="12sp"
+    app:todayBackgroundColor="#1848adff"
+    tools:context=".activities.FriendScheduleActivity"
+    tools:showIn="@layout/activity_friend_schedule"/>
