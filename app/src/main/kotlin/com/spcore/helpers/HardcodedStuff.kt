@@ -8,7 +8,6 @@ import kotlin.collections.ArrayList
 
 /*
     HARDCODE_MODE
-
     Hardcoded Users:
  */
 val NatoshiSakamoto = User("1111111", "natoshi_sakamoto", "Natoshi Sakamoto", arrayListOf())
@@ -81,9 +80,9 @@ val arListUsers = arrayListOf(
    Hardcoded lessons
  */
 
-val HardcodedLessons = mapOf(
-
-)
+//val HardcodedLessons = mapOf(
+//
+//)
 
 /*
     HARDCODE_MODE
