@@ -141,7 +141,6 @@ class SendATSIntentService() : IntentService("SendATSIntentService") {
          *
          * @see IntentService
          */
-        // TODO: Customize helper method
         @JvmStatic
         fun startNew(context: Context, lesson: Lesson, atsCode: String) {
             val intent = Intent(context, SendATSIntentService::class.java).apply {
