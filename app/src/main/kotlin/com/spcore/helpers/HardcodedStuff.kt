@@ -90,20 +90,50 @@ class WeeklyLesson(val moduleName: String, val moduleCode: String, val location:
 
 val HardcodedLessons = mapOf(
     Calendar.MONDAY to listOf(
-            WeeklyLesson("DSAL", "ST0218", "T2013", "TUT",
-                    Duration(hours=8, minutes = 30),
-                    Duration(hours=9, minutes = 30))
+            WeeklyLesson("DEUI", "ST0277", "T2253", "LAB",
+                    Duration(hours=11, minutes = 30),
+                    Duration(hours=13, minutes = 30))
         ),
         Calendar.TUESDAY to listOf(
-
+            WeeklyLesson("NETS", "ST2501", "T2036", "LAB",
+                    Duration(hours=8, minutes = 0),
+                    Duration(hours=11, minutes = 0)),
+            WeeklyLesson("MAPP", "ST0281", "T2253", "TUT",
+                    Duration(hours=14, minutes = 0),
+                    Duration(hours=16, minutes = 0)),
+            WeeklyLesson("SEP", "ST293Z", "T2142", "TUT",
+                    Duration(hours=16, minutes = 0),
+                    Duration(hours=18, minutes = 0))
         ),
         Calendar.WEDNESDAY to listOf(
-
+            WeeklyLesson("ENBP", "ST2219", "T2257", "TUT",
+                    Duration(hours=10, minutes = 0),
+                    Duration(hours=12, minutes = 0)),
+            WeeklyLesson("NETS", "ST2501", "T2251", "LEC",
+                    Duration(hours=13, minutes = 0),
+                    Duration(hours=14, minutes = 30))
         ),
         Calendar.THURSDAY to listOf(
-
+            WeeklyLesson("MAPP", "ST0281", "T2031", "LAB",
+                    Duration(hours=8, minutes = 0),
+                    Duration(hours=11, minutes = 0)),
+            WeeklyLesson("ENBP", "ST2219", "T2031", "LAB",
+                    Duration(hours=11, minutes = 0),
+                    Duration(hours=13, minutes = 30)),
+            WeeklyLesson("SIP", "LC8003", "T1635", "TUT",
+                    Duration(hours=15, minutes = 0),
+                    Duration(hours=17, minutes = 0))
         ),
         Calendar.FRIDAY to listOf(
+            WeeklyLesson("NETS", "ST2501", "T2012", "TUT",
+                    Duration(hours=8, minutes = 0),
+                    Duration(hours=9, minutes = 0)),
+            WeeklyLesson("SEP", "ST293Z", "T2142", "LAB",
+                    Duration(hours=9, minutes = 0),
+                    Duration(hours=12, minutes = 0)),
+            WeeklyLesson("DEUI", "ST0277", "T2012", "TUT",
+                    Duration(hours=13, minutes = 0),
+                    Duration(hours=15, minutes = 0))
 
         )
 )
