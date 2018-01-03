@@ -210,7 +210,7 @@ object Auth : SharedPrefWrapper {
         if (currUser != null)
             return currUser!!
 
-        currUser = User(getCredentials()[0], getUsername()!!, getDisplayedName(), HardcodedUsers)
+        currUser = User(getCredentials()[0], getUsername()!!, getDisplayedName(), HardcodedFriends)
         return currUser!!
     }
 

@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".activities.FriendsActivity">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_friend_fab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:fabSize="normal"
+        app:layout_anchor="@id/friend_nested_scroll_view"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@drawable/ic_user_add" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/friend_app_bar"
         android:layout_width="match_parent"
@@ -45,15 +55,5 @@
             android:nestedScrollingEnabled="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.v4.widget.NestedScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_friend_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchorGravity="bottom|end"
-        app:layout_anchor="@id/friend_nested_scroll_view"
-        android:layout_margin="@dimen/fab_margin"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_edit" />
 
 </android.support.design.widget.CoordinatorLayout>

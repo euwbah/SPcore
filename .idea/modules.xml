@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\SPCore.iml" filepath="C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\SPCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/SPcore.iml" filepath="$PROJECT_DIR$/SPcore.iml" />
-      <module fileurl="file://C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\SPcore.iml" filepath="C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\SPcore.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\app\app.iml" filepath="C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/spmobileapi/spmobileapi.iml" filepath="$PROJECT_DIR$/spmobileapi/spmobileapi.iml" />
       <module fileurl="file://$PROJECT_DIR$/weekview/weekview.iml" filepath="$PROJECT_DIR$/weekview/weekview.iml" />
       <module fileurl="file://$PROJECT_DIR$/weekview-source/weekview-source.iml" filepath="$PROJECT_DIR$/weekview-source/weekview-source.iml" />
-      <module fileurl="file://C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\weekview-source\weekview-source.iml" filepath="C:\Users\Budi Syahiddin\Desktop\spcore\SPcore\weekview-source\weekview-source.iml" />
     </modules>
   </component>
 </project>

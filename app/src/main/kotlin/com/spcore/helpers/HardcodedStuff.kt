@@ -79,6 +79,10 @@ val HardcodedUsers = arrayListOf(
         NatoshiSakamoto, NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3,
         DerpMcDerpson, SimonFransman, AdamNeely, WatermelonMan)
 
+val HardcodedFriends = arrayListOf(
+        NatoshiSakamoto, NatoshiSakamoto1, NatoshiSakamoto2,
+        DerpMcDerpson, SimonFransman, WatermelonMan)
+
 
 /*
    Hardcoded lessons
