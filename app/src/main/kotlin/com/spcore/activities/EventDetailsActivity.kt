@@ -8,6 +8,7 @@ import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.Auth
+import com.spcore.helpers.DoubleSnack
 import com.spcore.helpers.humanReadableTimeRange
 import com.spcore.helpers.setHeightToWrapContent
 import com.spcore.models.Event
@@ -19,6 +20,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -73,6 +75,33 @@ class EventDetailsActivity : AppCompatActivity() {
             } else {
                 event = updatedEvent
                 updateUI()
+
+                // Also show the going/not going snackbar after event is updated
+                DoubleSnack.show(
+                        event_details_coordinator_layout,
+                        "Going?",
+                        "YES",
+                        "NO",
+                        {
+                            if (Auth.user !in event.going) {
+                                event.remove(Auth.user)
+                                event.going.add(Auth.user)
+                            }
+                            doAsync { FrontendInterface.updateEvent(event) }
+                            it.dismiss()
+                            updateUI()
+                        },
+                        {
+                            if (Auth.user !in event.notGoing) {
+                                event.remove(Auth.user)
+                                event.notGoing.add(Auth.user)
+                            }
+                            doAsync { FrontendInterface.updateEvent(event) }
+                            it.dismiss()
+                            updateUI()
+                        },
+                        Auth.user in event.going,
+                        Auth.user in event.notGoing)
             }
         }
     }
