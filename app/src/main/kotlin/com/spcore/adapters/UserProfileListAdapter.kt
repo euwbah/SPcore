@@ -69,9 +69,6 @@ class UserProfileListAdapter(context: Context, val users: List<User>, val userRo
             }
         }
 
-        view.startAnimation(AnimationUtils.loadAnimation(context,
-                if(position > lastPosition) R.anim.slide_up_in else R.anim.slide_down_in))
-
         view.tag = user
 
         return view
