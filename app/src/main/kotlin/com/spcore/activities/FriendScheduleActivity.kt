@@ -3,6 +3,7 @@ package com.spcore.activities
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.helpers.*
@@ -27,6 +28,10 @@ class FriendScheduleActivity : AppCompatActivity() {
         setSupportActionBar(friend_schedule_toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        friend_schedule_toolbar.setNavigationOnClickListener {
+            finish()
+        }
 
         user = intent.getParcelableExtra("user")
 
@@ -125,4 +130,7 @@ class FriendScheduleActivity : AppCompatActivity() {
         friend_schedule_title_text_view.text = newTitle
     }
 
+    override fun onNavigateUp(): Boolean {
+        return super.onNavigateUp()
+    }
 }
