@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.spcore.R
+import com.spcore.adapters.DeletableUser
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.*
 import com.spcore.helpers.HardcodedUsers
@@ -61,17 +62,26 @@ class InvitationActivity: AppCompatActivity() {
         userSuggestionsAdapter = UserProfileListAdapter(this)
         invitedGuestsAdapter = UserProfileListAdapter(this)
 
-        val event = intent.getParcelableExtra<Event>("event")
+        // event will be null if the invitation activity is accessed in create mode
+        val event: Event? = intent.getParcelableExtra("event")
 
-        inviteList.addAll(event.going + event.notGoing + event.haventReplied)
+        val tempUpdatedInviteList: ArrayList<User>? = intent.getParcelableArrayListExtra<User>("invite list")
+        if (tempUpdatedInviteList != null)
+            inviteList.addAll(tempUpdatedInviteList)
+        else if (event != null) {
+            inviteList.addAll(event.going + event.notGoing + event.haventReplied)
+            blacklist.addAll(event.deletedInvite)
+        }
 
-        blacklist.addAll(event.deletedInvite)
-
-        invitedGuestsAdapter.addAll(inviteList)
+        invitedGuestsAdapter.addAll(
+                inviteList
+                        .filter { it != Auth.user }
+                        .map {DeletableUser(it)}
+        )
 
         invitation_lv.adapter = invitedGuestsAdapter
 
-        invitation_invited_text.text = "Invited Guests (${inviteList.size})"
+        invitation_invited_text.text = "Invited Guests (${inviteList.size - 1})"
 
         invitation_no_one_text.visibility =
                 if(inviteList.isEmpty())
@@ -113,6 +123,10 @@ class InvitationActivity: AppCompatActivity() {
             }
         }
 
+        invitedGuestsAdapter.setOnUserDelete {
+            remove(it)
+        }
+
         invitation_cancel_button.setOnClickListener {
             setResult(RC_INVITE_UPDATE_CANCELLED, intent)
             finish()
@@ -129,7 +143,7 @@ class InvitationActivity: AppCompatActivity() {
 
     private fun add(user: User) {
         inviteList.add(user)
-        invitedGuestsAdapter.add(user)
+        invitedGuestsAdapter.add(DeletableUser(user))
         invitation_lv.setHeightToWrapContent()
         invitation_no_one_text.visibility =
                 if(inviteList.isEmpty())
@@ -141,12 +155,11 @@ class InvitationActivity: AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
-        invitation_invited_text.text = "Invited Guests (${inviteList.size})"
+        invitation_invited_text.text = "Invited Guests (${inviteList.size - 1})"
     }
 
     private fun remove(user: User) {
         inviteList.remove(user)
-        invitedGuestsAdapter.remove(user)
         invitation_lv.setHeightToWrapContent()
         invitation_no_one_text.visibility =
                 if(inviteList.isEmpty())
@@ -158,7 +171,7 @@ class InvitationActivity: AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
-        invitation_invited_text.text = "Invited Guests (${inviteList.size})"
+        invitation_invited_text.text = "Invited Guests (${inviteList.size - 1})"
     }
 
     /**

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.spcore.R
@@ -15,8 +16,20 @@ import com.spcore.helpers.dpToPx
 import com.spcore.helpers.get
 import com.spcore.models.User
 
-class UserProfileListAdapter(context: Context, users: MutableList<User> = mutableListOf(), val userRoleMapping: Map<User, String> = mapOf()) :
-        ArrayAdapter<User>(context, R.layout.template_user_list_item_layout, users) {
+/**
+ * [DeletableUser] is a list item wrapper for the [User] object, which causes
+ * the [UserProfileListAdapter] to display a 'X' beside the user profile.
+ *
+ * When clicked, the user profile will be removed from the adapter and a callback,
+ * as defiend by [UserProfileListAdapter.setOnUserDelete], will be invoked with
+ * the deleted user as the parameter.
+ */
+class DeletableUser(user: User) : User(user.adminNo, user.username, user.displayName, user.HARDCODE_MODE_friends)
+
+class UserProfileListAdapter(context: Context, users: MutableList<out Any> = mutableListOf(), val userRoleMapping: Map<User, String> = mapOf()) :
+        ArrayAdapter<Any>(context, R.layout.template_user_list_item_layout, users) {
+
+    private var onUserDelete: ((User) -> Unit)? = null
 
     /**
      * Used to keep track of the most recently added item's position in the list
@@ -34,43 +47,66 @@ class UserProfileListAdapter(context: Context, users: MutableList<User> = mutabl
      *
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        val user: User = getItem(position) ?: return null
+        val obj = getItem(position)
 
-        val view = if(convertView == null) {
-            val inflater = LayoutInflater.from(context)
-            inflater.inflate(R.layout.template_user_list_item_layout, parent, false)
-        } else {
-            convertView
-        }
+        if (obj is User) {
+            val user: User = obj
 
-        view[R.id.profile_pic, CircularImageView::class.java]?.setImageDrawable(user.getProfilePic(context))
-        view[R.id.display_name_text, TextView::class.java]?.apply {
-            if(user.displayName == null || user.displayName.isBlank())
-                visibility = View.GONE
-            else {
-                visibility = View.VISIBLE
-                text = user.displayName
+            val view = if (convertView == null) {
+                val inflater = LayoutInflater.from(context)
+                inflater.inflate(R.layout.template_user_list_item_layout, parent, false)
+            } else {
+                convertView
             }
-        }
-        view[R.id.username_text, TextView::class.java]?.apply {
-            text = "@${user.username}"
-            textSize =
-                    if(user.displayName == null)
-                        18f
-                    else
-                        14f
-        }
-        view[R.id.role_text, TextView::class.java]?.apply {
-            userRoleMapping[user]?.let {
-                this.visibility = View.VISIBLE
-                this.text = it
-            } ?: run {
-                this.visibility = View.GONE
+
+            view[R.id.profile_pic, CircularImageView::class.java]?.setImageDrawable(user.getProfilePic(context))
+            view[R.id.display_name_text, TextView::class.java]?.apply {
+                if (user.displayName == null || user.displayName.isBlank()) {
+                    visibility = View.GONE
+
+                } else {
+                    visibility = View.VISIBLE
+                    text = user.displayName
+                }
             }
+            view[R.id.username_text, TextView::class.java]?.apply {
+                text = "@${user.username}"
+                if (user.displayName == null || user.displayName.isBlank()) {
+                    textSize = 18f
+                    setTextColor(0xFF_000000.toInt())
+                } else {
+                    textSize = 14f
+                    setTextColor(0xAA_000000.toInt())
+                }
+            }
+            view[R.id.role_text, TextView::class.java]?.apply {
+                userRoleMapping[user]?.let {
+                    this.visibility = View.VISIBLE
+                    this.text = it
+                } ?: run {
+                    this.visibility = View.GONE
+                }
+            }
+            view[R.id.delete_button, ImageView::class.java]?.apply {
+                if (obj is DeletableUser) {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        remove(user)
+                        onUserDelete?.invoke(user)
+                    }
+                } else
+                    visibility = View.GONE
+            }
+
+            view.tag = user
+
+            return view
         }
 
-        view.tag = user
+        return null
+    }
 
-        return view
+    fun setOnUserDelete(cb: (User) -> Unit) {
+        this.onUserDelete = cb
     }
 }

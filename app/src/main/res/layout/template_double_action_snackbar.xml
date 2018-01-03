@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#D0000000"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/dbl_snack_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight=".7"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="Please select any one"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/dbl_snack_action1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight=".1"
+        android:background="#555555"
+        android:gravity="center"
+        android:text="ONE"
+        android:textColor="#55FFBB"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/dbl_snack_action2"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_weight=".1"
+        android:gravity="center"
+        android:text="TWO"
+        android:textColor="#FF5555"
+        android:textSize="16sp" />
+</LinearLayout>

@@ -9,7 +9,7 @@ import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.HARDCODE_MODE
 
-class User(
+open class User(
         val adminNo: String,
         val username: String,
         val displayName: String?,

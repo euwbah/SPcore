@@ -66,6 +66,10 @@ class Event : WeekViewEvent, Parcelable, Nowable {
         this.deletedInvite = deletedInvite
     }
 
+    fun remove(user: User) {
+        listOf(going, notGoing, haventReplied).forEach { it.remove(user) }
+    }
+
     override fun hashCode(): Int {
         return this.id.toInt()
     }
