@@ -3,6 +3,7 @@ package com.spcore.activities
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.View
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
@@ -18,11 +19,9 @@ import kotlinx.android.synthetic.main.content_event_details.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
-import org.jetbrains.anko.startActivityForResult
+import org.jetbrains.anko.*
 import org.jetbrains.anko.coroutines.experimental.bg
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.design.snackbar
 
 const val UPDATE_EVENT_DETAILS = 1
 
@@ -60,6 +59,39 @@ class EventDetailsActivity : AppCompatActivity() {
                 if (user != Auth.user)
                     startActivity<FriendScheduleActivity>("user" to user)
             }
+
+            it.setOnItemLongClickListener listener@ { adapterView, view, i, l ->
+                // Revoking invitations should only be done by the creator of the event
+                if (event isCreatedBy Auth.user) {
+                    val user = view.tag as? User ?: return@listener true
+                    if (user != Auth.user) {
+                        alert {
+                            title = "Remove $user's invite?"
+                            isCancelable = false
+                            positiveButton("Yes") {
+                                val ogState = event.getInvitationState(user)
+                                event.remove(user)
+                                FrontendInterface.updateEvent(event)
+                                updateUI()
+
+                                snackbar(event_details_coordinator_layout,
+                                        "Removed $user from event",
+                                        "UNDO",
+                                        {
+                                            event.add(user, ogState)
+                                            FrontendInterface.updateEvent(event)
+                                            updateUI()
+                                        })
+                            }
+                            negativeButton("Cancel") {}
+                        }.show()
+
+                        true
+                    }
+                }
+
+                false
+            }
         }
 
         // Ensure that displayed data is up-to-date
@@ -69,39 +101,46 @@ class EventDetailsActivity : AppCompatActivity() {
 
             val updatedEvent = asyncUpdatedEvent.await()
 
-            if (updatedEvent == null) {
-                toast("Event no longer exists")
-                finish()
-            } else {
-                event = updatedEvent
-                updateUI()
+            when {
+                updatedEvent == null -> {
+                    toast("Event no longer exists")
+                    finish()
+                }
+                Auth.user isntInvitedTo updatedEvent -> {
+                    toast("You are not invited to this event")
+                    finish()
+                }
+                else -> {
+                    event = updatedEvent
+                    updateUI()
 
-                // Also show the going/not going snackbar after event is updated
-                DoubleSnack.show(
-                        event_details_coordinator_layout,
-                        "Going?",
-                        "YES",
-                        "NO",
-                        {
-                            if (Auth.user !in event.going) {
-                                event.remove(Auth.user)
-                                event.going.add(Auth.user)
-                            }
-                            doAsync { FrontendInterface.updateEvent(event) }
-                            it.dismiss()
-                            updateUI()
-                        },
-                        {
-                            if (Auth.user !in event.notGoing) {
-                                event.remove(Auth.user)
-                                event.notGoing.add(Auth.user)
-                            }
-                            doAsync { FrontendInterface.updateEvent(event) }
-                            it.dismiss()
-                            updateUI()
-                        },
-                        Auth.user in event.going,
-                        Auth.user in event.notGoing)
+                    // Also show the going/not going snackbar after event is updated
+                    DoubleSnack.show(
+                            event_details_coordinator_layout,
+                            "Going?",
+                            "YES",
+                            "NO",
+                            {
+                                if (Auth.user !in event.going) {
+                                    event.remove(Auth.user)
+                                    event.going.add(Auth.user)
+                                }
+                                doAsync { FrontendInterface.updateEvent(event) }
+                                it.dismiss()
+                                updateUI()
+                            },
+                            {
+                                if (Auth.user !in event.notGoing) {
+                                    event.remove(Auth.user)
+                                    event.notGoing.add(Auth.user)
+                                }
+                                doAsync { FrontendInterface.updateEvent(event) }
+                                it.dismiss()
+                                updateUI()
+                            },
+                            Auth.user in event.going,
+                            Auth.user in event.notGoing)
+                }
             }
         }
     }
@@ -143,6 +182,7 @@ class EventDetailsActivity : AppCompatActivity() {
             delay(50)
             forceListViewsHeightToWrapContent()
         }
+
 
         event_details_toolbar_title.text = event.name
         event_details_time_text.text = humanReadableTimeRange(event.startTime, event.endTime)

@@ -17,6 +17,7 @@ private const val NOT_GOING_EVENT_COLOUR   = 0xff_22_22_22.toInt()
 
 class Event : WeekViewEvent, Parcelable, Nowable {
 
+
     var description: String
     val creator: User
     val going: ArrayList<User>
@@ -66,8 +67,37 @@ class Event : WeekViewEvent, Parcelable, Nowable {
         this.deletedInvite = deletedInvite
     }
 
+    fun add(user: User, invitationState: InvitationState) {
+        val list = when(invitationState) {
+            Event.InvitationState.GOING -> going
+            Event.InvitationState.NOT_GOING -> notGoing
+            Event.InvitationState.HAVENT_REPLIED -> haventReplied
+            Event.InvitationState.DELETED_INVITE -> deletedInvite
+            else -> return
+        }
+
+        list.add(user)
+    }
+
     fun remove(user: User) {
         listOf(going, notGoing, haventReplied).forEach { it.remove(user) }
+    }
+
+    fun getInvitationState(user: User): InvitationState {
+        return when(user) {
+            in going -> InvitationState.GOING
+            in notGoing -> InvitationState.NOT_GOING
+            in haventReplied -> InvitationState.HAVENT_REPLIED
+            in deletedInvite -> InvitationState.DELETED_INVITE
+            else -> InvitationState.NOT_INVITED
+        }
+    }
+
+    /**
+     * See [User.isInvitedTo]
+     */
+    fun isInvited(user: User): Boolean {
+        return getInvitationState(user) != InvitationState.NOT_INVITED
     }
 
     override fun hashCode(): Int {
@@ -105,12 +135,17 @@ class Event : WeekViewEvent, Parcelable, Nowable {
     override fun describeContents() = 0
 
     companion object CREATOR : Parcelable.Creator<Event> {
+
         override fun createFromParcel(parcel: Parcel): Event {
             return Event(parcel)
         }
-
         override fun newArray(size: Int): Array<Event?> {
             return arrayOfNulls(size)
         }
+
+    }
+
+    enum class InvitationState {
+        GOING, NOT_GOING, HAVENT_REPLIED, DELETED_INVITE, NOT_INVITED
     }
 }

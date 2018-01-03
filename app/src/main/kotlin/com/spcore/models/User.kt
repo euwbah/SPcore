@@ -15,6 +15,19 @@ open class User(
         val displayName: String?,
         val HARDCODE_MODE_friends: ArrayList<User> = arrayListOf()): Parcelable {
 
+    /**
+     * Use this to get the [displayName] if present, but fall back to
+     * [username] with an @ sign prepended otherwise.
+     *
+     * Same as [User.toString]
+     */
+    val name: String
+        get() =
+            if(displayName == null || displayName.isBlank())
+                "@$username"
+            else
+                displayName
+
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
@@ -36,6 +49,26 @@ open class User(
         else
             TODO("I hAVE CRIPPLing DEpreSSion")
     }
+
+    /**
+     * Same as [Event.isInvited] but looks nice
+     */
+    infix fun isInvitedTo(event: Event): Boolean {
+        return event.isInvited(this)
+    }
+
+    /**
+     * Same as [Event.isInvited] but looks nice
+     */
+    infix fun isntInvitedTo(event: Event): Boolean {
+        return !event.isInvited(this)
+    }
+
+    override fun toString() =
+            if(displayName == null || displayName.isBlank())
+                "@$username"
+            else
+                displayName
 
     override fun equals(other: Any?): Boolean {
         return if(other is User)

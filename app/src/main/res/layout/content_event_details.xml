@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:paddingBottom="40dp">
+        android:paddingBottom="90dp">
 
         <!-- IMPORTANT: Remember to use includeFontPadding to properly vertical-center the text
                             in relation to the drawable icon

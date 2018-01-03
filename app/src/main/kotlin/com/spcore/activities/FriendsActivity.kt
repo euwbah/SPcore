@@ -3,11 +3,7 @@ package com.spcore.activities
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.view.View
-import android.widget.EditText
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.Auth
@@ -20,9 +16,11 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.*
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.sdk25.coroutines.onEditorAction
 
 class FriendsActivity : AppCompatActivity() {
 
+    private var addFriendDialog: DialogInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,18 +62,26 @@ class FriendsActivity : AppCompatActivity() {
         }
 
         add_friend_fab.setOnClickListener {
-            alert {
+            addFriendDialog = alert {
                 title = "Add Friend"
                 isCancelable = false
                 customView {
                     verticalLayout {
                         val userSearched = editText {
                             hint = "username"
-                        }.lparams{
+                            imeOptions = EditorInfo.IME_ACTION_DONE
+                            setSingleLine()
+
+                            onEditorAction { v, actionId, event ->
+                                addFriend(textStr)
+                                addFriendDialog?.dismiss()
+                            }
+                        }.lparams {
                             width = matchParent
                             marginStart = dip(24)
                             marginEnd = dip(24)
                         }
+
 
                         positiveButton("Send Request") {
                             addFriend(userSearched.textStr)
@@ -91,23 +97,23 @@ class FriendsActivity : AppCompatActivity() {
 
     }
 
-    private fun addFriend(usrName: String): Int{
-        if(usrName.isBlank())
+    private fun addFriend(usrName: String): Int {
+        if (usrName.isBlank())
             return -1
         //Check if user exist
         val user = HardcodedUsers.filter {
             it.username == usrName
         }
 
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             toast("$usrName not found!")
             return 0
         }
         // check if already friends
         val isAlrFriends = HardcodedFriends.find { it == user[0] }
-        if(isAlrFriends != null)
+        if (isAlrFriends != null)
             toast("You are already friends!")
-        else{
+        else {
             HardcodedFriends.add(user[0])
             toast("Friend request sent to ${user[0].username}")
             async(UI) {
@@ -124,6 +130,7 @@ class FriendsActivity : AppCompatActivity() {
 
         return 1
     }
+
     private fun removeFriend(user: User) {
         HardcodedFriends.remove(user)
         toast("Successfully removed ${user.username} ☺")
