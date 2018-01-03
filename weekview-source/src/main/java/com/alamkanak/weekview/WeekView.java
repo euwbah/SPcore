@@ -2050,7 +2050,7 @@ public class WeekView extends View {
 
         for(WeekViewEvent e : visibleEvents)
             if(!e.isAllDay() &&
-                    (earliestEventStartTime == null || e.getStartTime().compareTo(earliestEventStartTime) < 0))
+                    (earliestEventStartTime == null || e.getStartTime().getTime().compareTo(earliestEventStartTime.getTime()) < 0))
                 earliestEventStartTime = e.getStartTime();
 
         if(earliestEventStartTime == null) {

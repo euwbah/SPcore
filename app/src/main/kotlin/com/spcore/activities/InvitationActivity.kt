@@ -13,7 +13,6 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.sdk25.coroutines.onEditorAction
 import org.jetbrains.anko.sdk25.coroutines.onKey
 import org.jetbrains.anko.toast
-import org.jetbrains.anko.wrapContent
 
 
 class InvitationActivity: AppCompatActivity() {
@@ -26,10 +25,18 @@ class InvitationActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_invitations)
 
-        userSearch.onEditorAction { _, _, _ ->
-            invitation_isGoing.visibility = View.GONE
+        invitation_search_input.apply {
+            onKey { v, keyCode, event ->
+                if(textStr.isBlank()) {
+
+                }
+            }
+        }
+
+        invitation_search_input.onEditorAction { _, _, _ ->
+            invitation_invited_guests_text.visibility = View.GONE
             invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arrayListOfSearchedUsers)
-            performSearch((arrayListOfSearchedUsers))
+            performSearch(arrayListOfSearchedUsers)
         }
 
         invitation_cancel_button.onClick {
@@ -41,7 +48,7 @@ class InvitationActivity: AppCompatActivity() {
                 toast("User has already been added!")
             else {
                 arrayListOfAddedGuest.add(view.tag as User)
-                invitation_isGoing.visibility = View.VISIBLE
+                invitation_invited_guests_text.visibility = View.VISIBLE
                 invitation_lv.adapter = UserProfileListAdapter(this@InvitationActivity, arrayListOfAddedGuest)
                 invitation_lv.apply {
                     setHeightToWrapContent()
@@ -51,23 +58,23 @@ class InvitationActivity: AppCompatActivity() {
         }
     }
 
-        /**
-         * Simple search function that uses startsWith
-         * @param arrayList of User added. To be changed in the future to integrate with the database
-         */
-        private fun performSearch(arrayList: ArrayList<User>) {
-            arrayList.clear()
-            if (userSearch.text.isNullOrBlank())
-                finish()
-            else {
-                HardcodedUsers.filter { it.username.startsWith(userSearch.textStr) }
-                        .forEach { arrayList.add(it) }
+    /**
+     * Simple search function that uses startsWith
+     * @param arrayList of User added. To be changed in the future to integrate with the database
+     */
+    private fun performSearch(arrayList: ArrayList<User>) {
+        arrayList.clear()
+        if (invitation_search_input.text.isNullOrBlank())
+            finish()
+        else {
+            HardcodedUsers.filter { it.username.startsWith(invitation_search_input.textStr) }
+                    .forEach { arrayList.add(it) }
 
-                invitation_lv.apply {
-                    invalidateViews()
-                    setHeightToWrapContent()
-                }
+            invitation_lv.apply {
+                invalidateViews()
+                setHeightToWrapContent()
             }
-
         }
+
+    }
 }

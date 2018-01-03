@@ -52,10 +52,16 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             val id = it.itemId
 
             when(id) {
-                R.id.nav_day_view ->
+                R.id.nav_day_view -> {
+                    setGoToEarliestVisibleEventLoadTrigger()
                     schedule_view.numberOfVisibleDays = 1
+                    schedule_view.goToEarliestVisibleEvent(2.0)
+                }
                 R.id.nav_5_day_view -> {
+                    setGoToEarliestVisibleEventLoadTrigger()
                     schedule_view.numberOfVisibleDays = 5
+                    schedule_view.goToEarliestVisibleEvent(2.0)
+
                     // TODO: Automatically shift the 5 weekdays in view if the current selected date on the schedule view
                     // is a weekday. Otherwise, put the current selected date as the 3rd visible date (as the middle)
                 }
@@ -68,10 +74,11 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                 }
             }
 
+            home_drawer_layout.closeDrawer(nav_view)
+
             // TODO: Only return true if nav selection is to appear highlighted, if not, return false
             return@navHandler R.id.nav_day_view _or
-                                R.id.nav_5_day_view _or
-                                R.id.nav_friends _is id
+                                R.id.nav_5_day_view _is id
         }
 
         home_drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {
