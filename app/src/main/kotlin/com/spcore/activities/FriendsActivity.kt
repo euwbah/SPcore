@@ -51,6 +51,18 @@ class FriendsActivity : AppCompatActivity() {
                 startActivity<FriendScheduleActivity>("user" to user)
         }
 
+        friend_list_view.isLongClickable = true
+        friend_list_view.setOnItemLongClickListener { _, view, _, _ ->
+            val user = view.tag as User
+            alert {
+                title = "Remove Friend"
+                isCancelable = false
+                positiveButton("Remove") { removeFriend(user) }
+                negativeButton("Cancel") {}
+            }.show()
+            true
+        }
+
         add_friend_fab.setOnClickListener {
             alert {
                 title = "Add Friend"
@@ -111,5 +123,19 @@ class FriendsActivity : AppCompatActivity() {
         }
 
         return 1
+    }
+    private fun removeFriend(user: User) {
+        HardcodedFriends.remove(user)
+        toast("Successfully removed ${user.username} ☺")
+        async(UI) {
+            val asyncFriends = bg {
+                Auth.user.getFriends()
+            }
+
+            val friends = asyncFriends.await().toMutableList()
+
+            friend_list_view.adapter = UserProfileListAdapter(this@FriendsActivity, friends)
+        }
+        friend_list_view.invalidate()
     }
 }
