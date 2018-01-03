@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.EventCreateUpdateActivity"
-    tools:showIn="@layout/activity_event_create_update"
-    android:layout_height="match_parent">
+    tools:showIn="@layout/activity_event_create_update">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-
 
 
         <android.support.design.widget.TextInputLayout
@@ -70,8 +69,8 @@
                 android:id="@+id/event_crud_start_date_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Start Date"
                 android:focusable="false"
+                android:hint="Start Date"
                 android:inputType="none" />
         </android.support.design.widget.TextInputLayout>
 
@@ -86,8 +85,8 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/event_crud_start_time_input"
                 android:layout_width="match_parent"
-                android:focusable="false"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:focusable="false" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -105,8 +104,8 @@
                 android:id="@+id/event_crud_end_date_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="End Date"
                 android:focusable="false"
+                android:hint="End Date"
                 android:inputType="none" />
         </android.support.design.widget.TextInputLayout>
 
@@ -121,12 +120,11 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/event_crud_end_time_input"
                 android:layout_width="match_parent"
-                android:focusable="false"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:focusable="false" />
         </android.support.design.widget.TextInputLayout>
 
     </android.support.constraint.ConstraintLayout>
-
 
 
 </android.support.v4.widget.NestedScrollView>

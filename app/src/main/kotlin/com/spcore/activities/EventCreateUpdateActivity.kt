@@ -190,8 +190,6 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
                 event_crud_progress_indicator.visibility = View.GONE
                 event_crud_save_button.visibility = View.VISIBLE
 
-                toast("Event updated")
-
                 finish()
             }
         }

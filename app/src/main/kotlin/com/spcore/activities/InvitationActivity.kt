@@ -13,9 +13,7 @@ import kotlinx.android.synthetic.main.activity_invitations.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.sdk25.coroutines.onEditorAction
-import org.jetbrains.anko.sdk25.coroutines.onKey
+import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
 
 class InvitationActivity: AppCompatActivity() {
@@ -30,16 +28,25 @@ class InvitationActivity: AppCompatActivity() {
      * True: userSuggestionsAdapter
      */
     private var searchMode = false
-        set(searchMode) {
-            if (searchMode) {
-                invitation_invited_guests_text.visibility = View.GONE
+        set(x) {
+            if (x) {
+                invitation_no_one_text.visibility = View.GONE
+                invitation_invited_text.visibility = View.GONE
                 invitation_lv.adapter = userSuggestionsAdapter
                 invitation_lv.dividerHeight = 1
             } else {
-                invitation_invited_guests_text.visibility = View.VISIBLE
+                invitation_no_one_text.visibility =
+                        if(inviteList.isEmpty())
+                            View.VISIBLE
+                        else
+                            View.GONE
+
+                invitation_invited_text.visibility = View.VISIBLE
                 invitation_lv.adapter = invitedGuestsAdapter
                 invitation_lv.dividerHeight = 0
             }
+
+            field = x
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +62,18 @@ class InvitationActivity: AppCompatActivity() {
                 else
                     View.GONE
 
-        invitation_search_input.apply {
-            setOnKeyListener { v, keyCode, event ->
-                searchMode = !textStr.isBlank()
+        invitation_invited_text.visibility =
+                if(inviteList.isEmpty())
+                    View.GONE
+                else
+                    View.VISIBLE
 
-                false
+        invitation_search_input.apply {
+            textChangedListener {
+                afterTextChanged {
+                    searchMode = !textStr.isBlank()
+                    performSearch()
+                }
             }
         }
 
@@ -78,13 +92,11 @@ class InvitationActivity: AppCompatActivity() {
 
         invitation_lv.setOnItemClickListener { _, view, _, _ ->
             if(searchMode) {
+                invitation_search_input.textStr = ""
                 searchMode = false
 
                 val user = view.tag as User
-
                 add(user)
-
-                invitation_search_input.textStr = ""
             }
         }
     }
@@ -98,6 +110,11 @@ class InvitationActivity: AppCompatActivity() {
                     View.VISIBLE
                 else
                     View.GONE
+        invitation_invited_text.visibility =
+                if(inviteList.isEmpty())
+                    View.GONE
+                else
+                    View.VISIBLE
     }
 
     private fun remove(user: User) {
@@ -109,6 +126,11 @@ class InvitationActivity: AppCompatActivity() {
                     View.VISIBLE
                 else
                     View.GONE
+        invitation_invited_text.visibility =
+                if(inviteList.isEmpty())
+                    View.GONE
+                else
+                    View.VISIBLE
     }
 
     /**

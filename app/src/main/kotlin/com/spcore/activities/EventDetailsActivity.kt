@@ -45,7 +45,7 @@ class EventDetailsActivity : AppCompatActivity() {
         edit_event_fab.setOnClickListener {
             startActivityForResult<EventCreateUpdateActivity>(
                     UPDATE_EVENT_DETAILS,
-                    "mode" to "updat",
+                    "mode" to "update",
                     "event" to event)
         }
 
@@ -187,6 +187,8 @@ class EventDetailsActivity : AppCompatActivity() {
             event = data.getParcelableExtra("event")
 
             updateUI()
+
+            toast("Event updated")
         }
     }
 }
