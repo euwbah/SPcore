@@ -94,7 +94,7 @@ class EventDetailsActivity : AppCompatActivity() {
                                             "\u0001"
                                         else
                                             it.username
-                                    },
+                                    }.toMutableList(),
                                     userRoleMapping)
                         }
             }

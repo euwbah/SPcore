@@ -29,7 +29,7 @@ class FriendsActivity : AppCompatActivity() {
                 Auth.user.getFriends()
             }
 
-            val friends = asyncFriends.await()
+            val friends = asyncFriends.await().toMutableList()
 
             friend_list_view.adapter = UserProfileListAdapter(this@FriendsActivity, friends)
         }
