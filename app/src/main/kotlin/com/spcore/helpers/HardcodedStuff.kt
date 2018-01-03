@@ -12,10 +12,12 @@ import kotlin.collections.ArrayList
 
     Hardcoded Users:
  */
-val NatoshiSakamoto = User("1111111", "natoshi_sakamoto", "Natoshi Sakamoto", arrayListOf())
-val NatoshiSakamoto1 = User("1111112", "natoshi_sakamoto1", "Natoshi Sakamoto", arrayListOf())
-val NatoshiSakamoto2 = User("1111113", "natoshi_sakamoto2", "Natoshi Sakamoto", arrayListOf())
-val NatoshiSakamoto3 = User("1111114", "natoshi_sakamoto3", "Natoshi Sakamoto", arrayListOf())
+val NatoshiSakamoto = User("1111111", "natoshi_sakamoto", "Natoshi Sakamoto")
+val NatoshiSakamoto1 = User("1111112", "natoshi_sakamoto1", "Natoshi Sakamoto")
+val NatoshiSakamoto2 = User("1111113", "natoshi_sakamoto2", "Natoshi Sakamoto")
+val NatoshiSakamoto3 = User("1111114", "natoshi_sakamoto3", "Natoshi Sakamoto")
+
+val WatermelonMan = User("1111115", "watermel0n", "Watermelon Man")
 
 fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()
@@ -42,7 +44,7 @@ fun natoshiSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     return schedule
 }
 
-val DerpMcDerpson = User("2222222", "derpmcderpson", "Derp McDerpson", arrayListOf())
+val DerpMcDerpson = User("2222222", "derpmcderpson", "Derp McDerpson")
 
 fun derpSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     val schedule = ArrayList<WeekViewEvent>()
@@ -69,13 +71,13 @@ fun derpSchedule(year: Int, month: Int): ArrayList<WeekViewEvent> {
     return schedule
 }
 
-val SimonFransman = User("3333333", "yalikejazz", "Simon Fransman", arrayListOf())
+val SimonFransman = User("3333333", "yalikejazz", "Simon Fransman")
 
-val AdamNeely = User("4444444", "thelick", "BASS", arrayListOf())
+val AdamNeely = User("4444444", "thelick", "BASS")
 
-val arListUsers = arrayListOf(
+val HardcodedUsers = arrayListOf(
         NatoshiSakamoto, NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3,
-        DerpMcDerpson, SimonFransman, AdamNeely)
+        DerpMcDerpson, SimonFransman, AdamNeely, WatermelonMan)
 
 
 /*

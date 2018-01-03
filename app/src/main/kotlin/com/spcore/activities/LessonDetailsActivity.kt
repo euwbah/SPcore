@@ -70,7 +70,7 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
 
         lesson_details_toolbar_title.text = "[${lesson.moduleCode}] ${lesson.name}"
 
-        val _24dp = 24.dpToPx()
+        val _24dp = 24f.dpToPx()
         Handler(mainLooper).post {
             val d = getDrawable(R.drawable.ats).resizeImage(_24dp, _24dp, resources)
             d.setColorFilter(0xcc333333.toInt(), PorterDuff.Mode.MULTIPLY)

@@ -59,6 +59,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                     // TODO: Automatically shift the 5 weekdays in view if the current selected date on the schedule view
                     // is a weekday. Otherwise, put the current selected date as the 3rd visible date (as the middle)
                 }
+                R.id.nav_friends -> {
+                    startActivity<FriendsActivity>()
+                }
                 R.id.nav_logout -> {
                     Auth.logout()
                     this@HomeActivity.startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
@@ -66,7 +69,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
 
             // TODO: Only return true if nav selection is to appear highlighted, if not, return false
-            return@navHandler R.id.nav_day_view _or R.id.nav_5_day_view _is id
+            return@navHandler R.id.nav_day_view _or
+                                R.id.nav_5_day_view _or
+                                R.id.nav_friends _is id
         }
 
         home_drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {

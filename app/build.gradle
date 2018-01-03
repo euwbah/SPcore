@@ -41,15 +41,16 @@ dependencies {
     compile 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.+'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
-
+    compile "org.jetbrains.anko:anko:$anko_version"
+    
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.20'
-    compile "org.jetbrains.anko:anko:0.10.4"
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
     compile 'com.squareup.moshi:moshi-kotlin:1.5.0'
+
 
     // Using source version for testing custom code
     compile project(':weekview-source')

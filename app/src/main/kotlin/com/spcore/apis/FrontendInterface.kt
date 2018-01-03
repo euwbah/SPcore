@@ -6,6 +6,7 @@ import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.Lesson
+import com.spcore.models.User
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -120,7 +121,7 @@ object FrontendInterface {
     }
 
     fun createEvent(event: Event) {
-        if(HARDCODE_MODE) {
+        if (HARDCODE_MODE) {
             Thread.sleep(200)
 
             HardcodedEvents.add(event)
@@ -148,7 +149,7 @@ object FrontendInterface {
     fun setUserInitializedOnServer(username: String, displayedName: String?) : InitialLoginActivity.SubmitInitStatus {
         return if (HARDCODE_MODE) {
             Thread.sleep(200)
-            if("natoshi_sakamoto" _or "ayylmao" _is username)
+            if(username in HardcodedUsers.map { it.username })
                 InitialLoginActivity.SubmitInitStatus.USERNAME_TAKEN
             else {
                 Auth.setUserInitializedLocally(username, displayedName)

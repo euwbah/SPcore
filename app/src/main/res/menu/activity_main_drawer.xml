@@ -17,6 +17,16 @@
     </group>
 
     <group
+        android:id="@+id/nav_group_other_activities"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/ic_person"
+            android:title="@string/nav_friends_str"
+            />
+    </group>
+
+    <group
         android:id="@+id/nav_group_misc_actions"
         android:checkableBehavior="none">
         <item

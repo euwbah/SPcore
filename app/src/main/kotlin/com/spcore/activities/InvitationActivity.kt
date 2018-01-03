@@ -5,13 +5,11 @@ import android.support.v7.app.AppCompatActivity
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.*
-import com.spcore.helpers.arListUsers
+import com.spcore.helpers.HardcodedUsers
 import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_invitations.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.sdk25.coroutines.onEditorAction
-import org.jetbrains.anko.sdk25.coroutines.onKey
-import org.jetbrains.anko.wrapContent
 
 
 class InvitationActivity: AppCompatActivity() {
@@ -49,7 +47,7 @@ class InvitationActivity: AppCompatActivity() {
         if(userSearch.text.isNullOrBlank())
             finish()
         else {
-            val searchedUsers = arListUsers.filter {
+            val searchedUsers = HardcodedUsers.filter {
                 it.username.startsWith(userSearch.textStr)
             }.forEach { arrayList.add(it) }
 

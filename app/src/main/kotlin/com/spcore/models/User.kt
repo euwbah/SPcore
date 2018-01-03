@@ -7,12 +7,13 @@ import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
+import com.spcore.helpers.HARDCODE_MODE
 
 class User(
         val adminNo: String,
         val username: String,
         val displayName: String?,
-        val friends: ArrayList<User> = arrayListOf()): Parcelable {
+        val HARDCODE_MODE_friends: ArrayList<User> = arrayListOf()): Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -27,6 +28,13 @@ class User(
     fun getProfilePic(context: Context): Drawable {
         // TODO: this is HARDCODE_MODE
         return context.getDrawable(R.drawable.ic_profile_pic)
+    }
+
+    fun getFriends(): List<User> {
+        if(HARDCODE_MODE)
+            return HARDCODE_MODE_friends
+        else
+            TODO("I hAVE CRIPPLing DEpreSSion")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -44,7 +52,7 @@ class User(
         parcel.writeString(adminNo)
         parcel.writeString(username)
         parcel.writeString(displayName)
-        parcel.writeTypedList(friends)
+        parcel.writeTypedList(HARDCODE_MODE_friends)
     }
 
     override fun describeContents() = 0

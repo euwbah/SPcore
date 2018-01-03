@@ -62,23 +62,26 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
         </activity>
-
-        <service
-            android:name=".services.SendATSIntentService"
-            android:exported="false" />
 
         <activity
             android:name=".activities.FriendScheduleActivity"
             android:label="@string/title_activity_friend_schedule"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            />
+
+        <activity
+            android:name=".activities.FriendsActivity"
+            android:label="FriendsActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.HomeActivity"
+            />
+
+        <service
+        android:name=".services.SendATSIntentService"
+        android:exported="false" />
     </application>
 
 </manifest>

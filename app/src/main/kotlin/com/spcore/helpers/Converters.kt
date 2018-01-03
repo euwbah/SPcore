@@ -27,12 +27,12 @@ fun Float.pxToDp(): Float {
 }
 
 
-fun Int.dpToPx(): Float {
+fun Int.dpToPx(): Int {
     val metrics = Resources.getSystem().displayMetrics
-    return this * metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
+    return (this * metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT).toInt()
 }
 
-fun Int.pxToDp(): Float {
+fun Int.pxToDp(): Int {
     val metrics = Resources.getSystem().displayMetrics
-    return this / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    return (this / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
 }

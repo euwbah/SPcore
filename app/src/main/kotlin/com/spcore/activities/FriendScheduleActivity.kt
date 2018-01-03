@@ -24,7 +24,7 @@ class FriendScheduleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_friend_schedule)
-        setSupportActionBar(friend_toolbar)
+        setSupportActionBar(friend_schedule_toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -32,13 +32,13 @@ class FriendScheduleActivity : AppCompatActivity() {
 
         title = "@${user.username}"
 
-        friend_toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.getDefault())
-        friend_toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
-        friend_toolbar_dropdown_calendar.setListener(object : CompactCalendarView.CompactCalendarViewListener {
+        friend_schedule_toolbar_dropdown_calendar.setLocale(TimeZone.getDefault(), Locale.getDefault())
+        friend_schedule_toolbar_dropdown_calendar.setShouldDrawDaysHeader(true)
+        friend_schedule_toolbar_dropdown_calendar.setListener(object : CompactCalendarView.CompactCalendarViewListener {
             override fun onDayClick(dateClicked: Date) {
                 val cal = dateClicked.toCalendar()
                 setScheduleViewDate(cal)
-                friend_toolbar_dropdown_calendar.setTag(TAG_ID_CCV_CURRDATE, cal)
+                friend_schedule_toolbar_dropdown_calendar.setTag(TAG_ID_CCV_CURRDATE, cal)
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
@@ -51,10 +51,10 @@ class FriendScheduleActivity : AppCompatActivity() {
 
         isAppBarExpanded =
                 initCoolCalendarDropDown(
-                        friend_date_picker_dropdown_button,
-                        friend_app_bar_layout,
+                        friend_schedule_date_picker_dropdown_button,
+                        friend_schedule_app_bar_layout,
                         isAppBarExpanded,
-                        friend_date_picker_arrow,
+                        friend_schedule_date_picker_arrow,
                         friend_schedule_view)
 
         friend_schedule_view.setMonthChangeListener {
@@ -67,7 +67,7 @@ class FriendScheduleActivity : AppCompatActivity() {
 
             // See HomeActivity schedule_view.setScrollListener for explanation
             val calendarViewCurrDate =
-                    (friend_toolbar_dropdown_calendar.getTag(TAG_ID_CCV_CURRDATE) as? Calendar)?.startOfDay()
+                    (friend_schedule_toolbar_dropdown_calendar.getTag(TAG_ID_CCV_CURRDATE) as? Calendar)?.startOfDay()
             if (calendarViewCurrDate != newFirstVisibleDay.startOfDay())
                 setCalendarDate(newFirstVisibleDay)
         }
@@ -114,15 +114,15 @@ class FriendScheduleActivity : AppCompatActivity() {
 
     private fun setCalendarDate(cal: Calendar) {
         setMYTextView(cal)
-        friend_toolbar_dropdown_calendar.setCurrentDate(cal.toDate())
+        friend_schedule_toolbar_dropdown_calendar.setCurrentDate(cal.toDate())
     }
 
     private fun setMYTextView(cal: Calendar) {
-        friend_month_year_text_view.text = FULL_MONTH_YEAR_DATE_FORMAT.format(cal.toDate())
+        friend_schedule_month_year_text_view.text = FULL_MONTH_YEAR_DATE_FORMAT.format(cal.toDate())
     }
 
     override fun setTitle(newTitle: CharSequence) {
-        friend_title_text_view.text = newTitle
+        friend_schedule_title_text_view.text = newTitle
     }
 
 }
