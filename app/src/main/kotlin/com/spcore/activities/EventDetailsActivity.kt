@@ -51,10 +51,12 @@ class EventDetailsActivity : AppCompatActivity() {
 
         listOf(event_details_going_lv, event_details_not_going_lv, event_details_havent_replied_lv,
                 event_details_deleted_invite_lv).forEach {
-            it.setOnItemClickListener { adapterView, view, i, l ->
-                val user = view.tag as User
+            it.setOnItemClickListener listener@ { adapterView, view, i, l ->
+                val user = view.tag as? User ?: return@listener
 
-                startActivity<FriendScheduleActivity>("user" to user)
+                // Don't let the user click oneself's profile
+                if (user != Auth.user)
+                    startActivity<FriendScheduleActivity>("user" to user)
             }
         }
 
