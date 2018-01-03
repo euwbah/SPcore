@@ -45,7 +45,7 @@ class UserProfileListAdapter(context: Context, users: MutableList<User> = mutabl
 
         view[R.id.profile_pic, CircularImageView::class.java]?.setImageDrawable(user.getProfilePic(context))
         view[R.id.display_name_text, TextView::class.java]?.apply {
-            if(user.displayName == null)
+            if(user.displayName == null || user.displayName.isBlank())
                 visibility = View.GONE
             else {
                 visibility = View.VISIBLE

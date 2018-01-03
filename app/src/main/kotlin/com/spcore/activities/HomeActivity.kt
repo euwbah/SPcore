@@ -250,8 +250,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.action_home_ats -> {
-                startActivity(Intent(this, InvitationActivity::class.java))
-                true
+                false
             }
             R.id.action_home_refresh -> {
                 schedule_view.notifyDatasetChanged()

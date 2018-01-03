@@ -1,20 +1,24 @@
 package com.spcore.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.fragments.DatePickerFragment
 import com.spcore.fragments.TimePickerFragment
 import com.spcore.models.Event
+import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_event_create_update.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
 import java.util.*
 
@@ -45,6 +49,8 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             event_crud_end_time_input.textStr = value.getHumanReadableTime(false)
             event_crud_end_date_input.textStr = value.getHumanReadableDate(true)
         }
+
+    private var invitedGuests: MutableList<User> = mutableListOf()
 
     /** This property will be null if not in "update" mode */
     private var event: Event? = null
@@ -99,10 +105,13 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             timePicker?.show(supportFragmentManager, "end")
         }
 
+        event_crud_invite_button.setOnClickListener {
+            startActivityForResult<InvitationActivity>(1337, "event" to event)
+        }
+
         event_crud_cancel_button.setOnClickListener {
             cancel()
         }
-
     }
 
     private fun initCreateMode() {
@@ -253,6 +262,10 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
                     start += end - prevEnd
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
     }
 
     override fun onBackPressed() {

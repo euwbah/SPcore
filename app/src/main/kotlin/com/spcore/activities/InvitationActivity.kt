@@ -8,6 +8,7 @@ import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.*
 import com.spcore.helpers.HardcodedUsers
+import com.spcore.models.Event
 import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_invitations.*
 import kotlinx.coroutines.experimental.android.UI
@@ -16,12 +17,16 @@ import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
 
+const val RC_INVITE_UPDATE_CANCELLED = 0
+const val RC_INVITES_UPDATED = 1
+
 class InvitationActivity: AppCompatActivity() {
 
     private lateinit var userSuggestionsAdapter: UserProfileListAdapter
     private lateinit var invitedGuestsAdapter: UserProfileListAdapter
 
     private val inviteList = arrayListOf<User>()
+    private val blacklist = arrayListOf<User>()
 
     /**
      * False: invitedGuestsAdapter
@@ -56,6 +61,18 @@ class InvitationActivity: AppCompatActivity() {
         userSuggestionsAdapter = UserProfileListAdapter(this)
         invitedGuestsAdapter = UserProfileListAdapter(this)
 
+        val event = intent.getParcelableExtra<Event>("event")
+
+        inviteList.addAll(event.going + event.notGoing + event.haventReplied)
+
+        blacklist.addAll(event.deletedInvite)
+
+        invitedGuestsAdapter.addAll(inviteList)
+
+        invitation_lv.adapter = invitedGuestsAdapter
+
+        invitation_invited_text.text = "Invited Guests (${inviteList.size})"
+
         invitation_no_one_text.visibility =
                 if(inviteList.isEmpty())
                     View.VISIBLE
@@ -86,10 +103,6 @@ class InvitationActivity: AppCompatActivity() {
             false
         }
 
-        invitation_cancel_button.setOnClickListener {
-            finish()
-        }
-
         invitation_lv.setOnItemClickListener { _, view, _, _ ->
             if(searchMode) {
                 invitation_search_input.textStr = ""
@@ -98,6 +111,19 @@ class InvitationActivity: AppCompatActivity() {
                 val user = view.tag as User
                 add(user)
             }
+        }
+
+        invitation_cancel_button.setOnClickListener {
+            setResult(RC_INVITE_UPDATE_CANCELLED, intent)
+            finish()
+        }
+
+        invitation_done_button.setOnClickListener {
+            setResult(RC_INVITES_UPDATED,
+                    intent.apply {
+                        putExtra("invite list", inviteList)
+                    })
+            finish()
         }
     }
 
@@ -115,6 +141,7 @@ class InvitationActivity: AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
+        invitation_invited_text.text = "Invited Guests (${inviteList.size})"
     }
 
     private fun remove(user: User) {
@@ -131,6 +158,7 @@ class InvitationActivity: AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
+        invitation_invited_text.text = "Invited Guests (${inviteList.size})"
     }
 
     /**
@@ -143,6 +171,7 @@ class InvitationActivity: AppCompatActivity() {
                 .filter { it.username.startsWith(invitation_search_input.textStr) }
                 .filter { it != Auth.user }
                 .filter { it !in inviteList }
+                .filter { it !in blacklist }
                 .sortedWith(compareBy({it in Auth.user.getFriends()}, { it.username }))
                 .forEach { userSuggestionsAdapter.add(it) }
 
