@@ -38,7 +38,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:ems="10"
-                android:hint="Search User..."
+                android:hint="Search user to invite..."
                 android:imeOptions="actionSearch"
                 android:inputType="textPersonName"
                 android:singleLine="true"

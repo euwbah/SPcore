@@ -21,6 +21,7 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
 import java.util.*
+import kotlin.collections.ArrayList
 
 const val RC_EVENT_UPDATE_CANCELLED = 0
 const val RC_EVENT_UPDATED = 1
@@ -50,7 +51,7 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             event_crud_end_date_input.textStr = value.getHumanReadableDate(true)
         }
 
-    private var invitedGuests: MutableList<User> = mutableListOf()
+    private var invitedGuests: MutableList<User>? = null
 
     /** This property will be null if not in "update" mode */
     private var event: Event? = null
@@ -106,7 +107,9 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
         }
 
         event_crud_invite_button.setOnClickListener {
-            startActivityForResult<InvitationActivity>(1337, "event" to event)
+            startActivityForResult<InvitationActivity>(1337,
+                    "event" to event,
+                    "invite list" to invitedGuests)
         }
 
         event_crud_cancel_button.setOnClickListener {
@@ -136,7 +139,9 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
                     start,
                     end,
                     Auth.user,
-                    going = arrayListOf(Auth.user))
+                    going = arrayListOf(Auth.user),
+                    haventReplied =
+                        invitedGuests?.let { ArrayList(it) } ?: arrayListOf())
 
             async(UI) {
                 val asyncCreateEvent = bg {
@@ -178,15 +183,38 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
                 return@setOnClickListener
             }
 
-            event.name = event_crud_toolbar_title.textStr.trim()
-            event.location = event_crud_location_input.textStr.trim()
-            event.description = event_crud_description_input.textStr.trim()
-            event.startTime = start
-            event.endTime = end
+            event.apply {
+                name = event_crud_toolbar_title.textStr.trim()
+                location = event_crud_location_input.textStr.trim()
+                description = event_crud_description_input.textStr.trim()
+                startTime = start
+                endTime = end
 
-            setResult(RC_EVENT_UPDATED,
-                    intent.putExtra("event", event)
-            )
+                if (invitedGuests != null) {
+                    // An update to the invites list has been done
+
+                    val invitedGuests = invitedGuests!!
+
+                    val ogCombi = listOf(going, notGoing, haventReplied)
+                    val og = going + notGoing + haventReplied
+
+                    // Deleted users: Users in the original set that aren't in the invitedGuests list anymore
+                    val deleted = og.filter { it !in invitedGuests }
+
+                    // Added users: Invited guests that weren't in the original set of users
+                    val added = invitedGuests.filter { it !in og }
+
+                    deleted.forEach { u ->
+                        ogCombi.forEach { it.remove(u) }
+                    }
+
+                    haventReplied.addAll(added)
+                }
+
+                setResult(RC_EVENT_UPDATED,
+                        intent.putExtra("event", this)
+                )
+            }
 
             event_crud_progress_indicator.visibility = View.VISIBLE
             event_crud_save_button.visibility = View.GONE
@@ -265,7 +293,11 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode != RC_INVITE_UPDATE_CANCELLED && data != null) {
+            val inviteList = data.getParcelableArrayListExtra<User>("invite list")
 
+            invitedGuests = inviteList
+        }
     }
 
     override fun onBackPressed() {
