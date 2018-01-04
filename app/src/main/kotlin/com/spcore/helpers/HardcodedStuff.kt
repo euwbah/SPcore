@@ -209,5 +209,44 @@ object HardcodedStuff {
                 haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan,Auth.user),
                 id = 4
         ))
+
+        HardcodedEvents.add(Event(
+                "Eat at Fc5",
+                "Lunch at FC5",
+                "fc5",
+                newCalendar(2018, 0, 4, 13),
+                newCalendar(2018, 0, 4, 14, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(NatoshiSakamoto2,Auth.user),
+                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
+                id = 5
+        ))
+
+        HardcodedEvents.add(Event(
+                "Sc center trip",
+                "School trip",
+                "Science center",
+                newCalendar(2018, 0, 15, 18),
+                newCalendar(2018, 0, 16, 19, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(NatoshiSakamoto2),
+                notGoing = arrayListOf(Auth.user),
+                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
+                id = 6
+        ))
+
+        HardcodedEvents.add(Event(
+                "CCA meeting",
+                "Astronomy Club meeting",
+                "Main lib",
+                newCalendar(2018, 0, 15, 18),
+                newCalendar(2018, 0, 16, 19, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(NatoshiSakamoto2),
+                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan,Auth.user),
+                id = 7
+        ))
+
+
     }
 }
