@@ -69,28 +69,38 @@ object FrontendInterface {
             val cal = newCalendar(year, month-1, 1)
             for(day in 1..cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                 cal.set(Calendar.DAY_OF_MONTH, day)
-                if(!cal.isToday())
-                HardcodedLessons[cal.get(Calendar.DAY_OF_WEEK)]?.forEach {
-                    it.apply {
-                        schedule.add(
-                                Lesson(moduleName, moduleCode, location, lessonType,
-                                        cal.startOfDay() + startTime,
-                                        cal.startOfDay() + endTime)
-                        )
+                if(!cal.isToday() || cal == newCalendar(2018, 1, 15))
+                    HardcodedLessons[cal.get(Calendar.DAY_OF_WEEK)]?.forEach {
+                        it.apply {
+                            schedule.add(
+                                    Lesson(moduleName, moduleCode, location, lessonType,
+                                            cal.startOfDay() + startTime,
+                                            cal.startOfDay() + endTime)
+                            )
+                        }
                     }
-                }
             }
 
             val now = Calendar.getInstance()
             // only add now for the current month
             if (now.get(Calendar.MONTH) == month - 1) {
-                schedule.add(Lesson(
-                        "SIP",
-                        "LC4234",
-                        "T4200",
-                        "TUT",
-                        now - Duration(hours = 1),
-                        now + Duration(hours = 1)
+                schedule.addAll(listOf(
+                        Lesson(
+                            "SIP",
+                            "LC4234",
+                            "T1643",
+                            "TUT",
+                            now - Duration(hours = 1),
+                            now + Duration(hours = 1)
+                        ),
+                        Lesson(
+                                "HM2",
+                                "SM1337",
+                                "T2253",
+                                "TUT",
+                                now + Duration(hours = 3),
+                                now + Duration(hours = 5)
+                        )
                 ))
             }
 

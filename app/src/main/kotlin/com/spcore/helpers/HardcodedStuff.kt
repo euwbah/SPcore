@@ -160,12 +160,12 @@ object HardcodedStuff {
                 "Pre-SIP Lunch",
                 "Hanging out with mah lads before the big SIPPP",
                 "J Cube",
-                newCalendar(2018, 0, 15, 13),
-                newCalendar(2018, 0, 15, 15, 0, 0),
-                currUser,
-                going = arrayListOf(Auth.user, NatoshiSakamoto,NatoshiSakamoto1,NatoshiSakamoto2,NatoshiSakamoto3),
+                newCalendar(2018, 0, 15, 11),
+                newCalendar(2018, 0, 15, 13, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
                 notGoing = arrayListOf(DerpMcDerpson),
-                haventReplied = arrayListOf(AdamNeely),
+                haventReplied = arrayListOf(Auth.user),
                 deletedInvite = arrayListOf(SimonFransman),
                 id = 0
         ))
@@ -174,7 +174,7 @@ object HardcodedStuff {
                 "Post-SIP Lunch",
                 "Eat again i guess?",
                 "Marina Bay Sands",
-                newCalendar(2018, 0, 15, 16),
+                newCalendar(2018, 0, 15, 15),
                 newCalendar(2018, 0, 15, 17, 0, 0),
                 NatoshiSakamoto,
                 going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
@@ -223,30 +223,16 @@ object HardcodedStuff {
         ))
 
         HardcodedEvents.add(Event(
-                "Sc center trip",
-                "School trip",
-                "Science center",
-                newCalendar(2018, 0, 15, 18),
-                newCalendar(2018, 0, 16, 19, 0, 0),
+                "Smoke more trees",
+                "BiG shAQ",
+                "Changi Village",
+                newCalendar(2018, 0, 16, 18),
+                newCalendar(2018, 0, 16, 20, 0, 0),
                 NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto2),
-                notGoing = arrayListOf(Auth.user),
-                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
+                going = arrayListOf(DerpMcDerpson, WatermelonMan),
+                notGoing = arrayListOf(NatoshiSakamoto3),
+                haventReplied = arrayListOf(Auth.user),
                 id = 6
         ))
-
-        HardcodedEvents.add(Event(
-                "CCA meeting",
-                "Astronomy Club meeting",
-                "Main lib",
-                newCalendar(2018, 0, 15, 18),
-                newCalendar(2018, 0, 16, 19, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto2),
-                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan,Auth.user),
-                id = 7
-        ))
-
-
     }
 }
