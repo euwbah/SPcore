@@ -326,6 +326,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
             R.id.action_home_refresh -> {
                 schedule_view.notifyDatasetChanged()
+                // HARDCODE_MODE, remove ATS reset after debug
                 ATS.reset()
                 true
             }
