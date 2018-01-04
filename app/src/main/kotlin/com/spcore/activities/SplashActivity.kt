@@ -39,7 +39,7 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
                         LoginActivity::class.java
 
             // The splash screen should show for a minumum of 500ms
-            val msSleep = (500 - (System.currentTimeMillis() - start)).let {
+            val msSleep = (200 - (System.currentTimeMillis() - start)).let {
                 if (it < 0) 0
                 else it
             }
