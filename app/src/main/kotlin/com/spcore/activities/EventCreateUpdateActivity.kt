@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_event_create_update.*
 import kotlinx.android.synthetic.main.content_event_create_update.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -23,16 +24,18 @@ import org.jetbrains.anko.toast
 import java.util.*
 import kotlin.collections.ArrayList
 
+const val RC_EVENT_DELETED = 2
 const val RC_EVENT_UPDATE_CANCELLED = 0
 const val RC_EVENT_UPDATED = 1
 
 class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActivity"),
                                   DatePickerFragment.DateSetListener,
-                                  TimePickerFragment.TimeSetListener {
+                                  TimePickerFragment.TimeSetListener{
 
     // These fragment references are only necessary to prevent memory leaks
     private var datePicker: DatePickerFragment? = null
     private var timePicker: TimePickerFragment? = null
+
 
     private var _start: Calendar? = null
     private var start: Calendar
@@ -77,10 +80,9 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
         setSupportActionBar(event_crud_toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
-
         if(mode == "update") {
             event = intent.getParcelableExtra("event")
+            event_crud_delete_button.visibility = View.VISIBLE
             initUpdateMode()
         } else if (mode == "create") {
             initCreateMode()
@@ -110,6 +112,16 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
             startActivityForResult<InvitationActivity>(1337,
                     "event" to event,
                     "invite list" to invitedGuests)
+        }
+
+        event_crud_delete_button.setOnClickListener {
+            alert("Are you sure you want to delete this event?") {
+                positiveButton("Confirm"){
+                    setResult(RC_EVENT_DELETED)
+                    finish()
+                }
+                negativeButton("Cancel"){}
+            }.show()
         }
 
         event_crud_cancel_button.setOnClickListener {
