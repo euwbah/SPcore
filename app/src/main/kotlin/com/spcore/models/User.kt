@@ -8,6 +8,7 @@ import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.HARDCODE_MODE
+import java.util.*
 
 open class User(
         val adminNo: String,
@@ -36,6 +37,11 @@ open class User(
 
     fun getSchedule(year: Int, month: Int) : List<WeekViewEvent> {
         return FrontendInterface.getSchedule(adminNo, year, month)
+    }
+
+    fun getThisMonthSchedule() : List<WeekViewEvent> {
+        val cal = Calendar.getInstance()
+        return FrontendInterface.getSchedule(adminNo, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
     }
 
     fun getProfilePic(context: Context): Drawable {
