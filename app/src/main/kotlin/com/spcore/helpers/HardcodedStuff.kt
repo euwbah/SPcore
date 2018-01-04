@@ -169,5 +169,45 @@ object HardcodedStuff {
                 deletedInvite = arrayListOf(SimonFransman),
                 id = 0
         ))
+
+        HardcodedEvents.add(Event(
+                "Post-SIP Lunch",
+                "Eat again i guess?",
+                "Marina Bay Sands",
+                newCalendar(2018, 0, 15, 16),
+                newCalendar(2018, 0, 15, 17, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
+                notGoing = arrayListOf(DerpMcDerpson),
+                haventReplied = arrayListOf(Auth.user),
+                deletedInvite = arrayListOf(SimonFransman),
+                id = 2
+        ))
+
+        HardcodedEvents.add(Event(
+                "Smoke trees",
+                "Dinner round 1",
+                "Changi Village",
+                newCalendar(2018, 0, 15, 17),
+                newCalendar(2018, 0, 15, 18, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(DerpMcDerpson, WatermelonMan),
+                notGoing = arrayListOf(NatoshiSakamoto3),
+                haventReplied = arrayListOf(Auth.user),
+                id = 3
+
+        ))
+
+        HardcodedEvents.add(Event(
+                "Camping at Ubin",
+                "Idk let's get some sun I guess?",
+                "Pulau Ubin",
+                newCalendar(2018, 0, 15, 18),
+                newCalendar(2018, 0, 16, 6, 0, 0),
+                NatoshiSakamoto,
+                going = arrayListOf(NatoshiSakamoto2),
+                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan,Auth.user),
+                id = 4
+        ))
     }
 }
