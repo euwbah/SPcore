@@ -326,6 +326,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
             R.id.action_home_refresh -> {
                 schedule_view.notifyDatasetChanged()
+                ATS.reset()
                 true
             }
             else ->

@@ -268,6 +268,30 @@ object ATS : SharedPrefWrapper {
 
         return ATSSP?.getString("lessonID", "anignatup") == currLesson.id.toString()
     }
+
+    /**
+     * For HARDCODE_MODE purposes -- clicking the "Refresh" action in the appbar overflow menu
+     * will reset ATS submission statuses for debugging purposes.
+     *
+     * NOTE: when hardcoding, the ATS submission status is tracked by lesson ID, which is dependant
+     * on lesson name, location and LESSON TIMES. This means that when hardcoding lessons
+     * which are scheduled relative to the current time, the lesson ID will
+     * change based on the lesson time, and thus ATS will be invalidated every time the schedule
+     * refreshes.
+     *
+     * To prevent this from happening, make sure to use [roundUpToNearest] or similar
+     * functions to make sure the lessons are quantised into timespans long enought to do appropriate
+     * testing.
+     */
+    fun reset() {
+        if(ATSSP == null)
+            throw UnsupportedOperationException("ATS shared preferences not initialized yet")
+
+        ATSSP
+                ?.edit()
+                ?.clear()
+                ?.apply()
+    }
 }
 
 /**
