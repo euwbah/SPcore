@@ -1191,6 +1191,13 @@ public class WeekView extends View {
                     if(!eventRect.event.isAllDay()) {
                         eventRect.top = eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getStartTime().get(Calendar.MINUTE);
                         eventRect.bottom = eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getEndTime().get(Calendar.MINUTE);
+                        if (eventRect.bottom == 0) {
+                            // Fix bug where the event doesn't show if the event duration is from 11pm to 12am the next day
+                            // by coercing 12am (0 minutes from start of day) into 23:59 of the previous day
+                            // 12am end times don't get split into multi day events, only events ending from 12.01am onwards do,
+                            // hence this is necessary
+                            eventRect.bottom = 23 * 60 + 59;
+                        }
                     }
                     else{
                         eventRect.top = 0;

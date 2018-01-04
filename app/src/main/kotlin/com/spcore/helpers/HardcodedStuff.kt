@@ -156,6 +156,7 @@ object HardcodedStuff {
 
 
     fun initialize(currUser: User) {
+        HardcodedEvents.clear()
         HardcodedEvents.add(Event(
                 "Pre-SIP Lunch",
                 "Hanging out with mah lads before the big SIPPP",
