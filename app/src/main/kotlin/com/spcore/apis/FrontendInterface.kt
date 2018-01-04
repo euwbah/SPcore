@@ -81,6 +81,10 @@ object FrontendInterface {
                     }
             }
 
+            HardcodedEvents
+                    .filter { it.startTime.get(Calendar.MONTH) == month - 1 }
+                    .forEach { schedule.add(it) }
+
             val now = Calendar.getInstance()
             // only add now for the current month
             if (now.get(Calendar.MONTH) == month - 1) {
@@ -117,9 +121,6 @@ object FrontendInterface {
                 ))
             }
 
-            HardcodedEvents
-                    .filter { it.startTime.get(Calendar.MONTH) == month - 1 }
-                    .forEach { schedule.add(it) }
 
         } else {
             TODO("i HaVe CrIpPlInG dEpReSsIoN")
