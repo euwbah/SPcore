@@ -4,16 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.R
-import com.spcore.helpers.Auth
-import com.spcore.helpers.Duration
-import com.spcore.helpers.isFrom
-import com.spcore.helpers.minus
+import com.spcore.helpers.*
 import java.util.*
 
-/** Shared with [Event] also */
-const val         UPCOMING_EVENT_COLOUR                 = 0xff_33_55_ff.toInt()
-
-private const val DEFAULT_LESSON_COLOUR                 = 0xff_44_77_dd.toInt()
+private const val DEFAULT_LESSON_COLOUR                 = 0xff_88_99_dd.toInt()
 private const val ONGOING_LESSON_UNSUBMITTED_ATS_COLOUR = 0xff_dd_55_22.toInt()
 private const val ONGOING_LESSON_SUBMITTED_ATS_COLOUR   = 0xff_aa_44_aa.toInt()
 
@@ -28,7 +22,8 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
 
     val moduleCode: String
     val lessonType: String
-    val atsKeyed = false
+    val atsKeyed: Boolean
+        get() = ATS.checkATSSubmitted(this)
 
 
     /**
@@ -50,7 +45,14 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
     ) : super(id.toLong(), moduleName, location, start, end) {
         this.moduleCode = moduleCode
         this.lessonType = lessonType
-        this.color = DEFAULT_LESSON_COLOUR
+        this.color =
+                if(this.isATSKeyableNow()) {
+                    if(atsKeyed)
+                        ONGOING_LESSON_SUBMITTED_ATS_COLOUR
+                    else
+                        ONGOING_LESSON_UNSUBMITTED_ATS_COLOUR
+                } else
+                    DEFAULT_LESSON_COLOUR
     }
 
     constructor(x: Parcel) : super(x) {

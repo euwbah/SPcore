@@ -31,6 +31,10 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
 
+    app:showNowLine="true"
+    app:nowLineColor="#aa000000"
+    app:nowLineThickness="5dp"
+
     app:noOfVisibleDays="1"
     app:textSize="12sp"
     app:todayBackgroundColor="#1848adff"

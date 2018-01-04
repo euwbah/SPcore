@@ -248,6 +248,12 @@ class EventDetailsActivity : AppCompatActivity() {
                 .forEach { it.setHeightToWrapContent() }
     }
 
+    override fun onBackPressed() {
+        val x = hashMapOf<String, String>()
+
+        finish()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == RC_EVENT_UPDATED) {
             event = data!!.getParcelableExtra("event")
