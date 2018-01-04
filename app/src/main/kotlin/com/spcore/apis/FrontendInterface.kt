@@ -94,7 +94,10 @@ object FrontendInterface {
                                 Auth.user,
                                 going = arrayListOf(Auth.user),
                                 id = 1234
-                        ),
+                        ).let {
+                            HardcodedEvents.add(it)
+                            it
+                        },
                         Lesson(
                             "SIP",
                             "LC4234",
