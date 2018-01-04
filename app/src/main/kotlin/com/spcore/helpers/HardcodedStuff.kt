@@ -217,7 +217,7 @@ object HardcodedStuff {
                 newCalendar(2018, 0, 4, 13),
                 newCalendar(2018, 0, 4, 14, 0, 0),
                 NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto2,Auth.user),
+                going = arrayListOf(NatoshiSakamoto, Auth.user),
                 haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
                 id = 5
         ))
