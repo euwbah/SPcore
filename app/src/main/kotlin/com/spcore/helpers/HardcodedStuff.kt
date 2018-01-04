@@ -157,83 +157,69 @@ object HardcodedStuff {
 
     fun initialize(currUser: User) {
         HardcodedEvents.clear()
-        HardcodedEvents.add(Event(
-                "Pre-SIP Lunch",
-                "Hanging out with mah lads before the big SIPPP",
-                "J Cube",
-                newCalendar(2018, 0, 15, 11),
-                newCalendar(2018, 0, 15, 13, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
-                notGoing = arrayListOf(DerpMcDerpson),
-                haventReplied = arrayListOf(Auth.user),
-                deletedInvite = arrayListOf(SimonFransman),
-                id = 0
-        ))
-
-        HardcodedEvents.add(Event(
-                "Post-SIP Lunch",
-                "Eat again i guess?",
-                "Marina Bay Sands",
-                newCalendar(2018, 0, 15, 15),
-                newCalendar(2018, 0, 15, 17, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
-                notGoing = arrayListOf(DerpMcDerpson),
-                haventReplied = arrayListOf(Auth.user),
-                deletedInvite = arrayListOf(SimonFransman),
-                id = 2
-        ))
-
-        HardcodedEvents.add(Event(
-                "Smoke trees",
-                "Dinner round 1",
-                "Changi Village",
-                newCalendar(2018, 0, 15, 17),
-                newCalendar(2018, 0, 15, 18, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(DerpMcDerpson, WatermelonMan),
-                notGoing = arrayListOf(NatoshiSakamoto3),
-                haventReplied = arrayListOf(Auth.user),
-                id = 3
-
-        ))
-
-        HardcodedEvents.add(Event(
-                "Camping at Ubin",
-                "Idk let's get some sun I guess?",
-                "Pulau Ubin",
-                newCalendar(2018, 0, 15, 18),
-                newCalendar(2018, 0, 16, 6, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto2),
-                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan,Auth.user),
-                id = 4
-        ))
-
-        HardcodedEvents.add(Event(
-                "Eat at Fc5",
-                "Lunch at FC5",
-                "fc5",
-                newCalendar(2018, 0, 4, 13),
-                newCalendar(2018, 0, 4, 14, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(NatoshiSakamoto, Auth.user),
-                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
-                id = 5
-        ))
-
-        HardcodedEvents.add(Event(
-                "Smoke more trees",
-                "BiG shAQ",
-                "Changi Village",
-                newCalendar(2018, 0, 16, 18),
-                newCalendar(2018, 0, 16, 20, 0, 0),
-                NatoshiSakamoto,
-                going = arrayListOf(DerpMcDerpson, WatermelonMan),
-                notGoing = arrayListOf(NatoshiSakamoto3),
-                haventReplied = arrayListOf(Auth.user),
-                id = 6
-        ))
+        // "quantised now"
+        val qtNow = Calendar.getInstance().roundUpToNearest(minutes = 10)
+        HardcodedEvents.addAll(
+                listOf(Event("Pre-SIP Lunch",
+                                "Hanging out with mah lads before the big SIPPP",
+                                "J Cube",
+                                newCalendar(2018, 0, 15, 11),
+                                newCalendar(2018, 0, 15, 13, 0, 0),
+                                NatoshiSakamoto,
+                                going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
+                                notGoing = arrayListOf(DerpMcDerpson),
+                                haventReplied = arrayListOf(Auth.user),
+                                deletedInvite = arrayListOf(SimonFransman),
+                                id = 0),
+                        Event("Post-SIP Lunch",
+                                "Eat again i guess?",
+                                "Marina Bay Sands",
+                                newCalendar(2018, 0, 15, 15),
+                                newCalendar(2018, 0, 15, 17, 0, 0),
+                                NatoshiSakamoto,
+                                going = arrayListOf(NatoshiSakamoto,NatoshiSakamoto1, NatoshiSakamoto2, NatoshiSakamoto3),
+                                notGoing = arrayListOf(DerpMcDerpson),
+                                haventReplied = arrayListOf(Auth.user),
+                                deletedInvite = arrayListOf(SimonFransman),
+                                id = 2),
+                        Event("Smoke trees",
+                                "Dinner round 1",
+                                "Changi Village",
+                                newCalendar(2018, 0, 15, 17),
+                                newCalendar(2018, 0, 15, 18, 0, 0),
+                                NatoshiSakamoto,
+                                going = arrayListOf(DerpMcDerpson, WatermelonMan),
+                                notGoing = arrayListOf(NatoshiSakamoto3),
+                                haventReplied = arrayListOf(Auth.user),
+                                id = 3),
+                        Event("Eat at Fc5",
+                                "Lunch at FC5",
+                                "fc5",
+                                newCalendar(2018, 0, 4, 13),
+                                newCalendar(2018, 0, 4, 14, 0, 0),
+                                NatoshiSakamoto,
+                                going = arrayListOf(NatoshiSakamoto, Auth.user),
+                                haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
+                                id = 5),
+                        Event("Smoke more trees",
+                                "BiG shAQ",
+                                "Changi Village",
+                                newCalendar(2018, 0, 16, 18),
+                                newCalendar(2018, 0, 16, 20, 0, 0),
+                                NatoshiSakamoto,
+                                going = arrayListOf(DerpMcDerpson, WatermelonMan),
+                                notGoing = arrayListOf(NatoshiSakamoto3),
+                                haventReplied = arrayListOf(Auth.user),
+                                id = 6),
+                        Event("Prepare for SIP",
+                        "I hate SIP",
+                        "Anywhere",
+                        qtNow - Duration(hours = 4),
+                        qtNow - Duration(hours = 2),
+                        Auth.user,
+                        going = arrayListOf(Auth.user),
+                        id = 1234)
+                )
+        )
     }
 }

@@ -86,37 +86,25 @@ object FrontendInterface {
                     .forEach { schedule.add(it) }
 
             val now = Calendar.getInstance()
+            val qtNow = now.roundUpToNearest(minutes = 10)
             // only add now for the current month
             if (now.get(Calendar.MONTH) == month - 1) {
                 schedule.addAll(listOf(
-                        Event(
-                                "Prepare for SIP",
-                                "I hate SIP",
-                                "Anywhere",
-                                (now - Duration(hours = 4)).roundUpToNearest(minutes = 5),
-                                (now - Duration(hours = 2)).roundUpToNearest(minutes = 5),
-                                Auth.user,
-                                going = arrayListOf(Auth.user),
-                                id = 1234
-                        ).let {
-                            HardcodedEvents.add(it)
-                            it
-                        },
                         Lesson(
                             "SIP",
                             "LC4234",
                             "T1643",
                             "TUT",
-                            (now - Duration(hours = 1)).roundUpToNearest(minutes = 5),
-                            (now + Duration(hours = 1)).roundUpToNearest(minutes = 5)
+                            qtNow - Duration(hours = 1),
+                            qtNow + Duration(hours = 1)
                         ),
                         Lesson(
                                 "HM2",
                                 "SM1337",
                                 "T2253",
                                 "TUT",
-                                (now + Duration(hours = 3)).roundUpToNearest(minutes = 5),
-                                (now + Duration(hours = 5)).roundUpToNearest(minutes = 5)
+                                qtNow + Duration(hours = 3),
+                                qtNow + Duration(hours = 5)
                         )
                 ))
             }
