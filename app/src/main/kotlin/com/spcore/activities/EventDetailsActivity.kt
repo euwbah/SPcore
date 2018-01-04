@@ -254,10 +254,14 @@ class EventDetailsActivity : AppCompatActivity() {
 
             updateUI()
             toast("Event updated")
-        }else if(resultCode == RC_EVENT_DELETED){
-            HardcodedStuff.HardcodedEvents.remove(event)
-            toast("Event deleted")
-            finish()
+        } else if(resultCode == RC_EVENT_DELETED) {
+            async(UI) {
+                val asyncDel = bg { FrontendInterface.deleteEvent(event) }
+
+                asyncDel.await()
+                toast("Event deleted")
+                finish()
+            }
         }
     }
 }

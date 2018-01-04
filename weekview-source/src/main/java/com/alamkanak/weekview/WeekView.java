@@ -285,8 +285,9 @@ public class WeekView extends View {
                 Collections.reverse(reversedEventRects);
                 for (EventRect event : reversedEventRects) {
                     if (event.rectF != null && e.getX() > event.rectF.left && e.getX() < event.rectF.right && e.getY() > event.rectF.top && e.getY() < event.rectF.bottom) {
-                        mEventLongPressListener.onEventLongPress(event.originalEvent, event.rectF);
-                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        boolean vibrate = mEventLongPressListener.onEventLongPress(event.originalEvent, event.rectF);
+                        if (vibrate)
+                            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                         return;
                     }
                 }
@@ -2104,8 +2105,9 @@ public class WeekView extends View {
          * Similar to {@link com.alamkanak.weekview.WeekView.EventClickListener} but with a long press.
          * @param event: event clicked.
          * @param eventRect: view containing the clicked event.
+         * @return True if long press has effect, false otherwise
          */
-        void onEventLongPress(WeekViewEvent event, RectF eventRect);
+        boolean onEventLongPress(WeekViewEvent event, RectF eventRect);
     }
 
     public interface EmptyViewClickListener {

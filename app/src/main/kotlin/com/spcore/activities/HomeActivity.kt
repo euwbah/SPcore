@@ -22,9 +22,10 @@ import kotlinx.android.synthetic.main.home_nav_header.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
+import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.design.snackbar
 import java.util.*
 
 const val TAG_ID_CCV_CURRDATE = 156376132
@@ -143,17 +144,70 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                 setCalendarDate(newFirstVisibleDay)
         }
 
-        schedule_view.setOnEventClickListener { event, eventRect ->
+        schedule_view.setOnEventClickListener lstnr@ { event, eventRect ->
             val intent =
                     when(event) {
                         is Lesson -> Intent(this, LessonDetailsActivity::class.java)
                         is Event -> Intent(this, EventDetailsActivity::class.java)
-                        else -> return@setOnEventClickListener
+                        else -> return@lstnr
                     }
 
             intent.putExtra("event", event)
 
             startActivity(intent)
+        }
+
+        fun delEvent(event: Event) {
+            FrontendInterface.deleteEvent(event)
+
+            schedule_view.notifyDatasetChanged()
+
+            longSnackbar(schedule_view, "Event deleted",
+                    "UNDO",
+                    {
+                        FrontendInterface.createEvent(event)
+                        schedule_view.notifyDatasetChanged()
+                    })
+        }
+
+
+        fun confirmDel(event: Event) {
+            alert {
+                title = "Are you sure?"
+                message = "Deleting this event will also delete it for others who were invited"
+
+                positiveButton("YES", {
+                    async(UI) {
+                        delEvent(event)
+                    }
+                })
+            }.show()
+        }
+
+        schedule_view.setEventLongPressListener lstnr@ { event, eventRect ->
+            when(event) {
+                is Event -> {
+                    selector(null,
+                            listOf("Delete event"),
+                            { dialogInterface, i ->
+                                when(i) {
+                                    0 -> {
+                                        if(event isCreatedBy Auth.user) {
+                                            // Only confirm again if the user was the creator of the event
+                                            confirmDel(event)
+                                        } else {
+                                            async(UI) {
+                                                delEvent(event)
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+
+                    true
+                }
+                else -> return@lstnr false
+            }
         }
 
         schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 15
@@ -181,6 +235,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
 
     override fun onResume() {
         super.onResume()
+
         // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
         // this is really really inefficient, but it works for now.
         schedule_view.notifyDatasetChanged()

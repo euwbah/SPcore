@@ -8,7 +8,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-private const val UNRESPONDED_EVENT_COLOUR = 0xff_aa_88_33.toInt()
+private const val UNRESPONDED_EVENT_COLOUR = 0xff_cc_99_55.toInt()
 private const val GOING_EVENT_COLOUR       = 0xff_33_aa_55.toInt()
 private const val NOT_GOING_EVENT_COLOUR   = 0xff_22_22_22.toInt()
 
@@ -32,6 +32,7 @@ class Event : WeekViewEvent, Parcelable, Nowable {
         notGoing = parcel.createTypedArrayList(User.CREATOR)
         haventReplied = parcel.createTypedArrayList(User.CREATOR)
         deletedInvite = parcel.createTypedArrayList(User.CREATOR)
+        color = UNRESPONDED_EVENT_COLOUR
     }
 
     /**
@@ -65,6 +66,8 @@ class Event : WeekViewEvent, Parcelable, Nowable {
         this.notGoing = notGoing
         this.haventReplied = haventReplied
         this.deletedInvite = deletedInvite
+        color = UNRESPONDED_EVENT_COLOUR
+
     }
 
     fun add(user: User, invitationState: InvitationState) {
