@@ -92,6 +92,7 @@ object FrontendInterface {
                                 (now - Duration(hours = 4)).roundUpToNearest(minutes = 5),
                                 (now - Duration(hours = 2)).roundUpToNearest(minutes = 5),
                                 Auth.user,
+                                going = arrayListOf(Auth.user),
                                 id = 1234
                         ),
                         Lesson(
