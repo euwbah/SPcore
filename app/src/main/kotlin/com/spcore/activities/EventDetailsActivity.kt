@@ -8,10 +8,7 @@ import android.view.View
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.apis.FrontendInterface
-import com.spcore.helpers.Auth
-import com.spcore.helpers.DoubleSnack
-import com.spcore.helpers.humanReadableTimeRange
-import com.spcore.helpers.setHeightToWrapContent
+import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_event_details.*
@@ -251,13 +248,16 @@ class EventDetailsActivity : AppCompatActivity() {
                 .forEach { it.setHeightToWrapContent() }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == RC_EVENT_UPDATED) {
-            event = data.getParcelableExtra("event")
+            event = data!!.getParcelableExtra("event")
 
             updateUI()
-
             toast("Event updated")
+        }else if(resultCode == RC_EVENT_DELETED){
+            HardcodedStuff.HardcodedEvents.remove(event)
+            toast("Event deleted")
+            finish()
         }
     }
 }
