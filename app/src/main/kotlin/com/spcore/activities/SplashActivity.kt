@@ -30,9 +30,10 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
 
             val activityClass =
                     if (jwt != null) {
-                        if(FrontendInterface.isUserInitializedOnServer())
+                        if(FrontendInterface.isUserInitializedOnServer()) {
+                            HardcodedStuff.initialize(Auth.user)
                             HomeActivity::class.java
-                        else
+                        } else
                             InitialLoginActivity::class.java
                     }
                     else

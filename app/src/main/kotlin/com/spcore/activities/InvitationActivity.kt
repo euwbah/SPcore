@@ -8,7 +8,7 @@ import com.spcore.R
 import com.spcore.adapters.DeletableUser
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.*
-import com.spcore.helpers.HardcodedUsers
+import com.spcore.helpers.HardcodedStuff.HardcodedUsers
 import com.spcore.models.Event
 import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_invitations.*

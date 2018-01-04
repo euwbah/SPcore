@@ -7,6 +7,7 @@ import com.spcore.R
 import com.spcore.exceptions.NotLoggedInException
 import com.spcore.models.Lesson
 import com.spcore.models.User
+import com.spcore.helpers.HardcodedStuff.HardcodedFriends
 
 /**
  * Call this once during the splash screen

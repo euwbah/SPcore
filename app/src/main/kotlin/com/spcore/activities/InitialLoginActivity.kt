@@ -9,6 +9,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
+import com.spcore.helpers.Auth
+import com.spcore.helpers.HardcodedStuff
 import kotlinx.android.synthetic.main.activity_initial_login.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -94,7 +96,6 @@ class InitialLoginActivity : AppCompatActivity() {
                                         username_input.text.toString(),
                                         displayed_name_input.text.toString())
                             }
-
                     val res = asyncRes.await()
 
                     initial_login_progress_indicator.visibility = View.GONE
@@ -109,6 +110,7 @@ class InitialLoginActivity : AppCompatActivity() {
                                     .show()
                         }
                         SubmitInitStatus.SUCCESS -> {
+                            HardcodedStuff.initialize(Auth.user)
                             startActivity(Intent(this@InitialLoginActivity, HomeActivity::class.java))
                         }
                     }

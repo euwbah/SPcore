@@ -7,6 +7,9 @@ import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.Lesson
 import com.spcore.models.User
+import com.spcore.helpers.HardcodedStuff.HardcodedEvents
+import com.spcore.helpers.HardcodedStuff.HardcodedUsers
+import com.spcore.helpers.HardcodedStuff.HardcodedLessons
 import java.util.*
 import kotlin.collections.ArrayList
 

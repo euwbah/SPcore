@@ -7,8 +7,8 @@ import android.view.inputmethod.EditorInfo
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.Auth
-import com.spcore.helpers.HardcodedFriends
-import com.spcore.helpers.HardcodedUsers
+import com.spcore.helpers.HardcodedStuff.HardcodedFriends
+import com.spcore.helpers.HardcodedStuff.HardcodedUsers
 import com.spcore.helpers.textStr
 import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_friends.*

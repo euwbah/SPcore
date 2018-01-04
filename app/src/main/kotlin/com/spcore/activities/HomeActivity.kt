@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
+import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.*
 
 import com.spcore.models.Event
@@ -250,7 +251,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.action_home_ats -> {
-                false
+                val cal = Calendar.getInstance()
+                Auth.user.getSchedule(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
+                true
             }
             R.id.action_home_refresh -> {
                 schedule_view.notifyDatasetChanged()
