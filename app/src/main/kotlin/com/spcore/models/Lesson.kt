@@ -9,7 +9,7 @@ import java.util.*
 
 private const val DEFAULT_LESSON_COLOUR                 = 0xff_88_99_dd.toInt()
 private const val ONGOING_LESSON_UNSUBMITTED_ATS_COLOUR = 0xff_dd_55_22.toInt()
-private const val ONGOING_LESSON_SUBMITTED_ATS_COLOUR   = 0xff_55_99_ff.toInt()
+private const val ONGOING_LESSON_SUBMITTED_ATS_COLOUR   = 0xff_44_77_ff.toInt()
 
 
 /**
