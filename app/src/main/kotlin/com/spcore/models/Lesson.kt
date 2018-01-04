@@ -95,3 +95,20 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
     }
 
 }
+
+fun List<WeekViewEvent>.getCurrentATSKeyableLessons() : List<Lesson>? {
+
+    val ATSKeyableLessons = this
+            .filter {
+                it is Lesson &&
+                        it.isATSKeyableNow()
+            }
+            .map {
+                it as Lesson
+            }
+
+    return if (ATSKeyableLessons.isEmpty())
+        null
+    else
+        ATSKeyableLessons
+}

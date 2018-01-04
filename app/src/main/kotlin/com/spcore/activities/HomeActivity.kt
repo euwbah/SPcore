@@ -14,6 +14,7 @@ import com.spcore.helpers.*
 
 import com.spcore.models.Event
 import com.spcore.models.Lesson
+import com.spcore.models.getCurrentATSKeyableLessons
 
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
@@ -183,7 +184,6 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
         // this is really really inefficient, but it works for now.
         schedule_view.notifyDatasetChanged()
-
     }
 
     /**
@@ -242,6 +242,10 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.home_menu, menu)
+
+        menu.findItem(R.id.action_home_ats).isVisible =
+                Auth.user.getThisMonthSchedule().getCurrentATSKeyableLessons() != null
+
         return true
     }
 
@@ -252,7 +256,17 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         return when(item.itemId) {
             R.id.action_home_ats -> {
                 val cal = Calendar.getInstance()
-                Auth.user.getSchedule(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
+                val sched = Auth.user.getSchedule(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
+                val ATSKeyables = sched.getCurrentATSKeyableLessons() ?: return true
+
+                val mostRecent = ATSKeyables.last()
+
+                startActivity<LessonDetailsActivity>(
+                        "event" to mostRecent,
+                        "open ats dialog" to true,
+                        "dismiss notification" to true
+                )
+
                 true
             }
             R.id.action_home_refresh -> {
