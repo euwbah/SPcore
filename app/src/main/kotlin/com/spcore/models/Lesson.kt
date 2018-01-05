@@ -45,6 +45,7 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
     ) : super(id.toLong(), moduleName, location, start, end) {
         this.moduleCode = moduleCode
         this.lessonType = lessonType
+        this.additionalInfo = lessonType
         this.color =
                 if(this.isATSKeyableNow()) {
                     if(atsKeyed)
@@ -58,6 +59,7 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
     constructor(x: Parcel) : super(x) {
         this.moduleCode = x.readString()
         this.lessonType = x.readString()
+        this.additionalInfo = lessonType
         this.color = DEFAULT_LESSON_COLOUR
     }
 

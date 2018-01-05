@@ -29,6 +29,7 @@ public class WeekViewEvent implements Parcelable {
     private Calendar mEndTime;
     private String mName;
     private String mLocation;
+    private String mAdditionalInfo = null;
     private int mColor;
     private boolean mAllDay;
 
@@ -167,6 +168,10 @@ public class WeekViewEvent implements Parcelable {
     public void setLocation(String location) {
         this.mLocation = location;
     }
+
+    public String getAdditionalInfo() { return mAdditionalInfo; }
+
+    public void setAdditionalInfo(String info) { this.mAdditionalInfo = info; }
 
     public int getColor() {
         return mColor;

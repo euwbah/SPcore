@@ -23,8 +23,8 @@
     app:layout_constraintTop_toTopOf="parent"
 
     app:showNowLine="true"
-    app:nowLineColor="#aa000000"
-    app:nowLineThickness="5dp"
+    app:nowLineColor="#ff000000"
+    app:nowLineThickness="1dp"
 
     app:noOfVisibleDays="1"
     app:textSize="12sp"
