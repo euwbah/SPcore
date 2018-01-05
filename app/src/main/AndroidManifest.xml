@@ -55,7 +55,8 @@
             android:name=".activities.EventCreateUpdateActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            />
         <activity
             android:name=".activities.InvitationActivity"
             android:label="InvitationActivity"
