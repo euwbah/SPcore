@@ -77,7 +77,7 @@ class FriendScheduleActivity : AppCompatActivity() {
                 setCalendarDate(newFirstVisibleDay)
         }
 
-        friend_schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 15
+        friend_schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 10
 
         friend_schedule_view.eventMarginVertical = 1.5.dpToPx().toInt()
 

@@ -210,7 +210,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
         }
 
-        schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 15
+        schedule_view.hourHeight = Resources.getSystem().displayMetrics.heightPixels / 10
 
         schedule_view.eventMarginVertical = 1.5.dpToPx().toInt()
 
