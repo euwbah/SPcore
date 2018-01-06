@@ -110,6 +110,7 @@ class EventCreateUpdateActivity : AppStateTrackerActivity("EventCreateUpdateActi
 
         event_crud_invite_button.setOnClickListener {
             startActivityForResult<InvitationActivity>(1337,
+                    "mode" to mode,
                     "event" to event,
                     "invite list" to invitedGuests)
         }

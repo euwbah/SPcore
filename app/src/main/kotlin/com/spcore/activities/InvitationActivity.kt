@@ -30,6 +30,18 @@ class InvitationActivity: AppCompatActivity() {
     private val blacklist = arrayListOf<User>()
 
     /**
+     * Accounts for create mode ([Auth.user] not inside) vs. update mode ([Auth.user] inside list)
+     */
+    private val inviteListSize: Int
+        get() =
+            inviteList.size -
+                    if(mode == "create") 0
+                    else 1
+
+    private val mode: String
+        get() = intent.extras.getString("mode")
+
+    /**
      * False: invitedGuestsAdapter
      * True: userSuggestionsAdapter
      */
@@ -81,7 +93,7 @@ class InvitationActivity: AppCompatActivity() {
 
         invitation_lv.adapter = invitedGuestsAdapter
 
-        invitation_invited_text.text = "Invited Guests (${inviteList.size - 1})"
+        invitation_invited_text.text = "Invited Guests ($inviteListSize)"
 
         invitation_no_one_text.visibility =
                 if(inviteList.isEmpty())
@@ -155,7 +167,7 @@ class InvitationActivity: AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
-        invitation_invited_text.text = "Invited Guests (${inviteList.size - 1})"
+        invitation_invited_text.text = "Invited Guests ($inviteListSize)"
     }
 
     private fun remove(user: User) {
@@ -171,7 +183,7 @@ class InvitationActivity: AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
-        invitation_invited_text.text = "Invited Guests (${inviteList.size - 1})"
+        invitation_invited_text.text = "Invited Guests ($inviteListSize)"
     }
 
     /**
