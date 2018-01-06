@@ -3,7 +3,8 @@ package com.spcore.activities
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
@@ -18,6 +19,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.*
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.design.snackbar
 
 const val UPDATE_EVENT_DETAILS = 1
@@ -248,9 +250,57 @@ class EventDetailsActivity : AppCompatActivity() {
                 .forEach { it.setHeightToWrapContent() }
     }
 
-    override fun onBackPressed() {
-        val x = hashMapOf<String, String>()
+    private fun delEvent(event: Event) {
+        FrontendInterface.deleteEvent(event)
 
+        finish()
+
+        doAsync {
+            Thread.sleep(400)
+            sendBroadcast(Intent().apply {
+                action = BROADCAST_DELETED_EVENT
+                putExtra("event", event)
+            })
+        }
+
+    }
+
+    private fun confirmDel(event: Event) {
+        alert {
+            title = "Are you sure?"
+            message = "Deleting this event will also delete it for others who were invited"
+
+            positiveButton("YES", {
+                async(UI) {
+                    delEvent(event)
+                }
+            })
+        }.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.event_details_menu, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_event_details_delete -> {
+                if (event isCreatedBy Auth.user)
+                    confirmDel(event)
+                else
+                    delEvent(event)
+
+                true
+            }
+            else ->
+                    super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
         finish()
     }
 

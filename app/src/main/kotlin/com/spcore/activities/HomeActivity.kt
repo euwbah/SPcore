@@ -1,6 +1,9 @@
 package com.spcore.activities
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
@@ -23,12 +26,11 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.*
-import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.design.snackbar
 import java.util.*
 
 const val TAG_ID_CCV_CURRDATE = 156376132
+const val BROADCAST_DELETED_EVENT = "com.spcore.broadcasts.refreshscheduleview"
 
 class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                      AnkoLogger {
@@ -157,33 +159,6 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             startActivity(intent)
         }
 
-        fun delEvent(event: Event) {
-            FrontendInterface.deleteEvent(event)
-
-            schedule_view.notifyDatasetChanged()
-
-            longSnackbar(schedule_view, "Event deleted",
-                    "UNDO",
-                    {
-                        FrontendInterface.createEvent(event)
-                        schedule_view.notifyDatasetChanged()
-                    })
-        }
-
-
-        fun confirmDel(event: Event) {
-            alert {
-                title = "Are you sure?"
-                message = "Deleting this event will also delete it for others who were invited"
-
-                positiveButton("YES", {
-                    async(UI) {
-                        delEvent(event)
-                    }
-                })
-            }.show()
-        }
-
         schedule_view.setEventLongPressListener lstnr@ { event, eventRect ->
             when(event) {
                 is Event -> {
@@ -231,6 +206,24 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             // TODO: Change this to startActivityForResult
             startActivity<EventCreateUpdateActivity>("mode" to "create")
         }
+
+        applicationContext.registerReceiver(
+                RefreshReceiver { intent ->
+
+                    if (intent != null) {
+                        val event = intent.getParcelableExtra<Event>("event")
+                        longSnackbar(schedule_view, "Event deleted",
+                                "UNDO",
+                                {
+                                    FrontendInterface.createEvent(event)
+                                    schedule_view.notifyDatasetChanged()
+                                })
+                    }
+
+                    schedule_view.notifyDatasetChanged()
+                },
+                IntentFilter(com.spcore.activities.BROADCAST_DELETED_EVENT))
+
     }
 
     override fun onResume() {
@@ -239,6 +232,32 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
         // this is really really inefficient, but it works for now.
         schedule_view.notifyDatasetChanged()
+    }
+
+    private fun delEvent(event: Event) {
+        FrontendInterface.deleteEvent(event)
+
+        schedule_view.notifyDatasetChanged()
+
+        longSnackbar(schedule_view, "Event deleted",
+                "UNDO",
+                {
+                    FrontendInterface.createEvent(event)
+                    schedule_view.notifyDatasetChanged()
+                })
+    }
+
+    private fun confirmDel(event: Event) {
+        alert {
+            title = "Are you sure?"
+            message = "Deleting this event will also delete it for others who were invited"
+
+            positiveButton("YES", {
+                async(UI) {
+                    delEvent(event)
+                }
+            })
+        }.show()
     }
 
     /**
@@ -334,5 +353,11 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                 super.onOptionsItemSelected(item)
         }
 
+    }
+
+    class RefreshReceiver(val cb: (Intent?) -> Unit) : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            cb(intent)
+        }
     }
 }
