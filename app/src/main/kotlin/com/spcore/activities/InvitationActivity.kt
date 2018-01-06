@@ -139,18 +139,17 @@ class InvitationActivity: AppCompatActivity() {
             remove(it)
         }
 
-        invitation_cancel_button.setOnClickListener {
-            setResult(RC_INVITE_UPDATE_CANCELLED, intent)
-            finish()
-        }
-
         invitation_done_button.setOnClickListener {
-            setResult(RC_INVITES_UPDATED,
-                    intent.apply {
-                        putExtra("invite list", inviteList)
-                    })
-            finish()
+            done()
         }
+    }
+
+    private fun done() {
+        setResult(RC_INVITES_UPDATED,
+                intent.apply {
+                    putExtra("invite list", inviteList)
+                })
+        finish()
     }
 
     private fun add(user: User) {
@@ -207,5 +206,9 @@ class InvitationActivity: AppCompatActivity() {
                 setHeightToWrapContent()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        done()
     }
 }
