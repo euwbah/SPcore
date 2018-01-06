@@ -54,6 +54,9 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
                         ONGOING_LESSON_UNSUBMITTED_ATS_COLOUR
                 } else
                     DEFAULT_LESSON_COLOUR
+
+        if (isATSKeyableNow() && !atsKeyed)
+            additionalInfo += "\nKEY ATS!!"
     }
 
     constructor(x: Parcel) : super(x) {
@@ -61,6 +64,9 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
         this.lessonType = x.readString()
         this.additionalInfo = lessonType
         this.color = DEFAULT_LESSON_COLOUR
+
+        if (isATSKeyableNow() && !atsKeyed)
+            additionalInfo += "\nKEY ATS!!"
     }
 
     /**
