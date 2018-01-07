@@ -3,17 +3,21 @@ package com.spcore.activities
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.inputmethod.EditorInfo
 import com.spcore.R
 import com.spcore.adapters.UserProfileListAdapter
 import com.spcore.helpers.Auth
 import com.spcore.helpers.HardcodedStuff.HardcodedFriends
 import com.spcore.helpers.HardcodedStuff.HardcodedUsers
+import com.spcore.helpers.setHeightToWrapContent
 import com.spcore.helpers.textStr
 import com.spcore.models.User
 import kotlinx.android.synthetic.main.activity_friends.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.*
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.sdk25.coroutines.onEditorAction
@@ -31,15 +35,7 @@ class FriendsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(true)
         supportActionBar?.title = "Friends"
 
-        async(UI) {
-            val asyncFriends = bg {
-                Auth.user.getFriends()
-            }
-
-            val friends = asyncFriends.await().toMutableList()
-
-            friend_list_view.adapter = UserProfileListAdapter(this@FriendsActivity, friends)
-        }
+        updateFriendsLV()
 
         friend_list_view.setOnItemClickListener listener@ { _, view, _, _ ->
             val user = view.tag as? User ?: return@listener
@@ -97,6 +93,22 @@ class FriendsActivity : AppCompatActivity() {
 
     }
 
+    private fun updateFriendsLV() {
+        async(UI) {
+            val asyncFriends = bg {
+                Auth.user.getFriends()
+            }
+
+            val friends = asyncFriends.await().toMutableList()
+
+            added_friends_text.text = "Added friends (${friends.size})"
+            friend_list_view.adapter = UserProfileListAdapter(this@FriendsActivity, friends)
+
+            delay(300)
+            friend_list_view.setHeightToWrapContent()
+        }
+    }
+
     private fun addFriend(usrName: String): Int {
         if (usrName.isBlank())
             return -1
@@ -116,15 +128,7 @@ class FriendsActivity : AppCompatActivity() {
         else {
             HardcodedFriends.add(user[0])
             toast("Friend request sent to ${user[0].username}")
-            async(UI) {
-                val asyncFriends = bg {
-                    Auth.user.getFriends()
-                }
-
-                val friends = asyncFriends.await().toMutableList()
-
-                friend_list_view.adapter = UserProfileListAdapter(this@FriendsActivity, friends)
-            }
+            updateFriendsLV()
             friend_list_view.invalidate()
         }
 
@@ -134,15 +138,7 @@ class FriendsActivity : AppCompatActivity() {
     private fun removeFriend(user: User) {
         HardcodedFriends.remove(user)
         toast("Successfully removed ${user.username} ☺")
-        async(UI) {
-            val asyncFriends = bg {
-                Auth.user.getFriends()
-            }
-
-            val friends = asyncFriends.await().toMutableList()
-
-            friend_list_view.adapter = UserProfileListAdapter(this@FriendsActivity, friends)
-        }
+        updateFriendsLV()
         friend_list_view.invalidate()
     }
 }
