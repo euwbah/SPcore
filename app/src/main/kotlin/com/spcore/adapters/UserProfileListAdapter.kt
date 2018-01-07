@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.spcore.R
+import com.spcore.helpers.Auth
 import com.spcore.helpers.dpToPx
 import com.spcore.helpers.get
 import com.spcore.models.User
@@ -51,7 +52,7 @@ class UserProfileListAdapter(context: Context, users: MutableList<out Any> = mut
 
         if (obj is User) {
             val user: User = obj
-
+            val isCurrUser = user == Auth.user
             val view = if (convertView == null) {
                 val inflater = LayoutInflater.from(context)
                 inflater.inflate(R.layout.template_user_list_item_layout, parent, false)
@@ -61,22 +62,32 @@ class UserProfileListAdapter(context: Context, users: MutableList<out Any> = mut
 
             view[R.id.profile_pic, CircularImageView::class.java]?.setImageDrawable(user.getProfilePic(context))
             view[R.id.display_name_text, TextView::class.java]?.apply {
-                if (user.displayName == null || user.displayName.isBlank()) {
-                    visibility = View.GONE
-
-                } else {
+                if (isCurrUser) {
                     visibility = View.VISIBLE
-                    text = user.displayName
+                    text = "Me"
+                } else {
+                    if (user.displayName == null || user.displayName.isBlank()) {
+                        visibility = View.GONE
+                    } else {
+                        visibility = View.VISIBLE
+                        text = user.displayName
+                    }
                 }
             }
             view[R.id.username_text, TextView::class.java]?.apply {
-                text = "@${user.username}"
-                if (user.displayName == null || user.displayName.isBlank()) {
-                    textSize = 18f
-                    setTextColor(0xFF_000000.toInt())
+                if (isCurrUser) {
+                    visibility = View.GONE
                 } else {
-                    textSize = 14f
-                    setTextColor(0xAA_000000.toInt())
+                    text = "@${user.username}"
+                    visibility = View.VISIBLE
+
+                    if (user.displayName == null || user.displayName.isBlank()) {
+                        textSize = 18f
+                        setTextColor(0xFF_000000.toInt())
+                    } else {
+                        textSize = 14f
+                        setTextColor(0xAA_000000.toInt())
+                    }
                 }
             }
             view[R.id.role_text, TextView::class.java]?.apply {
