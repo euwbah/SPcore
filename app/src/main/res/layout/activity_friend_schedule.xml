@@ -43,7 +43,7 @@
                     app:compactCalendarCurrentDayBackgroundColor="#FFC107"
                     app:compactCalendarCurrentSelectedDayBackgroundColor="#BBDEFB"
                     app:compactCalendarTextColor="#fff"
-                    app:compactCalendarTextSize="12sp" />
+                    app:compactCalendarTextSize="15sp" />
             </LinearLayout>
 
             <android.support.v7.widget.Toolbar

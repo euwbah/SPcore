@@ -44,6 +44,7 @@ class FriendScheduleActivity : AppCompatActivity() {
                 val cal = dateClicked.toCalendar()
                 setScheduleViewDate(cal)
                 friend_schedule_toolbar_dropdown_calendar.setTag(TAG_ID_CCV_CURRDATE, cal)
+                friend_schedule_app_bar_layout.setExpanded(false, true)
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {

@@ -109,6 +109,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                 val cal = dateClicked.toCalendar()
                 setScheduleViewDate(cal)
                 toolbar_dropdown_calendar.setTag(TAG_ID_CCV_CURRDATE, cal)
+                home_app_bar_layout.setExpanded(false, true)
             }
 
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
