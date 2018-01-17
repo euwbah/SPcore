@@ -50,6 +50,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         home_drawer_layout.addDrawerListener(toggleListener!!)
         toggleListener!!.syncState()
 
+
         ScheduleViewState.getNumberOfVisibleDays().let {
             if (it == 1)
                 nav_view.setCheckedItem(R.id.nav_day_view)
