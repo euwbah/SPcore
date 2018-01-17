@@ -82,7 +82,10 @@
 
         <service
         android:name=".services.SendATSIntentService"
-        android:exported="false" />
+        android:exported="false"/>
+        <service
+        android:name=".services.DirectReplySendATSIntentService"
+        android:exported="false"/>
     </application>
 
 </manifest>

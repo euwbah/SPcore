@@ -10,9 +10,9 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.RemoteInput
 import com.spcore.R
 import com.spcore.activities.LessonDetailsActivity
-import com.spcore.broadcasts.DirectReplyATSBroadcastReceiver
-import com.spcore.broadcasts.ATS_ACTION_INLINE
 import com.spcore.models.Lesson
+import com.spcore.services.DirectReplySendATSIntentService
+import com.spcore.services.K_IR_ATS
 import com.spcore.services.SendATSIntentService
 
 
@@ -33,9 +33,6 @@ internal const val NC_ATS_DN = "ATS Prompts"
 
 internal const val NID_ATS_FAILURE = 0
 internal const val NID_ATS_SUCCESS = 1
-
-/** Key to use when putting inline-reply response into Intent extras */
-internal const val K_IR_ATS = "com.spcore.extra.IR_ATS"
 
 /** Inline reply request code identifier for ATS inline-reply */
 internal const val IR_RC_ATS = 0
@@ -125,12 +122,13 @@ class CNotifications(val context: Context) : ContextWrapper(context) {
 
 
         if (inlineReply) {
+
             // The inline-reply action restarts the SendATSIntentService
             val inlineReplyIntent =
-                    PendingIntent.getBroadcast(
-                            this,
+                    PendingIntent.getService(
+                            applicationContext,
                             IR_RC_ATS,
-                            DirectReplyATSBroadcastReceiver.newIntent(this, lesson),
+                            DirectReplySendATSIntentService.newIntent(applicationContext, lesson),
                             PendingIntent.FLAG_UPDATE_CURRENT)
             val remoteInput =
                     RemoteInput.Builder(K_IR_ATS)

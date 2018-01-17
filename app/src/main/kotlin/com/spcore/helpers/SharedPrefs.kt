@@ -22,6 +22,26 @@ interface SharedPrefWrapper {
 }
 
 object Auth : SharedPrefWrapper {
+
+    /**
+     * Keys:
+     *      token: String =>
+     *          JWT Token received from server upon login
+     *
+     *      23gnoiasbrjaeorbin: String =>
+     *          Base64 encoded admin number
+     *      argjoaierogjeoagij: String =>
+     *          Base64 encoded password
+     *
+     *      init: Boolean =>
+     *          Whether the app has confirmed with the server that the
+     *          user has indeed initialized his/her account
+     *
+     *      username =>
+     *          Locally cached username of the current user
+     *      displayed name =>
+     *          Locally cached display name of the current user
+     */
     private var authSP: SharedPreferences? = null
 
     private var currUser: User? = null
@@ -243,6 +263,11 @@ object Auth : SharedPrefWrapper {
  * So far, this shared pref is just used to store whether or not the current lesson's ATS was keyed
  */
 object ATS : SharedPrefWrapper {
+
+    /**
+     * Keys:
+     *      lessonID    =>  String .id of the most recent ATS-keyed lesson
+     */
     private var ATSSP : SharedPreferences? = null
 
     override fun <T : Context> initializeSP(context: T) {
@@ -311,6 +336,11 @@ object ATS : SharedPrefWrapper {
  *   When the notification is clicked, it opens up the ATS submission dialog
  */
 object AppState : SharedPrefWrapper {
+
+    /**
+     * Keys:
+     *      active  =>  String value of the name of the activity that is currently active.
+     */
     private var AppStateSP: SharedPreferences? = null
 
     override fun <T : Context> initializeSP(context: T) {
@@ -356,9 +386,42 @@ object CacheState : SharedPrefWrapper {
     private var CacheStateSP : SharedPreferences? = null
 
     override fun <T : Context> initializeSP(context: T) {
-        if (CacheStateSP != null)
+        if (CacheStateSP == null)
             CacheStateSP = context.getSharedPreferences(
                     "com.spcore.cachestate",
                     Context.MODE_PRIVATE)
     }
+}
+
+/**
+ * Used to ensure consistency of the schedule view & also to
+ * ensure that it is scrolled to the correct time & position
+ * after coming back from the Lesson/EventDetailsActivity.
+ */
+object ScheduleViewState : SharedPrefWrapper {
+    /**
+     * Keys:
+     *      date    =>  The date for the scheduleView to jump to the moment onResume is called in
+     *                  the home activity.
+     *
+     *                  This value will be reset every time the app starts up.
+     *
+     *      noDays  =>  The number of days to show in the schedule view. This is an implied
+     *                  persistent preference the user makes upon selecting one of the n-day view
+     *                  actions in the navigation drawer.
+     */
+    private var ScheduleViewStateSP : SharedPreferences? = null
+
+    override fun <T : Context> initializeSP(context: T) {
+        if (ScheduleViewStateSP == null)
+            ScheduleViewStateSP = context.getSharedPreferences(
+                    "com.spcore.scheduleviewstate",
+                    Context.MODE_PRIVATE)
+
+        ScheduleViewStateSP
+                ?.edit()
+                ?.remove("date")
+                ?.apply()
+    }
+
 }
