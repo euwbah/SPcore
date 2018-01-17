@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "943821531749",
+    "firebase_url": "https://spcore-u-dun-know.firebaseio.com",
+    "project_id": "spcore-u-dun-know",
+    "storage_bucket": "spcore-u-dun-know.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943821531749:android:6165a690d81f274e",
+        "android_client_info": {
+          "package_name": "com.spcore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943821531749-v232tq21rhqftnvm3tut5rbqmdm6a1c8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5PP8BhwuAcv83hsS3rir-miaoKo03III"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

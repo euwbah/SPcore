@@ -27,7 +27,7 @@ const val K_ACTION_SUBMIT_ATS = "com.spcore.action.SUBMIT_ATS"
 /**
  * [IntentService] for submitting ATS
  */
-class SendATSIntentService() : IntentService("SendATSIntentService") {
+class SendATSIntentService : IntentService("SendATSIntentService") {
 
     override fun onHandleIntent(intent: Intent) {
         when(intent.action) {

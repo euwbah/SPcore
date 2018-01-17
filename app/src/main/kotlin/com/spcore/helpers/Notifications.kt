@@ -128,9 +128,9 @@ class CNotifications(val context: Context) : ContextWrapper(context) {
             // The inline-reply action restarts the SendATSIntentService
             val inlineReplyIntent =
                     PendingIntent.getBroadcast(
-                            applicationContext,
+                            this,
                             IR_RC_ATS,
-                            DirectReplyATSBroadcastReceiver.newIntent(context, lesson),
+                            DirectReplyATSBroadcastReceiver.newIntent(this, lesson),
                             PendingIntent.FLAG_UPDATE_CURRENT)
             val remoteInput =
                     RemoteInput.Builder(K_IR_ATS)
