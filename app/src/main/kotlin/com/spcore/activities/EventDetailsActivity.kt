@@ -300,6 +300,12 @@ class EventDetailsActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        ScheduleViewState.setDate(event.startTime);
+    }
+
     override fun onBackPressed() {
         finish()
     }

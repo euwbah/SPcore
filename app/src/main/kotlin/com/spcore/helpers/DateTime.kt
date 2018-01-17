@@ -208,6 +208,18 @@ class Duration {
     var millis: Double = 0.0
         private set
 
+    val uncarriedDays: Double
+        get() = toMillisAccurate()/1000/60/60/24
+
+    val uncarriedHours: Double
+        get() = toMillisAccurate()/1000/60/60
+
+    val uncarriedMinutes: Double
+        get() = toMillisAccurate()/1000/60
+
+    val uncarriedSeconds: Double
+        get() = toMillisAccurate()/1000
+
 
     constructor(
             days: Int = 0,

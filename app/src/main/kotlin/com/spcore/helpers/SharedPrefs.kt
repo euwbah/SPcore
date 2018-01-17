@@ -8,12 +8,13 @@ import com.spcore.exceptions.NotLoggedInException
 import com.spcore.models.Lesson
 import com.spcore.models.User
 import com.spcore.helpers.HardcodedStuff.HardcodedFriends
+import java.util.*
 
 /**
  * Call this once during the splash screen
  */
 fun <T : Context> T.initSharedPrefs() {
-    arrayOf(Auth, ATS, AppState)
+    arrayOf(Auth, ATS, AppState, CacheState, ScheduleViewState)
             .map { it.initializeSP(this)}
 }
 
@@ -401,7 +402,7 @@ object CacheState : SharedPrefWrapper {
 object ScheduleViewState : SharedPrefWrapper {
     /**
      * Keys:
-     *      date    =>  The date for the scheduleView to jump to the moment onResume is called in
+     *      date    =>  The Long timestamp for the scheduleView to jump to the moment onResume is called in
      *                  the home activity.
      *
      *                  This value will be reset every time the app starts up.
@@ -421,6 +422,46 @@ object ScheduleViewState : SharedPrefWrapper {
         ScheduleViewStateSP
                 ?.edit()
                 ?.remove("date")
+                ?.apply()
+    }
+
+    /**
+     * Returns a [Calendar] instance of an jump-to date if it exists, null otherwise.
+     *
+     * Make sure to set the schedule view's datetime to have this in view in the `onResume()` of
+     * the HomeActivity.
+     */
+    fun getDateAndClear() : Calendar? {
+        if (ScheduleViewStateSP == null)
+            throw UnsupportedOperationException("ScheduleViewState shared preferences not initialized yet")
+
+        val timestamp =
+                ScheduleViewStateSP
+                        ?.getLong("date", -1)?.let {
+                    if (it == -1L)
+                        null
+                    else
+                        it
+                }
+
+        return if (timestamp == null)
+            null
+        else
+            Calendar.getInstance().apply { timeInMillis = timestamp }
+    }
+
+    /**
+     * Set the datetime for the schedule view to jump to the moment the home activity is resumed.
+     *
+     * Always call this on the `.onResume()` of the `LessonDetailsActivity` and `EventDetailsActivity`
+     */
+    fun setDate(calendar: Calendar) {
+        if (ScheduleViewStateSP == null)
+            throw UnsupportedOperationException("ScheduleViewState shared preferences not initialized yet")
+
+        ScheduleViewStateSP
+                ?.edit()
+                ?.putLong("date", calendar.timeInMillis)
                 ?.apply()
     }
 

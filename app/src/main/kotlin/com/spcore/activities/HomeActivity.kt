@@ -233,6 +233,11 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
         // this is really really inefficient, but it works for now.
         schedule_view.notifyDatasetChanged()
+
+        ScheduleViewState.getDateAndClear()?.let {
+            schedule_view.goToDate(it)
+            schedule_view.goToHour(it.getTimeAsDuration().uncarriedHours)
+        }
     }
 
     private fun delEvent(event: Event) {

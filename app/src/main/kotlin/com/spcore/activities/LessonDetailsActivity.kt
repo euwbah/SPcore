@@ -119,6 +119,12 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        ScheduleViewState.setDate(lesson.startTime);
+    }
+
     /**
      * This is invoked when the ATS code submitted passes client-side validation
      * in the [ATSEntryDialogFragment]
