@@ -50,7 +50,12 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         home_drawer_layout.addDrawerListener(toggleListener!!)
         toggleListener!!.syncState()
 
-        nav_view.setCheckedItem(R.id.nav_day_view)
+        ScheduleViewState.getNumberOfVisibleDays().let {
+            if (it == 1)
+                nav_view.setCheckedItem(R.id.nav_day_view)
+            else if (it == 5)
+                nav_view.setCheckedItem(R.id.nav_5_day_view)
+        }
 
         nav_view.setNavigationItemSelectedListener navHandler@ {
 
@@ -61,11 +66,13 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                     setGoToEarliestVisibleEventLoadTrigger()
                     schedule_view.numberOfVisibleDays = 1
                     schedule_view.goToEarliestVisibleEvent(2.0)
+                    ScheduleViewState.setNumberOfVisibleDays(1)
                 }
                 R.id.nav_5_day_view -> {
                     setGoToEarliestVisibleEventLoadTrigger()
                     schedule_view.numberOfVisibleDays = 5
                     schedule_view.goToEarliestVisibleEvent(2.0)
+                    ScheduleViewState.setNumberOfVisibleDays(5)
 
                     // TODO: Automatically shift the 5 weekdays in view if the current selected date on the schedule view
                     // is a weekday. Otherwise, put the current selected date as the 3rd visible date (as the middle)

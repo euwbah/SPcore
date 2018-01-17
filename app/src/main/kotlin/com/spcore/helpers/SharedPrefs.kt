@@ -402,14 +402,14 @@ object CacheState : SharedPrefWrapper {
 object ScheduleViewState : SharedPrefWrapper {
     /**
      * Keys:
-     *      date    =>  The Long timestamp for the scheduleView to jump to the moment onResume is called in
-     *                  the home activity.
+     *      date        =>  The Long timestamp for the scheduleView to jump to the moment onResume is called in
+     *                      the home activity.
      *
-     *                  This value will be reset every time the app starts up.
+     *                      This value will be reset every time the app starts up.
      *
-     *      noDays  =>  The number of days to show in the schedule view. This is an implied
-     *                  persistent preference the user makes upon selecting one of the n-day view
-     *                  actions in the navigation drawer.
+     *      num days    =>  The number of days to show in the schedule view. This is an implied
+     *                      persistent preference the user makes upon selecting one of the n-day view
+     *                      actions in the navigation drawer.
      */
     private var ScheduleViewStateSP : SharedPreferences? = null
 
@@ -428,6 +428,8 @@ object ScheduleViewState : SharedPrefWrapper {
     /**
      * Returns a [Calendar] instance of an jump-to date if it exists, null otherwise.
      *
+     * ONCE CALLED, THIS WILL CLEAR THE DATE SHARED PREF VALUE!!! IT WILL ONLY WORK ONCE PER SET()
+     *
      * Make sure to set the schedule view's datetime to have this in view in the `onResume()` of
      * the HomeActivity.
      */
@@ -443,6 +445,11 @@ object ScheduleViewState : SharedPrefWrapper {
                     else
                         it
                 }
+
+        ScheduleViewStateSP
+                ?.edit()
+                ?.remove("date")
+                ?.apply()
 
         return if (timestamp == null)
             null
@@ -462,6 +469,23 @@ object ScheduleViewState : SharedPrefWrapper {
         ScheduleViewStateSP
                 ?.edit()
                 ?.putLong("date", calendar.timeInMillis)
+                ?.apply()
+    }
+
+    fun getNumberOfVisibleDays() : Int {
+        if (ScheduleViewStateSP == null)
+            throw UnsupportedOperationException("ScheduleViewState shared preferences not initialized yet")
+
+        return ScheduleViewStateSP?.getInt("num days", 1) ?: 1
+    }
+
+    fun setNumberOfVisibleDays(numDays: Int) {
+        if (ScheduleViewStateSP == null)
+            throw UnsupportedOperationException("ScheduleViewState shared preferences not initialized yet")
+
+        ScheduleViewStateSP
+                ?.edit()
+                ?.putInt("num days", numDays)
                 ?.apply()
     }
 
