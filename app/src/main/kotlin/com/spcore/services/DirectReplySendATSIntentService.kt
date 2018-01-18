@@ -5,9 +5,14 @@ import android.app.RemoteInput
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.spcore.helpers.NID_ATS_FAILURE
+import com.spcore.helpers.Notifications
 import com.spcore.models.Lesson
 
 const val ATS_ACTION_INLINE = "com.spcore.inline.ATS_ACTION"
+
+/** Key to use when putting inline-reply response into Intent extras */
+internal const val K_IR_ATS = "com.spcore.extra.IR_ATS"
 
 class DirectReplySendATSIntentService : IntentService("DirectReplySendATSIntentService") {
 
@@ -21,6 +26,8 @@ class DirectReplySendATSIntentService : IntentService("DirectReplySendATSIntentS
             submitAts(applicationContext, ats.toString(), lesson)
         else
             Log.e("SPCORE", "UNEXPECTED IGNORED ERROR: ATS inline-reply results bundle was null")
+
+        Notifications.cancelNotification(NID_ATS_FAILURE)
     }
 
     private fun submitAts(context: Context, ats: String, lesson: Lesson) {
@@ -38,6 +45,3 @@ class DirectReplySendATSIntentService : IntentService("DirectReplySendATSIntentS
         }
     }
 }
-
-/** Key to use when putting inline-reply response into Intent extras */
-internal const val K_IR_ATS = "com.spcore.extra.IR_ATS"
