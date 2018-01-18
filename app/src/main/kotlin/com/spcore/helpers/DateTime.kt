@@ -2,6 +2,13 @@ package com.spcore.helpers
 
 import java.util.*
 
+/**
+ * Convert a [Long] timestamp to a [Calendar]
+ */
+fun Long.toCalendar(): Calendar {
+    return Calendar.getInstance().apply { timeInMillis = this@toCalendar }
+}
+
 fun Date.toCalendar(): Calendar {
     val cal = Calendar.getInstance()
     cal.time = this

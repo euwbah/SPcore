@@ -437,24 +437,23 @@ object ScheduleViewState : SharedPrefWrapper {
         if (ScheduleViewStateSP == null)
             throw UnsupportedOperationException("ScheduleViewState shared preferences not initialized yet")
 
-        val timestamp =
-                ScheduleViewStateSP
-                        ?.getLong("date", -1)?.let {
-                    if (it == -1L)
-                        null
-                    else
-                        it
-                }
 
-        ScheduleViewStateSP
-                ?.edit()
-                ?.remove("date")
-                ?.apply()
 
-        return if (timestamp == null)
-            null
-        else
-            Calendar.getInstance().apply { timeInMillis = timestamp }
+        val cal = ScheduleViewStateSP
+                ?.getLong("date", -1)?.let {
+
+            ScheduleViewStateSP
+                    ?.edit()
+                    ?.remove("date")
+                    ?.apply()
+
+            if (it == -1L)
+                null
+            else
+                it
+        }?.toCalendar()
+
+        return cal
     }
 
     /**

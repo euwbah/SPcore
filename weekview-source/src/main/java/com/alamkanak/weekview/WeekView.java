@@ -156,6 +156,7 @@ public class WeekView extends View {
     private DateTimeInterpreter mDateTimeInterpreter;
     private ScrollListener mScrollListener;
     private EventsLoadedListener mEventsLoadedListener;
+    private boolean mEventsLoadedListenerIsOneshot = false;
 
     // Behaviour options
     private boolean mDisplayDayOrdinalOfMultiDayEvents = true;
@@ -1062,11 +1063,11 @@ public class WeekView extends View {
             computePositionOfEvents(eventRects);
         }
 
-        Log.d("WeekView", "PRE triggered events loaded listener");
-
         if(mEventsLoadedListener != null) {
             mEventsLoadedListener.onEventsLoaded();
-            Log.d("WeekView", "triggered events loaded listener");
+
+            if(mEventsLoadedListenerIsOneshot)
+                mEventsLoadedListener = null;
         }
     }
 
@@ -1323,8 +1324,14 @@ public class WeekView extends View {
         return mScrollListener;
     }
 
+    public void setOneshotEventsLoadedListener(EventsLoadedListener l) {
+        this.mEventsLoadedListener = l;
+        this.mEventsLoadedListenerIsOneshot = true;
+    }
+
     public void setEventsLoadedListener(EventsLoadedListener l) {
         this.mEventsLoadedListener = l;
+        this.mEventsLoadedListenerIsOneshot = false;
     }
 
     public EventsLoadedListener getEventsLoadedListener() { return mEventsLoadedListener; }

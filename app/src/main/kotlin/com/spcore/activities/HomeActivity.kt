@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.*
+import com.alamkanak.weekview.WeekView
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
@@ -198,19 +199,6 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
 
         schedule_view.eventMarginVertical = 1.5.dpToPx().toInt()
 
-        async(UI) {
-            // The delay is necessary as the week view needs some time to load
-            // in order for goToEarliestEvent and its related event listeners
-            // to function reliably.
-
-            // There's no other way to fix this other than to rewrite the
-            // WeekView package from scratch with more robust and canonical synchronicity,
-            // obviously I'm not gonna do that so guess we'll have to deal with this stupid
-            // hack.
-            delay(40)
-            setScheduleViewDate(Calendar.getInstance())
-        }
-
         create_event_fab.setOnClickListener {
             // TODO: Change this to startActivityForResult
             startActivity<EventCreateUpdateActivity>("mode" to "create")
@@ -238,13 +226,18 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     override fun onResume() {
         super.onResume()
 
+        info("onResume")
+
         // TODO: Only notifyDatasetChanged if onActivityResult yields information that a new Event was created
         // this is really really inefficient, but it works for now.
         schedule_view.notifyDatasetChanged()
 
         ScheduleViewState.getDateAndClear()?.let {
-            schedule_view.goToDate(it)
-            schedule_view.goToHour(it.getTimeAsDuration().uncarriedHours)
+            setScheduleViewDate(it) {
+                schedule_view.goToHour(it.getTimeAsDuration().uncarriedHours - 2)
+            }
+        } ?: run {
+            setScheduleViewDate(Calendar.getInstance())
         }
     }
 
@@ -279,24 +272,23 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
      */
     private fun setGoToEarliestVisibleEventLoadTrigger() {
         debug("event loaded listener cued")
-        schedule_view.setEventsLoadedListener {
+        schedule_view.setOneshotEventsLoadedListener {
             // once-off event
             schedule_view.goToEarliestVisibleEvent(2.0)
-            removeGoToEarliestVisibleEventLoadTrigger()
 
             debug("event loaded listener triggered")
         }
     }
 
-    private fun removeGoToEarliestVisibleEventLoadTrigger() {
-        schedule_view.eventsLoadedListener = null
+    private fun setScheduleViewDate(cal: Calendar, onLoadedOneshot: (() -> Unit)? = null) {
+        if (onLoadedOneshot == null)
+            setGoToEarliestVisibleEventLoadTrigger()
+        else
+            schedule_view.setOneshotEventsLoadedListener { onLoadedOneshot() }
 
-        debug("event loaded listener trigger cancelled")
-    }
-
-    private fun setScheduleViewDate(cal: Calendar) {
-        setGoToEarliestVisibleEventLoadTrigger()
-        schedule_view.goToDate(cal)
+        // Cloning is necessary as the WeekView will set the time to 00:00 upon
+        // goToDate. This caused the original Calendar object to die
+        schedule_view.goToDate(cal.clone() as Calendar)
         setMYTextView(cal)
     }
 

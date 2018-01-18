@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.DatePicker
 import com.spcore.helpers.newCalendar
+import com.spcore.helpers.toCalendar
 import java.util.*
 
 private val ARG_TIMESTAMP = "timestamp"
@@ -37,9 +38,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val date = Calendar.getInstance().apply {
-            timeInMillis = arguments!!.getLong(ARG_TIMESTAMP)
-        }
+        val date = arguments!!.getLong(ARG_TIMESTAMP).toCalendar()
 
         return DatePickerDialog(activity, this, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH))
     }
