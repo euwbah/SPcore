@@ -54,6 +54,8 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
     compile 'com.squareup.moshi:moshi-kotlin:1.5.0'
 
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
+
 
     // Using source version for testing custom code
     compile project(':weekview-source')
