@@ -182,7 +182,7 @@ object SPMobileAPI {
                     val htmlresponse = it.string()
                     val document = Jsoup.parse(htmlresponse)
                     val hiddenInputFields = document.select("input[type='hidden']")
-                    hiddenInputFields.forEach {
+                    hiddenInputFields.map {
                         step4RequestBody.put(it.attr("name"), it.attr("value"))
                     }
                 } ?: run {

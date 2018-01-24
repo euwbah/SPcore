@@ -3,15 +3,19 @@ package com.spcore.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.google.firebase.iid.FirebaseInstanceId
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.spmobileapi.SPMobileAPI
+import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.info
 import org.jetbrains.anko.uiThread
 
 
-class SplashActivity : AppStateTrackerActivity("SplashActivity") {
+class SplashActivity : AppStateTrackerActivity("SplashActivity"),
+                       AnkoLogger {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +29,10 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity") {
             initSharedPrefs()
             SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
 
+
+            val registrationToken = FirebaseInstanceId.getInstance().token
+
+            info("registration token: $registrationToken")
 
             val jwt = Auth.getJwtToken()
 

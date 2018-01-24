@@ -145,6 +145,7 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
         class SUCCESS(val response: LoginResponse) : LoginStatus()
         object INVALID_CREDENTIALS : LoginStatus()
         object SP_SERVER_DOWN : LoginStatus()
+        object LOCKED_OUT_BY_SP : LoginStatus()
         object VOID : LoginStatus()
         class UNEXPECTED_ERROR(val code: Int, val message: String) : LoginStatus()
     }

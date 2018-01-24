@@ -31,6 +31,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),
                 else ->
                     warn("Unsupported firebase message data type")
             }
-        }
+        } ?:
+            warn("High-level non-data notifications not supported")
     }
 }

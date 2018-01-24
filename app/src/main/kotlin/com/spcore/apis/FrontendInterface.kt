@@ -24,16 +24,16 @@ import kotlin.collections.ArrayList
  */
 object FrontendInterface {
     fun performLogin(adminNo: String, password: String) : LoginStatus {
-        if (HARDCODE_MODE) {
-            // Simulate server access
-            Thread.sleep(500)
-            val fakeResponse = LoginResponse("Fake JWT Token")
-            return when (adminNo) {
-                "1234567" -> LoginStatus.SUCCESS(fakeResponse)
-                "7654321" -> LoginStatus.SP_SERVER_DOWN
-                else -> LoginStatus.INVALID_CREDENTIALS
-            }
-        }
+//        if (HARDCODE_MODE) {
+//            // Simulate server access
+//            Thread.sleep(500)
+//            val fakeResponse = LoginResponse("Fake JWT Token")
+//            return when (adminNo) {
+//                "1234567" -> LoginStatus.SUCCESS(fakeResponse)
+//                "7654321" -> LoginStatus.SP_SERVER_DOWN
+//                else -> LoginStatus.INVALID_CREDENTIALS
+//            }
+//        }
 
         val resp = Backend.performLogin(adminNo, password).execute()
 
@@ -43,8 +43,9 @@ object FrontendInterface {
 
                 err?.code?.let {
                     return when(it) {
-                        2 -> LoginStatus.INVALID_CREDENTIALS
-                        3 -> LoginStatus.SP_SERVER_DOWN
+                        Backend.WRONG_SPICE_CRENDENTIALS -> LoginStatus.INVALID_CREDENTIALS
+                        Backend.DATABASE_ERROR -> LoginStatus.SP_SERVER_DOWN
+                        Backend.LOCKED_OUT_BY_SP -> LoginStatus.LOCKED_OUT_BY_SP
                         else -> LoginStatus.UNEXPECTED_ERROR(it, err.message)
                     }
                 }
@@ -54,6 +55,9 @@ object FrontendInterface {
         }
 
         resp.body()?.let {
+            if (it.username != null) {
+                Auth.setUserInitializedLocally(it.username, it.displayName)
+            }
             return LoginStatus.SUCCESS(it)
         }
 
@@ -162,13 +166,13 @@ object FrontendInterface {
      * check the server.
      */
     fun isUserInitializedOnServer() : Boolean {
-        if (HARDCODE_MODE) {
-            // Simulate server access
-            Thread.sleep(200)
-            return Auth.getUserInitializedLocally()
-        } else {
-            TODO("i HaVe CrIpPlInG dEpReSsIoN")
-        }
+//        if (HARDCODE_MODE) {
+//            // Simulate server access
+//            Thread.sleep(200)
+//            return Auth.getUserInitializedLocally()
+//        }
+
+        return Auth.getUserInitializedLocally()
     }
 
     fun setUserInitializedOnServer(username: String, displayedName: String?) : InitialLoginActivity.SubmitInitStatus {
