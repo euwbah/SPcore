@@ -20,10 +20,12 @@ import com.spcore.R
 import com.spcore.helpers.Auth
 import com.spcore.apis.FrontendInterface
 import com.spcore.apis.LoginResponse
+import com.spcore.helpers.isOnline
 import com.spcore.helpers.onAnimationEnd
 import com.spcore.spmobileapi.SPMobileAPI
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.contentView
+import org.jetbrains.anko.longToast
 
 class LoginActivity : AppStateTrackerActivity("LoginActivity") {
     /**
@@ -55,6 +57,11 @@ class LoginActivity : AppStateTrackerActivity("LoginActivity") {
      */
     private fun attemptLogin() {
         if (mAuthTask != null) {
+            return
+        }
+
+        if (!isOnline(this)) {
+            longToast("Internet connection required")
             return
         }
 

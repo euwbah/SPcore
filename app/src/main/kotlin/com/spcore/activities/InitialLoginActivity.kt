@@ -11,10 +11,12 @@ import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.Auth
 import com.spcore.helpers.HardcodedStuff
+import com.spcore.helpers.isOnline
 import kotlinx.android.synthetic.main.activity_initial_login.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.longToast
 
 class InitialLoginActivity : AppCompatActivity() {
 
@@ -65,6 +67,12 @@ class InitialLoginActivity : AppCompatActivity() {
          * validation checkers
          */
         fun submitInfo() {
+
+            if (!isOnline(this)) {
+                longToast("Internet connection required")
+                return
+            }
+
             // the usage of the 'or' infix function instead of the lazy disjunction '||' operator
             // is such that both operands will be evaluated, whether or not the first operand
             // yields a value, in this case 'true', that will make the second ineffective to the

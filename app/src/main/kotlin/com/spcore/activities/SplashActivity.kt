@@ -37,15 +37,39 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity"),
             val jwt = Auth.getJwtToken()
 
             val activityClass =
-                    if (jwt != null) {
-                        if(FrontendInterface.isUserInitializedOnServer()) {
-                            HardcodedStuff.initialize(Auth.user)
-                            HomeActivity::class.java
+                    let {
+                        if (jwt != null) {
+                            if (isOnline(this@SplashActivity)) {
+
+                                // If online, attempt to login every time the app is
+                                // started
+
+                                val (adminNo, password) = Auth.getCredentials()
+                                val res = FrontendInterface.performLogin(adminNo, password)
+
+                                when {
+                                    res !is LoginActivity.LoginStatus.SUCCESS -> LoginActivity::class.java
+
+                                    FrontendInterface.isUserInitializedOnServer() -> {
+                                        HardcodedStuff.initialize(Auth.user)
+                                        info("Splash auto log-in success")
+                                        HomeActivity::class.java
+                                    }
+
+                                    else -> InitialLoginActivity::class.java
+                                }
+
+                            } else {
+                                // Otherwise just base auth on previous state of the app (as per ShPrefs)
+                                if (Auth.getUserInitializedLocally()) {
+                                    HardcodedStuff.initialize(Auth.user)
+                                    HomeActivity::class.java
+                                } else
+                                    InitialLoginActivity::class.java
+                            }
                         } else
-                            InitialLoginActivity::class.java
+                            LoginActivity::class.java
                     }
-                    else
-                        LoginActivity::class.java
 
             // The splash screen should show for a minumum of 500ms
             val msSleep = (200 - (System.currentTimeMillis() - start)).let {
