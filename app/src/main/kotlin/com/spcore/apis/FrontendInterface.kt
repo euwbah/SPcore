@@ -39,6 +39,9 @@ object FrontendInterface {
 
         if(!resp.isSuccessful) {
             resp.errorBody()?.string()?.let {
+                if (it.isBlank())
+                    return@let
+
                 val err = backendErrorAdapter.fromJson(it)
 
                 err?.code?.let {
@@ -46,7 +49,7 @@ object FrontendInterface {
                         Backend.WRONG_SPICE_CRENDENTIALS -> LoginStatus.INVALID_CREDENTIALS
                         Backend.DATABASE_ERROR -> LoginStatus.SP_SERVER_DOWN
                         Backend.LOCKED_OUT_BY_SP -> LoginStatus.LOCKED_OUT_BY_SP
-                        else -> LoginStatus.UNEXPECTED_ERROR(it, err.message)
+                        else -> LoginStatus.UNEXPECTED_ERROR(it, err.msg)
                     }
                 }
             }

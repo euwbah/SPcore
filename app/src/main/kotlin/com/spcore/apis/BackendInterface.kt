@@ -1,13 +1,12 @@
 package com.spcore.apis
 
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface BackendInterface {
     @FormUrlEncoded
     @POST("/api/dev/auth/login")
+    @Headers("Accept: application/json")
     fun performLogin(
             @Field("adminNo") adminNo: String,
             @Field("password") password: String) : Call<LoginResponse>
