@@ -169,27 +169,30 @@ object FrontendInterface {
      * check the server.
      */
     fun isUserInitializedOnServer() : Boolean {
-//        if (HARDCODE_MODE) {
-//            // Simulate server access
-//            Thread.sleep(200)
-//            return Auth.getUserInitializedLocally()
-//        }
-
+        // Just check locally, because this will be automatically updated when performLogin is called
         return Auth.getUserInitializedLocally()
     }
 
     fun setUserInitializedOnServer(username: String, displayedName: String?) : InitialLoginActivity.SubmitInitStatus {
-        return if (HARDCODE_MODE) {
-            Thread.sleep(200)
-            if(username in HardcodedUsers.map { it.username })
-                InitialLoginActivity.SubmitInitStatus.USERNAME_TAKEN
-            else {
-                Auth.setUserInitializedLocally(username, displayedName)
-                InitialLoginActivity.SubmitInitStatus.SUCCESS
+
+        val resp = Backend.initializeOrUpdateUserDetails(username, displayedName).execute()
+
+        if (!resp.isSuccessful) {
+            resp.errorBody()?.string()?.let {
+                val err =
+                        backendErrorAdapter.fromJson(it) ?:
+                                return InitialLoginActivity.SubmitInitStatus.UNKNOWN_ERROR("Bodyless error")
+
+                return when(err.code) {
+                    Backend.DUPLICATE_FOUND -> InitialLoginActivity.SubmitInitStatus.USERNAME_TAKEN
+                    else -> InitialLoginActivity.SubmitInitStatus.UNKNOWN_ERROR(err.msg)
+                }
             }
-        } else {
-            TODO("i HaVe CrIpPlInG dEpReSsIoN")
         }
+
+        Auth.setUserInitializedLocally(username, displayedName)
+
+        return InitialLoginActivity.SubmitInitStatus.SUCCESS
     }
 
 

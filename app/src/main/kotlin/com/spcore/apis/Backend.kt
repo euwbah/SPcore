@@ -1,5 +1,6 @@
 package com.spcore.apis
 
+import com.spcore.helpers.Auth
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,7 +58,9 @@ object Backend {
         return onResponseBuilder(backendCalls.performLogin(adminNo, password))
     }
 
-
+    fun initializeOrUpdateUserDetails(username: String, displayName: String?) : Call<StringResponse> {
+        return backendCalls.updateUser("Bearer ${Auth.getJwtToken()}", username, displayName)
+    }
 
     /**
      * Method-chaining interface to provide a callback upon successful response
