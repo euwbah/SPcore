@@ -21,4 +21,14 @@ interface BackendInterface {
             @Header("Authorization") authorization: String,
             @Field("username") username: String,
             @Field("displayName") displayName: String?) : Call<StringResponse>
+
+    /**
+     * @param authorization Should be "Bearer<space><jwt token>"
+     */
+    @GET("/api/dev/events/lesson")
+    @Headers("Accept: */*")
+    fun getLessons(
+            @Header("Authorization") authorization: String,
+            @Query("start") startYYYYMM: String,
+            @Query("end") endYYYYMM: String? = null) : Call<List<LessonResponse>>
 }

@@ -7,7 +7,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-internal const val BACKEND_URL: String = "http://188.166.217.80:8080"
+internal const val BACKEND_URL: String = "http://128.199.181.203:8080"
 
 object Backend {
 
@@ -60,6 +60,10 @@ object Backend {
 
     fun initializeOrUpdateUserDetails(username: String, displayName: String?) : Call<StringResponse> {
         return backendCalls.updateUser("Bearer ${Auth.getJwtToken()}", username, displayName)
+    }
+
+    fun getLessons(startYYYYMM: String, endYYYYMM: String? = null) : Call<List<LessonResponse>> {
+        return backendCalls.getLessons("Bearer ${Auth.getJwtToken()}", startYYYYMM, endYYYYMM)
     }
 
     /**
