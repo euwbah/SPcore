@@ -9,7 +9,8 @@ interface BackendInterface {
     @Headers("Accept: application/json")
     fun performLogin(
             @Field("adminNo") adminNo: String,
-            @Field("password") password: String) : Call<LoginResponse>
+            @Field("password") password: String,
+            @Field("firebaseRegistrationToken") firebaseRegistrationToken: String) : Call<LoginResponse>
 
     /**
      * @param authorization Should be "Bearer<space><jwt token>"

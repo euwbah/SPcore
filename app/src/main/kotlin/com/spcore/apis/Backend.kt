@@ -36,7 +36,7 @@ object Backend {
                 .build().create(BackendInterface::class.java)
     }
 
-    fun performLogin(adminNo: String, password: String) : Call<LoginResponse> {
+    fun performLogin(adminNo: String, password: String, firebaseRegistrationToken: String?) : Call<LoginResponse> {
         return backendCalls.performLogin(
                 adminNo.let {
                     if (it.startsWith("p"))
@@ -44,18 +44,8 @@ object Backend {
                     else
                         "p$it"
                 },
-                password)
-    }
-
-    /**
-     * Performs an async login request to Budi's backend
-     *
-     * This returns a [onResponseBuilder] which consumes a callback, [onResponseBuilder.onResponse],
-     * upon successful response,
-     * which in turn returns [onFailureBuilder]
-     */
-    fun performLoginAsync(adminNo: String, password: String): onResponseBuilder<LoginResponse> {
-        return onResponseBuilder(backendCalls.performLogin(adminNo, password))
+                password,
+                firebaseRegistrationToken ?: "NULL, somehow")
     }
 
     fun initializeOrUpdateUserDetails(username: String, displayName: String?) : Call<StringResponse> {

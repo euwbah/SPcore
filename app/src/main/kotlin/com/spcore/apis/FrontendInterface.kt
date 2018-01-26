@@ -1,6 +1,7 @@
 package com.spcore.apis
 
 import com.alamkanak.weekview.WeekViewEvent
+import com.google.firebase.iid.FirebaseInstanceId
 import com.spcore.activities.InitialLoginActivity
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
@@ -35,7 +36,7 @@ object FrontendInterface {
 //            }
 //        }
 
-        val resp = Backend.performLogin(adminNo, password).execute()
+        val resp = Backend.performLogin(adminNo, password, FirebaseInstanceId.getInstance().token).execute()
 
         if(!resp.isSuccessful) {
             resp.errorBody()?.string()?.let {
