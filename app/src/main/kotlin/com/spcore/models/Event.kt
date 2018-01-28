@@ -107,11 +107,11 @@ class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
     }
 
     override fun hashCode(): Int {
-        return this.id.toInt()
+        return this.base24ID.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is Event && other.id == this.id
+        return other is Event && other.base24ID == this.base24ID
     }
 
     /**

@@ -90,6 +90,14 @@ class Lesson : WeekViewEvent, Base24ID, Parcelable, Nowable {
         return Calendar.getInstance() isFrom startTime upTo endTime
     }
 
+    override fun equals(other: Any?): Boolean {
+        return other is Lesson && this.base24ID == other.base24ID
+    }
+
+    override fun hashCode(): Int {
+        return this.base24ID.hashCode()
+    }
+
     override fun writeToParcel(dest: Parcel, flags: Int) {
         super.writeToParcel(dest, flags)
         dest.writeString(base24ID)
