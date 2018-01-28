@@ -95,7 +95,8 @@ object FrontendInterface {
                     schedule.add(
                             Lesson(moduleName, moduleCode, location, lessonType,
                                     startTime.toCalendar(),
-                                    endTime.toCalendar())
+                                    endTime.toCalendar(),
+                                    id)
                     )
                 }
             }

@@ -15,8 +15,9 @@ private const val NOT_GOING_EVENT_COLOUR   = 0xff_22_22_22.toInt()
 // Note that there isn't any "Deleted invitiation" colour, because the event would simply not exist
 // on the schedule
 
-class Event : WeekViewEvent, Parcelable, Nowable {
+class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
 
+    override val base24ID: String
 
     var description: String
     val creator: User
@@ -26,6 +27,7 @@ class Event : WeekViewEvent, Parcelable, Nowable {
     val deletedInvite: ArrayList<User>
 
     constructor(parcel: Parcel) : super(parcel) {
+        this.base24ID = parcel.readString()
         this.description = parcel.readString()
         creator = parcel.readParcelable(User::class.java.classLoader)
         going = parcel.createTypedArrayList(User.CREATOR)
@@ -58,8 +60,9 @@ class Event : WeekViewEvent, Parcelable, Nowable {
                 notGoing: ArrayList<User> = arrayListOf(),
                 haventReplied: ArrayList<User> = arrayListOf(),
                 deletedInvite: ArrayList<User> = arrayListOf(),
-                id: Int = Objects.hash(eventName, location, start)
-    ) : super(id.toLong(), eventName, location, start, end) {
+                id: String = Objects.hash(eventName, location, start).toString()
+    ) : super(id.hashCode().toLong(), eventName, location, start, end) {
+        this.base24ID = id
         this.description = eventDesc
         this.creator = creator
         this.going = going
@@ -127,6 +130,7 @@ class Event : WeekViewEvent, Parcelable, Nowable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         super.writeToParcel(parcel, flags)
+        parcel.writeString(base24ID)
         parcel.writeString(description)
         parcel.writeParcelable(creator, flags)
         parcel.writeTypedList(going)

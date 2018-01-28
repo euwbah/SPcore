@@ -18,7 +18,9 @@ private const val ONGOING_LESSON_SUBMITTED_ATS_COLOUR   = 0xff_44_77_ff.toInt()
  * 1. WeekViewEvent (Parcelable Object)
  * 2. moduleCode (String)
  */
-class Lesson : WeekViewEvent, Parcelable, Nowable {
+class Lesson : WeekViewEvent, Base24ID, Parcelable, Nowable {
+
+    override val base24ID: String
 
     val moduleCode: String
     val lessonType: String
@@ -41,8 +43,9 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
                 lessonType: String,
                 start: Calendar,
                 end: Calendar,
-                id: Int = Objects.hash(moduleCode, location, start)
-    ) : super(id.toLong(), moduleName, location, start, end) {
+                id: String = Objects.hash(moduleCode, location, start).toString()
+    ) : super(id.hashCode().toLong(), moduleName, location, start, end) {
+        this.base24ID = id
         this.moduleCode = moduleCode
         this.lessonType = lessonType
         this.additionalInfo = lessonType
@@ -60,6 +63,7 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
     }
 
     constructor(x: Parcel) : super(x) {
+        this.base24ID = x.readString()
         this.moduleCode = x.readString()
         this.lessonType = x.readString()
         this.additionalInfo = lessonType
@@ -88,6 +92,7 @@ class Lesson : WeekViewEvent, Parcelable, Nowable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         super.writeToParcel(dest, flags)
+        dest.writeString(base24ID)
         dest.writeString(moduleCode)
         dest.writeString(lessonType)
     }
