@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.spcore.helpers.NID_ATS_FAILURE
+import com.spcore.helpers.NID_LESSON_PROMPT
 import com.spcore.helpers.Notifications
 import com.spcore.models.Lesson
 
@@ -27,7 +28,7 @@ class DirectReplySendATSIntentService : IntentService("DirectReplySendATSIntentS
         else
             Log.e("SPCORE", "UNEXPECTED IGNORED ERROR: ATS inline-reply results bundle was null")
 
-        Notifications.cancelNotification(NID_ATS_FAILURE)
+        Notifications.cancelNotification(NID_ATS_FAILURE, NID_LESSON_PROMPT)
     }
 
     private fun submitAts(context: Context, ats: String, lesson: Lesson) {

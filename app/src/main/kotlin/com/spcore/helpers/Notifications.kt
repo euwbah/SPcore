@@ -33,6 +33,7 @@ internal const val NC_ATS_DN = "ATS Prompts"
 
 internal const val NID_ATS_FAILURE = 0
 internal const val NID_ATS_SUCCESS = 1
+internal const val NID_LESSON_PROMPT = 2
 
 /** Inline reply request code identifier for ATS inline-reply */
 internal const val IR_RC_ATS = 0
@@ -69,8 +70,8 @@ class CNotifications(val context: Context) : ContextWrapper(context) {
         }
     }
 
-    fun cancelNotification(notifID: Int) {
-        notifManager.cancel(notifID)
+    fun cancelNotification(vararg notifIDs: Int) {
+        notifIDs.forEach { notifManager.cancel(it) }
     }
 
     fun notifyATSSuccess() {
@@ -82,6 +83,54 @@ class CNotifications(val context: Context) : ContextWrapper(context) {
                         .setContentTitle("ATS submitted")
 
         notifManager.notify(NID_ATS_SUCCESS, notificationBuilder.build())
+    }
+
+    fun notifyPromptToSubmitATS(lesson: Lesson) {
+        val notificationBuilder =
+                NotificationCompat
+                        .Builder(this, NC_ATS)
+                        .setSmallIcon(R.drawable.ats) // FIXME: This is stupid
+                        .setLargeIcon(getDrawable(R.drawable.ats).toBitmap())
+                        .setContentTitle("${lesson.name} Lesson")
+                        .setContentText("${lesson.toHumanReadableTimeRange()}\n@${lesson.location}")
+                        .setOngoing(true)
+
+        // i.e. the intent which shows up when the user clicks on the notification body
+        val intentToSpawn =
+                Intent(this, LessonDetailsActivity::class.java)
+                        .putExtra("event", lesson)
+                        .putExtra("open ats dialog", !ATS.checkATSSubmitted(lesson))
+
+        val stackBuilder = TaskStackBuilder.create(this)
+        // addParentStack will read parentActivityName metadata attributes from AndroidManifest.xml
+        // and automatically reconstruct the back stack up to the root task
+        stackBuilder.addParentStack(LessonDetailsActivity::class.java)
+        stackBuilder.addNextIntent(intentToSpawn)
+
+        val spawnedPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        notificationBuilder.setContentIntent(spawnedPendingIntent)
+
+        // The inline-reply action restarts the SendATSIntentService
+        val inlineReplyIntent =
+                PendingIntent.getService(
+                        applicationContext,
+                        IR_RC_ATS,
+                        DirectReplySendATSIntentService.newIntent(applicationContext, lesson),
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        val remoteInput =
+                RemoteInput.Builder(K_IR_ATS)
+                        .setLabel("Key ATS...")
+                        .build()
+        val inlineReplyNotifAction =
+                NotificationCompat.Action.Builder(
+                        R.drawable.ats,
+                        "Re-submit ATS",
+                        inlineReplyIntent)
+                        .addRemoteInput(remoteInput)
+                        .build()
+
+        notificationBuilder.addAction(inlineReplyNotifAction)
+
     }
 
     /**

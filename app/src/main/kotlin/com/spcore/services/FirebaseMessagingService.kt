@@ -14,6 +14,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),
     companion object {
         // Notification types
         const val TEST_DATA_MESSAGE = "tdm"
+        const val LESSON_NOTIFICATION = "lesson"
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -26,6 +27,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),
                 TEST_DATA_MESSAGE -> {
                     async(UI) {
                         longToast(it["message"] ?: "No message")
+                    }
+                }
+                LESSON_NOTIFICATION -> {
+                    async(UI) {
+
                     }
                 }
                 else ->

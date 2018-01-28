@@ -170,6 +170,8 @@ class LessonDetailsActivity : AppStateTrackerActivity("LessonDetailsActivity"),
                     }
 
                     key_ats_fab.visibility = View.GONE
+
+                    Notifications.cancelNotification(NID_LESSON_PROMPT)
                 }
 
                 BROADCAST_ATS_FAILURE -> {

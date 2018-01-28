@@ -1,6 +1,12 @@
 package com.spcore.helpers
 
+import com.alamkanak.weekview.WeekViewEvent
 import java.util.*
+
+
+fun WeekViewEvent.toHumanReadableTimeRange() : String {
+    return humanReadableTimeRange(startTime, endTime)
+}
 
 /**
  * Convert a [Long] timestamp to a [Calendar]
