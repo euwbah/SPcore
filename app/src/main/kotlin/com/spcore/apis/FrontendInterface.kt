@@ -1,5 +1,6 @@
 package com.spcore.apis
 
+import android.util.Log
 import com.alamkanak.weekview.WeekViewEvent
 import com.google.firebase.iid.FirebaseInstanceId
 import com.spcore.activities.InitialLoginActivity
@@ -72,6 +73,65 @@ object FrontendInterface {
     fun getSchedule(adminNo: String, year: Int, month: Int) : List<WeekViewEvent> {
         val schedule = ArrayList<WeekViewEvent>()
 
+        val resp = Backend.getLessons("%04d%02d".format(year, month)).execute()
+
+        if (!resp.isSuccessful) {
+            // This shouldn't fall through since the server doesn't return any errors in this endpoint
+            resp.errorBody()?.string()?.let {
+                if (it.isBlank())
+                    return@let
+
+                val err = backendErrorAdapter.fromJson(it)
+
+                Log.w("SPCore", "Backend Interface error: unable to get lessons. ${err?.msg}")
+            }
+
+            return schedule
+        }
+
+        resp.body()?.let {
+            it.forEach {
+                it.apply {
+                    schedule.add(
+                            Lesson(moduleName, moduleCode, location, lessonType,
+                                    startTime.toCalendar(),
+                                    endTime.toCalendar())
+                    )
+                }
+            }
+        }
+
+        HardcodedEvents
+                .filter { it.startTime.get(Calendar.MONTH) == month - 1 }
+                .forEach { schedule.add(it) }
+
+        val now = Calendar.getInstance()
+        val qtNow = now.roundUpToNearest(minutes = 10)
+        // only add now for the current month
+        if (now.get(Calendar.MONTH) == month - 1) {
+            schedule.addAll(listOf(
+                    Lesson(
+                            "SIP",
+                            "LC4234",
+                            "T1643",
+                            "TUT",
+                            qtNow - Duration(hours = 1),
+                            qtNow + Duration(hours = 1)
+                    ),
+                    Lesson(
+                            "HM2",
+                            "SM1337",
+                            "T2253",
+                            "TUT",
+                            qtNow + Duration(hours = 3),
+                            qtNow + Duration(hours = 5)
+                    )
+            ))
+        }
+
+        return schedule
+
+
         if(HARDCODE_MODE) {
 
             val cal = newCalendar(year, month-1, 1)
@@ -120,9 +180,6 @@ object FrontendInterface {
 
         }
 
-
-
-        return schedule
     }
 
     fun getEvent(id: Long): Event? {
