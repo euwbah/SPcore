@@ -194,9 +194,9 @@ infix fun Calendar.isFrom(start: Calendar): CalendarRangeBuilder {
 fun Calendar.getTimeAsDuration() : Duration {
     return Duration(
             0,
-            get(Calendar.HOUR_OF_DAY),
-            get(Calendar.MINUTE),
-            get(Calendar.SECOND),
+            get(Calendar.HOUR_OF_DAY).toLong(),
+            get(Calendar.MINUTE).toLong(),
+            get(Calendar.SECOND).toLong(),
             get(Calendar.MILLISECOND).toDouble())
 }
 
@@ -204,13 +204,13 @@ fun Calendar.getTimeAsDuration() : Duration {
  * Honestly because Java datetime and calendar sucks so much
  */
 class Duration {
-    var days: Int = 0
+    var days: Long = 0
         private set
-    var hours: Int = 0
+    var hours: Long = 0
         private set
-    var minutes: Int = 0
+    var minutes: Long = 0
         private set
-    var seconds: Int = 0
+    var seconds: Long = 0
         private set
     var millis: Double = 0.0
         private set
@@ -230,13 +230,13 @@ class Duration {
 
     constructor(
             days: Int = 0,
-            hours: Int = 0,
-            minutes: Int = 0,
-            seconds: Int = 0,
+            hours: Long = 0,
+            minutes: Long = 0,
+            seconds: Long = 0,
             millis: Double = 0.0
     ) {
         this.millis = millis % 1000
-        this.seconds = seconds + millis.toInt() / 1000
+        this.seconds = seconds + millis.toLong() / 1000
 
         this.minutes = minutes + this.seconds / 60
         this.seconds %= 60
@@ -248,8 +248,8 @@ class Duration {
         this.hours %= 24
     }
 
-    fun toMillis(): Int {
-        return  millis.toInt() +
+    fun toMillis(): Long {
+        return  millis.toLong() +
                 seconds * 1000 +
                 minutes * 1000 * 60 +
                 hours   * 1000 * 60 * 60 +
@@ -284,7 +284,7 @@ class Duration {
         return this - rem + if(rem == ZERO || this < ZERO) ZERO else span
     }
 
-    fun roundUpToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
+    fun roundUpToNearest(days: Int = 0, hours: Long = 0, minutes: Long = 0, seconds: Long = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
         return roundUpToNearest(span)
     }
@@ -301,7 +301,7 @@ class Duration {
         return this - rem - if(this < ZERO && rem != ZERO) span else ZERO
     }
 
-    fun roundDownToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
+    fun roundDownToNearest(days: Int = 0, hours: Long = 0, minutes: Long = 0, seconds: Long = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
         return roundDownToNearest(span)
     }
@@ -323,7 +323,7 @@ class Duration {
         return if(this < ZERO) -absRnd else absRnd
     }
 
-    fun roundToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Duration {
+    fun roundToNearest(days: Int = 0, hours: Long = 0, minutes: Long = 0, seconds: Long = 0, millis: Double = 0.0): Duration {
         val span = Duration(days, hours, minutes, seconds, millis)
         return roundToNearest(span)
     }
@@ -344,7 +344,7 @@ class Duration {
         return Duration(millis = this.toMillisAccurate() * scalarMultiple)
     }
 
-    operator fun times(scalarMultiple: Int): Duration {
+    operator fun times(scalarMultiple: Long): Duration {
         return Duration(millis = this.toMillisAccurate() * scalarMultiple)
     }
 
@@ -382,7 +382,7 @@ class Duration {
  */
 operator fun Calendar.plus(duration: Duration): Calendar {
     val newCalendar = this.clone() as Calendar
-    newCalendar.add(Calendar.MILLISECOND, duration.toMillis())
+    newCalendar.add(Calendar.MILLISECOND, duration.toMillis().toInt())
     return newCalendar
 }
 
@@ -394,7 +394,7 @@ operator fun Calendar.plus(duration: Duration): Calendar {
  */
 operator fun Calendar.minus(duration: Duration): Calendar {
     val newCalendar = this.clone() as Calendar
-    newCalendar.add(Calendar.MILLISECOND, -duration.toMillis())
+    newCalendar.add(Calendar.MILLISECOND, -duration.toMillis().toInt())
     return newCalendar
 }
 
@@ -418,7 +418,7 @@ fun Calendar.roundUpToNearest(duration: Duration): Calendar {
     return this.startOfDay() + this.getTimeAsDuration().roundUpToNearest(duration)
 }
 
-fun Calendar.roundUpToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Calendar {
+fun Calendar.roundUpToNearest(days: Int = 0, hours: Long = 0, minutes: Long = 0, seconds: Long = 0, millis: Double = 0.0): Calendar {
     val span = Duration(days, hours, minutes, seconds, millis)
     return this.roundUpToNearest(span)
 }
@@ -430,7 +430,7 @@ fun Calendar.roundDownToNearest(duration: Duration): Calendar {
     return this.startOfDay() + this.getTimeAsDuration().roundDownToNearest(duration)
 }
 
-fun Calendar.roundDownToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Calendar {
+fun Calendar.roundDownToNearest(days: Int = 0, hours: Long = 0, minutes: Long = 0, seconds: Long = 0, millis: Double = 0.0): Calendar {
     val span = Duration(days, hours, minutes, seconds, millis)
     return this.roundDownToNearest(span)
 }
@@ -442,7 +442,7 @@ fun Calendar.roundToNearest(duration: Duration): Calendar {
     return this.startOfDay() + this.getTimeAsDuration().roundToNearest(duration)
 }
 
-fun Calendar.roundToNearest(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, millis: Double = 0.0): Calendar {
+fun Calendar.roundToNearest(days: Int = 0, hours: Long = 0, minutes: Long = 0, seconds: Long = 0, millis: Double = 0.0): Calendar {
     val span = Duration(days, hours, minutes, seconds, millis)
     return this.roundToNearest(span)
 }

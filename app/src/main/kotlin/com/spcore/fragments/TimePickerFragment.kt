@@ -34,7 +34,7 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
     }
 
     override fun onTimeSet(view: TimePicker?, h: Int, m: Int) {
-        listener?.onTimePicked(Duration(0, h, m), tag ?: "")
+        listener?.onTimePicked(Duration(0, h.toLong(), m.toLong()), tag ?: "")
     }
 
     interface TimeSetListener {
@@ -45,8 +45,8 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
         fun newInstance(duration: Duration) =
                 TimePickerFragment().apply {
                     arguments = Bundle().apply {
-                        putInt(ARG_MIN, duration.minutes)
-                        putInt(ARG_HOUR, duration.hours)
+                        putInt(ARG_MIN, duration.minutes.toInt())
+                        putInt(ARG_HOUR, duration.hours.toInt())
                     }
                 }
     }
