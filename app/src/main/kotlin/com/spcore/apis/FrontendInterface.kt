@@ -24,6 +24,10 @@ import kotlin.collections.ArrayList
  * REMEMBER TO CALL THESE FROM A BACKGROUND THREAD IF NOT THE APP WILL CLOSE
  */
 object FrontendInterface {
+    /**
+     * NOTE: This will also update the FirebaseInstanceId Firebase registration token
+     * on the server-side
+     */
     fun performLogin(adminNo: String, password: String) : LoginStatus {
 //        if (HARDCODE_MODE) {
 //            // Simulate server access
