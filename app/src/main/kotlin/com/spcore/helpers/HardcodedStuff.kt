@@ -170,7 +170,7 @@ object HardcodedStuff {
                                 notGoing = arrayListOf(DerpMcDerpson),
                                 haventReplied = arrayListOf(Auth.user),
                                 deletedInvite = arrayListOf(SimonFransman),
-                                id = 0),
+                                id = "0"),
                         Event("Post-SIP Lunch",
                                 "Eat again i guess?",
                                 "Marina Bay Sands",
@@ -181,7 +181,7 @@ object HardcodedStuff {
                                 notGoing = arrayListOf(DerpMcDerpson),
                                 haventReplied = arrayListOf(Auth.user),
                                 deletedInvite = arrayListOf(SimonFransman),
-                                id = 2),
+                                id = "2"),
                         Event("Smoke trees",
                                 "Dinner round 1",
                                 "Changi Village",
@@ -191,7 +191,7 @@ object HardcodedStuff {
                                 going = arrayListOf(DerpMcDerpson, WatermelonMan),
                                 notGoing = arrayListOf(NatoshiSakamoto3),
                                 haventReplied = arrayListOf(Auth.user),
-                                id = 3),
+                                id = "3"),
                         Event("Eat at Fc5",
                                 "Lunch at FC5",
                                 "fc5",
@@ -200,7 +200,7 @@ object HardcodedStuff {
                                 NatoshiSakamoto,
                                 going = arrayListOf(NatoshiSakamoto, Auth.user),
                                 haventReplied = arrayListOf(DerpMcDerpson, WatermelonMan),
-                                id = 5),
+                                id = "5"),
                         Event("Smoke more trees",
                                 "BiG shAQ",
                                 "Changi Village",
@@ -210,7 +210,7 @@ object HardcodedStuff {
                                 going = arrayListOf(DerpMcDerpson, WatermelonMan),
                                 notGoing = arrayListOf(NatoshiSakamoto3),
                                 haventReplied = arrayListOf(Auth.user),
-                                id = 6),
+                                id = "6"),
                         Event("Prepare for SIP",
                         "I hate SIP",
                         "Anywhere",
@@ -218,7 +218,7 @@ object HardcodedStuff {
                         qtNow - Duration(hours = 2),
                         Auth.user,
                         going = arrayListOf(Auth.user),
-                        id = 1234)
+                        id = "1234")
                 )
         )
     }
