@@ -10,6 +10,7 @@ import com.spcore.models.Event
 import com.spcore.models.Lesson
 import com.spcore.helpers.HardcodedStuff.HardcodedEvents
 import com.spcore.helpers.HardcodedStuff.HardcodedLessons
+import com.spcore.persistence.CachedLesson
 import com.spcore.persistence.SPCoreLocalDB
 import java.util.*
 import kotlin.collections.ArrayList
@@ -77,7 +78,8 @@ object FrontendInterface {
         val schedule = ArrayList<WeekViewEvent>()
 
         if (CacheState.checkNeedToRefreshLessonsCache()) {
-            val resp = Backend.getLessons("%04d%02d".format(year, month)).execute()
+            val resp =
+                    Backend.getLessons("%04d%02d".format(year, month)).execute()
 
             if (!resp.isSuccessful) {
                 // This shouldn't fall through since the server doesn't return any errors in this endpoint
@@ -93,7 +95,12 @@ object FrontendInterface {
                 return schedule
             }
 
-            SPCoreLocalDB.lessonDAO().clear()
+            SPCoreLocalDB.lessonDAO().clear(
+                    newCalendar(year, month - 1, 1).timeInMillis,
+                    (newCalendar(year, month - 1, 1).apply {
+                        set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                    } + Duration(1) - Duration(millis = 0.1)).timeInMillis
+            )
 
 
             resp.body()?.let {
@@ -104,7 +111,18 @@ object FrontendInterface {
                                 endTime.toCalendar(),
                                 id)
                         schedule.add(lesson)
-                        SPCoreLocalDB.lessonDAO().insertLesson(lesson)
+                        val cachedLesson = lesson.let {
+                            CachedLesson(
+                                    it.base24ID,
+                                    it.moduleCode,
+                                    it.name,
+                                    it.lessonType,
+                                    it.location,
+                                    it.startTime.timeInMillis,
+                                    it.endTime.timeInMillis
+                            )
+                        }
+                        SPCoreLocalDB.lessonDAO().insertLesson(cachedLesson)
                     }
                 }
             }
@@ -153,7 +171,7 @@ object FrontendInterface {
 
         return schedule
 
-
+        /*
         if(HARDCODE_MODE) {
 
             val cal = newCalendar(year, month-1, 1)
@@ -201,7 +219,7 @@ object FrontendInterface {
 
 
         }
-
+        */
     }
 
     fun getEvent(id: Long): Event? {

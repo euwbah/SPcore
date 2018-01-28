@@ -15,20 +15,13 @@ interface LessonDAO {
     @Query("DELETE FROM lessons")
     fun clear()
 
+    /**
+     * Clears all lessons of which [CachedLesson.startTime] falls between the [startTimestamp] inclusively
+     * and the [endTimestamp] exclusively
+     */
+    @Query("DELETE FROM lessons WHERE startTime >= :startTimestamp AND startTime < :endTimestamp")
+    fun clear(startTimestamp: Long, endTimestamp: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLesson(lesson: CachedLesson)
-
-    fun insertLesson(lesson: Lesson) {
-        lesson.apply {
-            insertLesson(CachedLesson(
-                base24ID,
-                moduleCode,
-                name,
-                lessonType,
-                location,
-                startTime.timeInMillis,
-                endTime.timeInMillis
-            ))
-        }
-    }
 }

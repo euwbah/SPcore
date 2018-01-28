@@ -10,7 +10,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.*
-import com.alamkanak.weekview.WeekView
+import com.alamkanak.weekview.WeekViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
@@ -19,14 +19,15 @@ import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.Lesson
 import com.spcore.models.getCurrentATSKeyableLessons
+import com.spcore.persistence.SPCoreLocalDB
 
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 import kotlinx.android.synthetic.main.home_nav_header.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
 import org.jetbrains.anko.*
+import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.design.longSnackbar
 import java.util.*
 
@@ -39,6 +40,10 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     private var isAppBarExpanded = false
 
     private var toggleListener: ActionBarDrawerToggle? = null
+
+    private var monthsLoadingOrLoaded: MutableSet<Pair<Int, Int>> = mutableSetOf()
+
+    private val schedule: MutableList<WeekViewEvent> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,7 +145,18 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         // Note: month here is 1-based
         schedule_view.setMonthChangeListener {
             year, month ->
-                Auth.user.getSchedule(year, month)
+
+            if (Pair(year, month) !in monthsLoadingOrLoaded) {
+                monthsLoadingOrLoaded.add(Pair(year, month))
+                cueLoadSchedule(year, month)
+            }
+
+            schedule.filter {
+                it.startTime isFrom newCalendar(year, month - 1, 1) to
+                             newCalendar(year, month - 1, 1).apply {
+                                 set(Calendar.DAY_OF_MONTH, this.getActualMaximum(Calendar.DAY_OF_MONTH))
+                             } + (Duration(days = 1) - Duration(millis = 0.1))
+            }
         }
 
         schedule_view.setScrollListener {
@@ -241,6 +257,23 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         }
     }
 
+    private fun cueLoadSchedule(year: Int, month: Int) {
+        async(UI) {
+            val asyncSchedule = bg {
+                FrontendInterface.getSchedule(Auth.user.adminNo, year, month)
+            }
+
+            schedule.removeAll {
+                it.startTime isFrom newCalendar(year, month - 1, 1) to
+                                    newCalendar(year, month - 1, 1).apply {
+                                        set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                                    } + (Duration(days = 1) - Duration(millis = 0.1))
+            }
+            schedule.addAll(asyncSchedule.await())
+            schedule_view.notifyDatasetChanged()
+        }
+    }
+
     private fun delEvent(event: Event) {
         FrontendInterface.deleteEvent(event)
 
@@ -323,9 +356,11 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.home_menu, menu)
 
-        menu.findItem(R.id.action_home_ats).isVisible =
-                Auth.user.getThisMonthSchedule().getCurrentATSKeyableLessons() != null
-
+        async(UI) {
+            val asyncSched = bg { Auth.user.getThisMonthSchedule() }
+            menu.findItem(R.id.action_home_ats).isVisible =
+                    asyncSched.await().getCurrentATSKeyableLessons() != null
+        }
         return true
     }
 
@@ -350,6 +385,8 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                 true
             }
             R.id.action_home_refresh -> {
+                monthsLoadingOrLoaded.clear()
+                SPCoreLocalDB.lessonDAO().clear()
                 schedule_view.notifyDatasetChanged()
                 // For debug purposes only >>> resets ATS submission status when refresh is clicked
                 // ATS.reset()
