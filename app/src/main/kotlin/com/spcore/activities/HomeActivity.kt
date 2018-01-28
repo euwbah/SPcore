@@ -351,8 +351,8 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
             R.id.action_home_refresh -> {
                 schedule_view.notifyDatasetChanged()
-                // HARDCODE_MODE, remove ATS reset after debug
-                ATS.reset()
+                // For debug purposes only >>> resets ATS submission status when refresh is clicked
+                // ATS.reset()
                 true
             }
             else ->

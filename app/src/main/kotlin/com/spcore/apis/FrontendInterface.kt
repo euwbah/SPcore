@@ -8,10 +8,9 @@ import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
 import com.spcore.models.Event
 import com.spcore.models.Lesson
-import com.spcore.models.User
 import com.spcore.helpers.HardcodedStuff.HardcodedEvents
-import com.spcore.helpers.HardcodedStuff.HardcodedUsers
 import com.spcore.helpers.HardcodedStuff.HardcodedLessons
+import com.spcore.persistence.SPCoreLocalDB
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -73,30 +72,48 @@ object FrontendInterface {
     fun getSchedule(adminNo: String, year: Int, month: Int) : List<WeekViewEvent> {
         val schedule = ArrayList<WeekViewEvent>()
 
-        val resp = Backend.getLessons("%04d%02d".format(year, month)).execute()
+        if (CacheState.checkNeedToRefreshLessonsCache()) {
+            val resp = Backend.getLessons("%04d%02d".format(year, month)).execute()
 
-        if (!resp.isSuccessful) {
-            // This shouldn't fall through since the server doesn't return any errors in this endpoint
-            resp.errorBody()?.string()?.let {
-                if (it.isBlank())
-                    return@let
+            if (!resp.isSuccessful) {
+                // This shouldn't fall through since the server doesn't return any errors in this endpoint
+                resp.errorBody()?.string()?.let {
+                    if (it.isBlank())
+                        return@let
 
-                val err = backendErrorAdapter.fromJson(it)
+                    val err = backendErrorAdapter.fromJson(it)
 
-                Log.w("SPCore", "Backend Interface error: unable to get lessons. ${err?.msg}")
+                    Log.w("SPCore", "Backend Interface error: unable to get lessons. ${err?.msg}")
+                }
+
+                return schedule
             }
 
-            return schedule
-        }
+            SPCoreLocalDB.lessonDAO().clear()
 
-        resp.body()?.let {
-            it.forEach {
+
+            resp.body()?.let {
+                it.forEach {
+                    it.apply {
+                        val lesson = Lesson(moduleName, moduleCode, location, lessonType,
+                                startTime.toCalendar(),
+                                endTime.toCalendar(),
+                                id)
+                        schedule.add(lesson)
+                        SPCoreLocalDB.lessonDAO().insertLesson(lesson)
+                    }
+                }
+            }
+        } else {
+            // NO need to refresh cache, just take from local db
+
+            SPCoreLocalDB.lessonDAO().getCachedLessons().forEach {
                 it.apply {
                     schedule.add(
                             Lesson(moduleName, moduleCode, location, lessonType,
                                     startTime.toCalendar(),
                                     endTime.toCalendar(),
-                                    id)
+                                    base24ID)
                     )
                 }
             }

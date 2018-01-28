@@ -7,6 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.spcore.helpers.*
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
+import com.spcore.persistence.initLocalDB
 import com.spcore.spmobileapi.SPMobileAPI
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
@@ -29,6 +30,7 @@ class SplashActivity : AppStateTrackerActivity("SplashActivity"),
             initSharedPrefs()
             SPMobileAPI.inititialize(getSharedPreferences(getString(R.string.cookie_storage_shared_preference_id), Context.MODE_PRIVATE))
 
+            initLocalDB(applicationContext)
 
             val registrationToken = FirebaseInstanceId.getInstance().token
 
