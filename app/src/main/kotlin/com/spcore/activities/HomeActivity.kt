@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.*
+import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
@@ -149,14 +150,29 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             if (Pair(year, month) !in monthsLoadingOrLoaded) {
                 monthsLoadingOrLoaded.add(Pair(year, month))
                 cueLoadSchedule(year, month)
+                info("NIBBA Cue load $month")
+                return@setMonthChangeListener listOf()
             }
 
-            schedule.filter {
-                it.startTime isFrom newCalendar(year, month - 1, 1) to
-                             newCalendar(year, month - 1, 1).apply {
-                                 set(Calendar.DAY_OF_MONTH, this.getActualMaximum(Calendar.DAY_OF_MONTH))
-                             } + (Duration(days = 1) - Duration(millis = 0.1))
+            val ret = mutableListOf<WeekViewEvent>()
+
+
+            schedule.forEach {
+                if (it.startTime isFrom newCalendar(year, month - 1, 1) to
+                        newCalendar(year, month - 1, 1).apply {
+                            set(Calendar.DAY_OF_MONTH, this.getActualMaximum(Calendar.DAY_OF_MONTH))
+                        } + Duration(days = 1) - Duration(millis = 0.1))
+                    ret.add(it)
             }
+
+            schedule_view.invalidate()
+            info("NIBBA invalidated schedule view month: $month")
+
+            //ret.forEach {info("${it.name} : ${it.startTime.getHumanReadableDate(false)}")}
+            info("NIBBA Month Change Callback returned (month: $month, size: ${ret.count()})")
+            ret
+
+
         }
 
         schedule_view.setScrollListener {
@@ -260,7 +276,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     private fun cueLoadSchedule(year: Int, month: Int) {
         async(UI) {
             val asyncSchedule = bg {
-                FrontendInterface.getSchedule(Auth.user.adminNo, year, month)
+                val x = FrontendInterface.getSchedule(Auth.user.adminNo, year, month)
+                info("NIBBA bg asyncSchedule loaded month: $month")
+                x
             }
 
             schedule.removeAll {
@@ -269,8 +287,16 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                                         set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
                                     } + (Duration(days = 1) - Duration(millis = 0.1))
             }
-            schedule.addAll(asyncSchedule.await())
+
+            val scheduleToAdd = asyncSchedule.await()
+            schedule.addAll(scheduleToAdd)
+
+            info("NIBBA asyncSchedule added month: $month")
+
+            Thread.sleep(42)
+
             schedule_view.notifyDatasetChanged()
+            info("NIBBA notifyDatasetChanged month: $month")
         }
     }
 
@@ -389,7 +415,7 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                     bg { SPCoreLocalDB.lessonDAO().clear() }.await()
 
                     monthsLoadingOrLoaded.clear()
-                    CacheState.setNeedToRefreshLessonsCache(true)
+                    CacheState.setNeedToRefreshLocalLessonsCache(true)
                     schedule_view.notifyDatasetChanged()
 
                     // For debug purposes only >>> resets ATS submission status when refresh is clicked

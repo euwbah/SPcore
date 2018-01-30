@@ -12,6 +12,8 @@ import com.spcore.helpers.HardcodedStuff.HardcodedEvents
 import com.spcore.helpers.HardcodedStuff.HardcodedLessons
 import com.spcore.persistence.CachedLesson
 import com.spcore.persistence.SPCoreLocalDB
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,7 +26,7 @@ import kotlin.collections.ArrayList
  *
  * REMEMBER TO CALL THESE FROM A BACKGROUND THREAD IF NOT THE APP WILL CLOSE
  */
-object FrontendInterface {
+object FrontendInterface : AnkoLogger {
     /**
      * NOTE: This will also update the FirebaseInstanceId Firebase registration token
      * on the server-side
@@ -102,7 +104,7 @@ object FrontendInterface {
                     } + Duration(1) - Duration(millis = 0.1)).timeInMillis
             )
 
-
+            info("NIBBA Populating returns month: $month")
             resp.body()?.let {
                 it.forEach {
                     it.apply {
@@ -145,30 +147,9 @@ object FrontendInterface {
                 .filter { it.startTime.get(Calendar.MONTH) == month - 1 }
                 .forEach { schedule.add(it) }
 
-        val now = Calendar.getInstance()
-        val qtNow = now.roundUpToNearest(minutes = 10)
-        // only add now for the current month
-        if (now.get(Calendar.MONTH) == month - 1) {
-            schedule.addAll(listOf(
-                    Lesson(
-                            "SIP",
-                            "LC4234",
-                            "T1643",
-                            "TUT",
-                            qtNow - Duration(hours = 1),
-                            qtNow + Duration(hours = 1)
-                    ),
-                    Lesson(
-                            "HM2",
-                            "SM1337",
-                            "T2253",
-                            "TUT",
-                            qtNow + Duration(hours = 3),
-                            qtNow + Duration(hours = 5)
-                    )
-            ))
-        }
+        Thread.sleep(60)
 
+        info("NIBBA Returning schedule (month: $month, size: ${schedule.size})")
         return schedule
 
         /*

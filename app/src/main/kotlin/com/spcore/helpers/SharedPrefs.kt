@@ -400,7 +400,7 @@ object CacheState : SharedPrefWrapper {
         return CacheStateSP?.getBoolean("refresh lessons", true) ?: true
     }
 
-    fun setNeedToRefreshLessonsCache(bool: Boolean) {
+    fun setNeedToRefreshLocalLessonsCache(bool: Boolean) {
         if (CacheStateSP == null)
             throw UnsupportedOperationException("CacheState shared pref not init yet")
 
