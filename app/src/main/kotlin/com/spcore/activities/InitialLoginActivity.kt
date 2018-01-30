@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.Auth
+import com.spcore.helpers.CacheState
 import com.spcore.helpers.HardcodedStuff
 import com.spcore.helpers.isOnline
 import kotlinx.android.synthetic.main.activity_initial_login.*
@@ -123,6 +124,7 @@ class InitialLoginActivity : AppCompatActivity() {
                         }
                         SubmitInitStatus.SUCCESS -> {
                             HardcodedStuff.initialize(Auth.user)
+                            CacheState.setNeedToRefreshLessonsCache(false)
                             startActivity(Intent(this@InitialLoginActivity, HomeActivity::class.java))
                         }
                     }
