@@ -412,10 +412,12 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
             }
             R.id.action_home_refresh -> {
                 async(UI) {
-                    bg { SPCoreLocalDB.lessonDAO().clear() }.await()
+                    bg {
+                        SPCoreLocalDB.lessonDAO().clear()
+                        SPCoreLocalDB.lessonCacheStatusDAO().clear()
+                    }.await()
 
                     monthsLoadingOrLoaded.clear()
-                    CacheState.setNeedToRefreshLocalLessonsCache(true)
                     schedule_view.notifyDatasetChanged()
 
                     // For debug purposes only >>> resets ATS submission status when refresh is clicked

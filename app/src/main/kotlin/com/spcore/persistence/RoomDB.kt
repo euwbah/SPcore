@@ -4,11 +4,13 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import com.spcore.persistence.roomdaos.LessonCacheStatusDAO
 import com.spcore.persistence.roomdaos.LessonDAO
 
-@Database(entities = arrayOf(CachedLesson::class), version = 1)
+@Database(entities = arrayOf(CachedLesson::class, LessonCacheStatus::class), version = 1)
 abstract class _SPCoreLocalDB : RoomDatabase() {
     abstract fun lessonDAO(): LessonDAO
+    abstract fun lessonCacheStatusDAO(): LessonCacheStatusDAO
 }
 
 fun initLocalDB(context: Context) {

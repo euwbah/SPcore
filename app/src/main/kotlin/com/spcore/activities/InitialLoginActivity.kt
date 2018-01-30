@@ -124,7 +124,6 @@ class InitialLoginActivity : AppCompatActivity() {
                         }
                         SubmitInitStatus.SUCCESS -> {
                             HardcodedStuff.initialize(Auth.user)
-                            CacheState.setNeedToRefreshLocalLessonsCache(true)
                             startActivity(Intent(this@InitialLoginActivity, HomeActivity::class.java))
                         }
                     }

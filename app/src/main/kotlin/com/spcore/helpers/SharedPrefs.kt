@@ -392,23 +392,6 @@ object CacheState : SharedPrefWrapper {
                     "com.spcore.cachestate",
                     Context.MODE_PRIVATE)
     }
-
-    fun checkNeedToRefreshLessonsCache() : Boolean {
-        if (CacheStateSP == null)
-            throw UnsupportedOperationException("CacheState shared pref not init yet")
-
-        return CacheStateSP?.getBoolean("refresh lessons", true) ?: true
-    }
-
-    fun setNeedToRefreshLocalLessonsCache(bool: Boolean) {
-        if (CacheStateSP == null)
-            throw UnsupportedOperationException("CacheState shared pref not init yet")
-
-        CacheStateSP
-                ?.edit()
-                ?.putBoolean("refresh lessons", bool)
-                ?.apply()
-    }
 }
 
 /**

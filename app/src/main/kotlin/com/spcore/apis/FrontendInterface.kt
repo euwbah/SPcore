@@ -11,6 +11,7 @@ import com.spcore.models.Lesson
 import com.spcore.helpers.HardcodedStuff.HardcodedEvents
 import com.spcore.helpers.HardcodedStuff.HardcodedLessons
 import com.spcore.persistence.CachedLesson
+import com.spcore.persistence.LessonCacheStatus
 import com.spcore.persistence.SPCoreLocalDB
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
@@ -79,7 +80,9 @@ object FrontendInterface : AnkoLogger {
     fun getSchedule(adminNo: String, year: Int, month: Int) : List<WeekViewEvent> {
         val schedule = ArrayList<WeekViewEvent>()
 
-        if (CacheState.checkNeedToRefreshLessonsCache()) {
+        // Check whether if the current month not already cached locally
+        if (LessonCacheStatus(year, month) !in SPCoreLocalDB.lessonCacheStatusDAO().getCachedMonths()) {
+
             val resp =
                     Backend.getLessons("%04d%02d".format(year, month)).execute()
 
@@ -101,7 +104,7 @@ object FrontendInterface : AnkoLogger {
                     newCalendar(year, month - 1, 1).timeInMillis,
                     (newCalendar(year, month - 1, 1).apply {
                         set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
-                    } + Duration(1) - Duration(millis = 0.1)).timeInMillis
+                    } + Duration(1)).timeInMillis
             )
 
             info("NIBBA Populating returns month: $month")
@@ -128,18 +131,29 @@ object FrontendInterface : AnkoLogger {
                     }
                 }
             }
-        } else {
-            // NO need to refresh cache, just take from local db
 
-            SPCoreLocalDB.lessonDAO().getCachedLessons().forEach {
-                it.apply {
-                    schedule.add(
-                            Lesson(moduleName, moduleCode, location, lessonType,
-                                    startTime.toCalendar(),
-                                    endTime.toCalendar(),
-                                    base24ID)
-                    )
-                }
+            // Remember to mark month as cached
+            SPCoreLocalDB.lessonCacheStatusDAO().markMonthAsCached(LessonCacheStatus(year, month))
+
+        } else {
+            // Otherwise, NO need to refresh cache, just take from local db
+
+            SPCoreLocalDB.lessonDAO().getCachedLessons()
+                    .filter {
+                        it.startTime.toCalendar().let {
+                            it.get(Calendar.MONTH) == month - 1 &&
+                            it.get(Calendar.YEAR) == year
+                        }
+                    }
+                    .forEach {
+                        it.apply {
+                            schedule.add(
+                                    Lesson(moduleName, moduleCode, location, lessonType,
+                                            startTime.toCalendar(),
+                                            endTime.toCalendar(),
+                                            base24ID)
+                            )
+                        }
             }
         }
 

@@ -14,3 +14,17 @@ data class CachedLesson(
         val startTime: Long,
         val endTime: Long
 )
+
+// This table stores months that has already been cached in YYYYMM format
+@Entity(tableName = "lessoncachestatus")
+data class LessonCacheStatus(
+        @PrimaryKey(autoGenerate = false)
+        val YYYYMM: String
+) {
+        constructor(year: Int, month: Int) :
+                this("%04d%02d".format(year, month))
+
+        override fun equals(other: Any?): Boolean {
+                return other is LessonCacheStatus && other.YYYYMM == this.YYYYMM
+        }
+}

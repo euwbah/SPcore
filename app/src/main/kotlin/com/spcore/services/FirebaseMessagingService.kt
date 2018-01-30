@@ -5,6 +5,7 @@ import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.warn
 
@@ -31,7 +32,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),
                 }
                 LESSON_NOTIFICATION -> {
                     async(UI) {
-
+                        val json = it["lesson"] ?: "no lesson"
+                        info(json)
+                        longToast(json)
                     }
                 }
                 else ->
