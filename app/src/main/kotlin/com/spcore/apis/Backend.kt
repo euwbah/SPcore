@@ -65,9 +65,8 @@ object Backend {
         return backendCalls.updateUser("Bearer ${Auth.getJwtToken()}", username, displayName)
     }
 
-    fun getLessons(startYYYYMM: String, endYYYYMM: String? = null) : Call<List<LessonResponse>> {
-        return backendCalls.getLessons("Bearer ${Auth.getJwtToken()}", startYYYYMM, endYYYYMM,
-                CacheState.checkNeedToRefreshLessonsCache())
+    fun getLessons(startYYYYMM: String, endYYYYMM: String? = null, forceRefresh: Boolean = false) : Call<List<LessonResponse>> {
+        return backendCalls.getLessons("Bearer ${Auth.getJwtToken()}", startYYYYMM, endYYYYMM, forceRefresh)
     }
 
     /**
