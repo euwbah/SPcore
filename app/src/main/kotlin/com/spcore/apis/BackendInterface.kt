@@ -26,10 +26,11 @@ interface BackendInterface {
     /**
      * @param authorization Should be "Bearer<space><jwt token>"
      */
-    @GET("/api/dev/events/lesson")
+    @GET("/api/dev/event/lesson")
     @Headers("Accept: */*")
     fun getLessons(
             @Header("Authorization") authorization: String,
             @Query("start") startYYYYMM: String,
-            @Query("end") endYYYYMM: String? = null) : Call<List<LessonResponse>>
+            @Query("end") endYYYYMM: String? = null,
+            @Query("refresh") forceRefresh: Boolean) : Call<List<LessonResponse>>
 }

@@ -1,13 +1,19 @@
 package com.spcore.apis
 
 import com.spcore.helpers.Auth
+import com.spcore.helpers.CacheState
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
-internal const val BACKEND_URL: String = "http://128.199.181.203:8080"
+
+//internal const val BACKEND_URL: String = "http://128.199.181.203:8080"
+internal const val BACKEND_URL: String = "http://192.168.43.185:8080"
+
 
 object Backend {
 
@@ -30,8 +36,15 @@ object Backend {
     private var backendCalls: BackendInterface
 
     init {
+        val okHttpClient = OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(80, TimeUnit.SECONDS)
+                .writeTimeout(50, TimeUnit.SECONDS)
+                .build()
+
         backendCalls = Retrofit.Builder()
                 .baseUrl(BACKEND_URL)
+                .client(okHttpClient)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build().create(BackendInterface::class.java)
     }
@@ -53,7 +66,8 @@ object Backend {
     }
 
     fun getLessons(startYYYYMM: String, endYYYYMM: String? = null) : Call<List<LessonResponse>> {
-        return backendCalls.getLessons("Bearer ${Auth.getJwtToken()}", startYYYYMM, endYYYYMM)
+        return backendCalls.getLessons("Bearer ${Auth.getJwtToken()}", startYYYYMM, endYYYYMM,
+                CacheState.checkNeedToRefreshLessonsCache())
     }
 
     /**

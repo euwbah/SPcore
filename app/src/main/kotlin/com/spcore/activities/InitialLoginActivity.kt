@@ -96,6 +96,8 @@ class InitialLoginActivity : AppCompatActivity() {
                 }
 
                 initial_login_progress_indicator.visibility = View.VISIBLE
+                loadingText.visibility = View.VISIBLE
+                form.visibility = View.GONE
 
                 async(UI) {
                     val asyncRes =
@@ -107,6 +109,8 @@ class InitialLoginActivity : AppCompatActivity() {
                     val res = asyncRes.await()
 
                     initial_login_progress_indicator.visibility = View.GONE
+                    loadingText.visibility = View.GONE
+                    form.visibility = View.VISIBLE
 
                     when(res) {
                         SubmitInitStatus.USERNAME_TAKEN -> {
