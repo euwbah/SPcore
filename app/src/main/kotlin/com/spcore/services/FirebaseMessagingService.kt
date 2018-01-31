@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.spcore.apis.LessonResponse
 import com.spcore.exceptions.WTF
+import com.spcore.helpers.Notifications
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -45,6 +46,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),
                                 lessonResponseAdapter.fromJson(json) ?:
                                 throw WTF("Unable to parse lesson response from server notification:\n$json")
 
+                        Notifications.notifyPromptToSubmitATS(lessonResponse.toLesson())
                     }
                 }
                 else ->

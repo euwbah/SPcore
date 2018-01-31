@@ -3,8 +3,10 @@ package com.spcore.models
 import android.os.Parcel
 import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
-import com.spcore.R
-import com.spcore.helpers.*
+import com.spcore.helpers.ATS
+import com.spcore.helpers.Duration
+import com.spcore.helpers.isFrom
+import com.spcore.helpers.minus
 import java.util.*
 
 private const val DEFAULT_LESSON_COLOUR                 = 0xff_88_99_dd.toInt()
@@ -20,7 +22,7 @@ private const val ONGOING_LESSON_SUBMITTED_ATS_COLOUR   = 0xff_44_77_ff.toInt()
  */
 class Lesson : WeekViewEvent, Base24ID, Parcelable, Nowable {
 
-    override val base24ID: String
+    override val base16ID: String
 
     val moduleCode: String
     val lessonType: String
@@ -45,7 +47,7 @@ class Lesson : WeekViewEvent, Base24ID, Parcelable, Nowable {
                 end: Calendar,
                 id: String = Objects.hash(moduleCode, location, start).toString()
     ) : super(id.hashCode().toLong(), moduleName, location, start, end) {
-        this.base24ID = id
+        this.base16ID = id
         this.moduleCode = moduleCode
         this.lessonType = lessonType
         this.additionalInfo = lessonType
@@ -63,7 +65,7 @@ class Lesson : WeekViewEvent, Base24ID, Parcelable, Nowable {
     }
 
     constructor(x: Parcel) : super(x) {
-        this.base24ID = x.readString()
+        this.base16ID = x.readString()
         this.moduleCode = x.readString()
         this.lessonType = x.readString()
         this.additionalInfo = lessonType
@@ -91,16 +93,16 @@ class Lesson : WeekViewEvent, Base24ID, Parcelable, Nowable {
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is Lesson && this.base24ID == other.base24ID
+        return other is Lesson && this.base16ID == other.base16ID
     }
 
     override fun hashCode(): Int {
-        return this.base24ID.hashCode()
+        return this.base16ID.hashCode()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         super.writeToParcel(dest, flags)
-        dest.writeString(base24ID)
+        dest.writeString(base16ID)
         dest.writeString(moduleCode)
         dest.writeString(lessonType)
     }

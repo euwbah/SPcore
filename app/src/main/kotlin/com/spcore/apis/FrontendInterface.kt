@@ -6,10 +6,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.spcore.activities.InitialLoginActivity
 import com.spcore.activities.LoginActivity.LoginStatus
 import com.spcore.helpers.*
+import com.spcore.helpers.HardcodedStuff.HardcodedEvents
 import com.spcore.models.Event
 import com.spcore.models.Lesson
-import com.spcore.helpers.HardcodedStuff.HardcodedEvents
-import com.spcore.helpers.HardcodedStuff.HardcodedLessons
 import com.spcore.persistence.CachedLesson
 import com.spcore.persistence.LessonCacheStatus
 import com.spcore.persistence.SPCoreLocalDB
@@ -118,7 +117,7 @@ object FrontendInterface : AnkoLogger {
                         schedule.add(lesson)
                         val cachedLesson = lesson.let {
                             CachedLesson(
-                                    it.base24ID,
+                                    it.base16ID,
                                     it.moduleCode,
                                     it.name,
                                     it.lessonType,
@@ -146,14 +145,7 @@ object FrontendInterface : AnkoLogger {
                         }
                     }
                     .forEach {
-                        it.apply {
-                            schedule.add(
-                                    Lesson(moduleName, moduleCode, location, lessonType,
-                                            startTime.toCalendar(),
-                                            endTime.toCalendar(),
-                                            base24ID)
-                            )
-                        }
+                        schedule.add(it.toLesson())
             }
         }
 

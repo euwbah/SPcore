@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.alamkanak.weekview.WeekViewEvent
 import com.spcore.helpers.isFrom
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val UNRESPONDED_EVENT_COLOUR = 0xff_cc_99_55.toInt()
@@ -17,7 +16,7 @@ private const val NOT_GOING_EVENT_COLOUR   = 0xff_22_22_22.toInt()
 
 class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
 
-    override val base24ID: String
+    override val base16ID: String
 
     var description: String
     val creator: User
@@ -27,7 +26,7 @@ class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
     val deletedInvite: ArrayList<User>
 
     constructor(parcel: Parcel) : super(parcel) {
-        this.base24ID = parcel.readString()
+        this.base16ID = parcel.readString()
         this.description = parcel.readString()
         creator = parcel.readParcelable(User::class.java.classLoader)
         going = parcel.createTypedArrayList(User.CREATOR)
@@ -62,7 +61,7 @@ class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
                 deletedInvite: ArrayList<User> = arrayListOf(),
                 id: String = Objects.hash(eventName, location, start).toString()
     ) : super(id.hashCode().toLong(), eventName, location, start, end) {
-        this.base24ID = id
+        this.base16ID = id
         this.description = eventDesc
         this.creator = creator
         this.going = going
@@ -107,11 +106,11 @@ class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
     }
 
     override fun hashCode(): Int {
-        return this.base24ID.hashCode()
+        return this.base16ID.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is Event && other.base24ID == this.base24ID
+        return other is Event && other.base16ID == this.base16ID
     }
 
     /**
@@ -130,7 +129,7 @@ class Event : WeekViewEvent, Base24ID, Parcelable, Nowable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         super.writeToParcel(parcel, flags)
-        parcel.writeString(base24ID)
+        parcel.writeString(base16ID)
         parcel.writeString(description)
         parcel.writeParcelable(creator, flags)
         parcel.writeTypedList(going)
