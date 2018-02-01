@@ -1,18 +1,18 @@
 package com.spcore.apis
 
 import com.spcore.helpers.Auth
-import com.spcore.helpers.CacheState
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 
 //internal const val BACKEND_URL: String = "http://128.199.181.203:8080"
-internal const val BACKEND_URL: String = "http://192.168.43.185:8080"
+//internal const val BACKEND_URL: String = "http://192.168.43.185:8080"
+internal const val BACKEND_URL: String = "http://10.0.0.2:8080"
 
 
 object Backend {
