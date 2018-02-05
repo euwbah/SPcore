@@ -149,6 +149,25 @@ object FrontendInterface : AnkoLogger {
             }
         }
 
+        // Following section for debug purposes
+
+        val now = Calendar.getInstance()
+        val qtNow = now.roundUpToNearest(minutes = 10)
+
+        // only add now for the current month
+        if (now.get(Calendar.MONTH) == month - 1) {
+            schedule.addAll(listOf(
+                    Lesson(
+                            "Test Lesson",
+                            "Currently ongoing",
+                            "T1643",
+                            "TUT",
+                            qtNow - Duration(hours = 1),
+                            qtNow + Duration(hours = 1)
+                    )
+            ))
+        }
+
         HardcodedEvents
                 .filter { it.startTime.get(Calendar.MONTH) == month - 1 }
                 .forEach { schedule.add(it) }
