@@ -3,24 +3,33 @@ package com.spcore.activities
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
+import com.alamkanak.weekview.WeekViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
+import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.*
 import com.spcore.models.User
-
 import kotlinx.android.synthetic.main.activity_friend_schedule.*
 import kotlinx.android.synthetic.main.content_friend_schedule.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.info
 import java.util.*
 
-class FriendScheduleActivity : AppCompatActivity() {
+class FriendScheduleActivity : AppCompatActivity(),
+                               AnkoLogger {
 
     private lateinit var user: User
 
     private var isAppBarExpanded = false
+
+
+    private var monthsLoadingOrLoaded: MutableSet<Pair<Int, Int>> = mutableSetOf()
+
+    private val schedule: MutableList<WeekViewEvent> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +74,31 @@ class FriendScheduleActivity : AppCompatActivity() {
 
         friend_schedule_view.setMonthChangeListener {
             year, month ->
-            Auth.user.getSchedule(year, month)
+
+            if (Pair(year, month) !in monthsLoadingOrLoaded) {
+                monthsLoadingOrLoaded.add(Pair(year, month))
+                cueLoadSchedule(year, month)
+                info("NIBBA Cue load $month")
+                return@setMonthChangeListener listOf()
+            }
+
+            val ret = mutableListOf<WeekViewEvent>()
+
+
+            schedule.forEach {
+                if (it.startTime isFrom newCalendar(year, month - 1, 1) to
+                        newCalendar(year, month - 1, 1).apply {
+                            set(Calendar.DAY_OF_MONTH, this.getActualMaximum(Calendar.DAY_OF_MONTH))
+                        } + Duration(days = 1) - Duration(millis = 0.1))
+                    ret.add(it)
+            }
+
+            friend_schedule_view.invalidate()
+            info("NIBBA invalidated schedule view month: $month")
+
+            //ret.forEach {info("${it.name} : ${it.startTime.getHumanReadableDate(false)}")}
+            info("NIBBA Month Change Callback returned (month: $month, size: ${ret.count()})")
+            ret
         }
 
         friend_schedule_view.setScrollListener {
@@ -93,6 +126,33 @@ class FriendScheduleActivity : AppCompatActivity() {
             // hack.
             delay(40)
             setScheduleViewDate(Calendar.getInstance())
+        }
+    }
+
+    private fun cueLoadSchedule(year: Int, month: Int) {
+        async(UI) {
+            val asyncSchedule = bg {
+                val x = FrontendInterface.getSchedule(user.adminNo, year, month)
+                info("NIBBA bg asyncSchedule loaded month: $month")
+                x
+            }
+
+            schedule.removeAll {
+                it.startTime isFrom newCalendar(year, month - 1, 1) to
+                        newCalendar(year, month - 1, 1).apply {
+                            set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                        } + (Duration(days = 1) - Duration(millis = 0.1))
+            }
+
+            val scheduleToAdd = asyncSchedule.await()
+            schedule.addAll(scheduleToAdd)
+
+            info("NIBBA asyncSchedule added month: $month")
+
+            Thread.sleep(42)
+
+            friend_schedule_view.notifyDatasetChanged()
+            info("NIBBA notifyDatasetChanged month: $month")
         }
     }
 
