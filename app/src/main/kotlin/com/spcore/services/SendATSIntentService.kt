@@ -1,9 +1,8 @@
 package com.spcore.services
 
 import android.app.IntentService
-import android.app.RemoteInput
-import android.content.Intent
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
@@ -46,24 +45,24 @@ class SendATSIntentService : IntentService("SendATSIntentService") {
         Thread.sleep(2000)
 
         val atsResult =
-                if(HARDCODE_MODE) {
-                    when (ats) {
-                        "111111" ->
-                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.INVALID_CODE)
-                        "222222" ->
-                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.NO_INTERNET)
-                        "333333" ->
-                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.INVALID_CREDENTIALS)
-                        "444444" ->
-                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI)
-                        "555555" ->
-                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.ALREADY_ENTERED)
-                        "666666" ->
-                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.WRONG_CLASS("YE/MUMS/CLASS"))
-                        else ->
-                            Result.Ok(null)
-                    }
-                } else
+//                if(HARDCODE_MODE) {
+//                    when (ats) {
+//                        "111111" ->
+//                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.INVALID_CODE)
+//                        "222222" ->
+//                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.NO_INTERNET)
+//                        "333333" ->
+//                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.INVALID_CREDENTIALS)
+//                        "444444" ->
+//                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.NOT_CONNECTED_TO_SCHOOL_WIFI)
+//                        "555555" ->
+//                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.ALREADY_ENTERED)
+//                        "666666" ->
+//                            Result.Error<Nothing?, ATSResult.Errors>(ATSResult.Errors.WRONG_CLASS("YE/MUMS/CLASS"))
+//                        else ->
+//                            Result.Ok(null)
+//                    }
+//                } else
                     SPMobileAPI.sendATS(adminNo, pass, ats)
 
 
