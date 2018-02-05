@@ -41,6 +41,18 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
 
     private var toggleListener: ActionBarDrawerToggle? = null
 
+    // Because of the async-ness of the loading of the schedule,
+    // goToEarliestVisibleEvent won't work the first time. Hence,
+    // it should be called the first time the async loading finally
+    // loads today's current day. Then, the flag will be set to false
+    // and subsequent current-day loads will not force herein the
+    // setGoToEarliestVisibleEventLoadTrigger
+    private var initialLoadCurrentDayFlag = true
+
+    // This cue is set in the cueLoadSchedule fn, which triggers the above
+    // situation within the post-async schedule loading callback fn
+    private var cueJustAddedCurrentDay = false
+
     private var monthsLoadingOrLoaded: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     private val schedule: MutableList<WeekViewEvent> = mutableListOf()
@@ -174,6 +186,12 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                     ret.add(it)
             }
 
+            if (initialLoadCurrentDayFlag && cueJustAddedCurrentDay) {
+                initialLoadCurrentDayFlag = false
+
+                setGoToEarliestVisibleEventLoadTrigger()
+            }
+
             schedule_view.invalidate()
             info("NIBBA invalidated schedule view month: $month")
 
@@ -296,6 +314,9 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
                                         set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
                                     } + (Duration(days = 1) - Duration(millis = 0.1))
             }
+
+            if (month == Calendar.getInstance().get(Calendar.MONTH) + 1)
+                cueJustAddedCurrentDay = true
 
             val scheduleToAdd = asyncSchedule.await()
             schedule.addAll(scheduleToAdd)
