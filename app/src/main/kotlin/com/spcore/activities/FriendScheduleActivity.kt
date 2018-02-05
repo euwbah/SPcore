@@ -27,9 +27,15 @@ class FriendScheduleActivity : AppCompatActivity(),
     private var isAppBarExpanded = false
 
 
+    // See HomeActivity.kt for explanation on the following two flags
+    private var initialLoadCurrentDayFlag = true
+    private var cueJustAddedCurrentDay = false
+
     private var monthsLoadingOrLoaded: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     private val schedule: MutableList<WeekViewEvent> = mutableListOf()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +81,12 @@ class FriendScheduleActivity : AppCompatActivity(),
         friend_schedule_view.setMonthChangeListener {
             year, month ->
 
+            if (initialLoadCurrentDayFlag && cueJustAddedCurrentDay) {
+                initialLoadCurrentDayFlag = false
+
+                setGoToEarliestVisibleEventLoadTrigger()
+            }
+
             if (Pair(year, month) !in monthsLoadingOrLoaded) {
                 monthsLoadingOrLoaded.add(Pair(year, month))
                 cueLoadSchedule(year, month)
@@ -92,6 +104,7 @@ class FriendScheduleActivity : AppCompatActivity(),
                         } + Duration(days = 1) - Duration(millis = 0.1))
                     ret.add(it)
             }
+
 
             friend_schedule_view.invalidate()
             info("NIBBA invalidated schedule view month: $month")
@@ -143,6 +156,9 @@ class FriendScheduleActivity : AppCompatActivity(),
                             set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
                         } + (Duration(days = 1) - Duration(millis = 0.1))
             }
+
+            if (month == Calendar.getInstance().get(Calendar.MONTH) + 1)
+                cueJustAddedCurrentDay = true
 
             val scheduleToAdd = asyncSchedule.await()
             schedule.addAll(scheduleToAdd)
