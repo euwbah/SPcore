@@ -9,19 +9,18 @@ import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.view.*
-import com.alamkanak.weekview.WeekView
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.spcore.R
 import com.spcore.apis.FrontendInterface
 import com.spcore.helpers.*
-
 import com.spcore.models.Event
 import com.spcore.models.Lesson
 import com.spcore.models.getCurrentATSKeyableLessons
 import com.spcore.persistence.SPCoreLocalDB
-
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 import kotlinx.android.synthetic.main.home_nav_header.*
@@ -59,10 +58,20 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
 
 
         ScheduleViewState.getNumberOfVisibleDays().let {
-            if (it == 1)
+            if (it == 1) {
                 nav_view.setCheckedItem(R.id.nav_day_view)
-            else if (it == 5)
+                setGoToEarliestVisibleEventLoadTrigger()
+                schedule_view.numberOfVisibleDays = 1
+                schedule_view.goToEarliestVisibleEvent(2.0)
+                ScheduleViewState.setNumberOfVisibleDays(1)
+            } else if (it == 5) {
                 nav_view.setCheckedItem(R.id.nav_5_day_view)
+
+                setGoToEarliestVisibleEventLoadTrigger()
+                schedule_view.numberOfVisibleDays = 5
+                schedule_view.goToEarliestVisibleEvent(2.0)
+                ScheduleViewState.setNumberOfVisibleDays(5)
+            }
         }
 
         nav_view.setNavigationItemSelectedListener navHandler@ {
@@ -396,17 +405,23 @@ class HomeActivity : AppStateTrackerActivity("HomeActivity"),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.action_home_ats -> {
-                val cal = Calendar.getInstance()
-                val sched = Auth.user.getSchedule(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
-                val ATSKeyables = sched.getCurrentATSKeyableLessons() ?: return true
+                async(UI) {
+                    val cal = Calendar.getInstance()
+                    val asyncSched =
+                            bg {
+                                Auth.user.getSchedule(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
+                            }
 
-                val mostRecent = ATSKeyables.last()
+                    val ATSKeyables = asyncSched.await().getCurrentATSKeyableLessons() ?: return@async
 
-                startActivity<LessonDetailsActivity>(
-                        "event" to mostRecent,
-                        "open ats dialog" to true,
-                        "dismiss notification" to true
-                )
+                    val mostRecent = ATSKeyables.last()
+
+                    startActivity<LessonDetailsActivity>(
+                            "event" to mostRecent,
+                            "open ats dialog" to true,
+                            "dismiss notification" to true
+                    )
+                }
 
                 true
             }
