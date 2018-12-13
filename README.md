@@ -1,4 +1,4 @@
-> Just an abandoned school assignment where we did mobile application development, reverse engineering, and ended up contributing to an open source project :P
+> Just an old school assignment where we did mobile application development, reverse engineering, and ended up contributing to an open source project :P
 
 -----
 
